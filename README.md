@@ -4,6 +4,12 @@
 
 Messing around with learning NextJS + React at the same time. There is no TDD in sight here. 
 
+## Install
+
+`npm i`
+`npm run build`
+`npm run dev`
+
 ## To-do: 
 
 * Add style / make less ugly
