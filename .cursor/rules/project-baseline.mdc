@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+[
+  {
+    "description": "Ensure all HTTP requests for VEGA chart data use fetch.",
+    "rule": "When writing HTTP requests, always use the fetch library for consistency and error handling."
+  },
+   {
+    "description": "Use TypeScript for type safety.",
+    "rule": "All new components should be written in TypeScript to utilize type safety and prevent runtime errors."
+  },
+  {
+    "description": "Ensure Vega charts are responsive.",
+    "rule": "When implementing Vega charts, make sure they are responsive to different screen sizes by setting appropriate view configurations."
+  },
+  {
+    "description": "Optimize for deployment on Raspberry Pi.",
+    "rule": "Keep an eye on the bundle size to ensure optimal performance on a Raspberry Pi. Use dynamic imports where possible."
+  },
+  {
+    "description": "Secure cloudflare tunnel endpoints.",
+    "rule": "Implement appropriate security measures (such as authentication and rate limiting) for endpoints exposed via cloudflare tunnels."
+  },
+  {
+    "description": "Standardize chart configurations.",
+    "rule": "Create a centralized configuration file for default chart properties to ensure consistency across all visualizations."
+  },
+  {
+    "description": "Document API interactions.",
+    "rule": "All API interactions should be well-documented, including endpoints, request parameters, and expected responses."
+  }
+]

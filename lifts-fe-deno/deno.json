@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-read main.ts"
+  },
+  "imports": {
+    "@eta-dev/eta": "jsr:@eta-dev/eta@^3.5.0",
+    "@std/http": "jsr:@std/http@^1.0.17",
+    "@std/path": "jsr:@std/path@^1.1.0"
+  }
+}
