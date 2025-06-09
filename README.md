@@ -1,30 +1,26 @@
-## Front end for lifts
+# Lifts FE (Deno Edition)
 
-Update: I don't like react but at least this works.
+A minimal, fast, and modern frontend for displaying VEGA charts using Deno and vanilla JS. No React or heavy frameworks.
 
+## Features
+- Deno HTTP server
+- Vega charts rendered client-side
+- Simple, maintainable structure
 
-## Deploy instructions
+## Getting Started
 
-Needs to be built on machine, rasp pi can't handle.
+1. Install [Deno](https://deno.land/manual/getting_started/installation)
+2. Run the server:
+   ```sh
+   deno run --allow-net --allow-read main.ts
+   ```
+3. Open your browser at [http://localhost:8000](http://localhost:8000)
 
-Copy over: `rsync -avz --exclude node_modules lifts-fe admin@pihost.local:/home/admin/opt`
+## Project Structure
+- `main.ts` — Deno server entry point
+- `routes/` — API endpoints (e.g., chart data)
+- `views/` — HTML templates
+- `public/` — Static assets (JS, CSS, Vega libs)
 
-Install on box, `npm run start` works. 
-
-Docker also seems to work fine. 
-
-
-## Install
-
-`npm i`
-`npm run build`
-`npm run dev`
-
-## To-do: 
-
-* Add style / make less ugly
-* Add other pages 
-* Tests 
-
-## Long term to eventually to-do
-* Migrate to TypeScript 
+## To-do
+- Add more pages/styles

@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "start": "deno run --allow-net --allow-read main.ts"
+    "start": "deno run --allow-net --allow-read main.ts",
+    "test": "deno test --allow-net --allow-read --allow-run --allow-env --allow-write"
   },
   "imports": {
     "@eta-dev/eta": "jsr:@eta-dev/eta@^3.5.0",
