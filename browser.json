@@ -3,4 +3,4 @@
     "lib": ["dom", "esnext"],
     "strict": true
   }
-} 
+}

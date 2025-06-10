@@ -1,4 +1,4 @@
-import { assertEquals, assertStringIncludes } from "https://deno.land/std@0.224.0/testing/asserts.ts";
+import { assertEquals, assertStringIncludes } from "jsr:@std/assert";
 
 let serverProcess: Deno.ChildProcess | undefined;
 
@@ -21,7 +21,7 @@ Deno.test({
           break;
         }
       } catch (_) {}
-      await new Promise(r => setTimeout(r, 100));
+      await new Promise((r) => setTimeout(r, 100));
     }
     if (!ready) throw new Error("Server did not start in time");
   },
@@ -35,9 +35,9 @@ Deno.test("GET /measure returns page with chart container and Vega scripts", asy
   const body = await res.text();
   assertEquals(res.status, 200);
   assertStringIncludes(body, '<div id="vis"');
-  assertStringIncludes(body, 'vega@5');
-  assertStringIncludes(body, 'vega-lite@5');
-  assertStringIncludes(body, 'vega-embed@6');
+  assertStringIncludes(body, "vega@5");
+  assertStringIncludes(body, "vega-lite@5");
+  assertStringIncludes(body, "vega-embed@6");
 });
 
 Deno.test("GET /api/charts returns JSON array", async () => {
@@ -60,4 +60,4 @@ Deno.test({
   sanitizeResources: false,
   sanitizeOps: false,
   only: false,
-}); 
+});

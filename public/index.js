@@ -1,2 +1,30 @@
-(()=>{window.addEventListener("DOMContentLoaded",()=>{fetch("/api/charts").then(r=>r.json()).then(r=>{let e=document.getElementById("vis");e&&(e.innerHTML="",r.forEach((n,o)=>{let t=document.createElement("div");t.id=`chart-${o}`,t.className="chart-container",e.appendChild(t);try{let a=typeof n=="string"?JSON.parse(n):n;window.vegaEmbed(`#chart-${o}`,a,{renderer:"svg",actions:!1}).catch(c=>{console.error(`Failed to render chart ${o}:`,c),t.innerHTML="<p>Failed to load chart</p>"})}catch(a){console.error(`Error parsing chart ${o}:`,a),t.innerHTML="<p>Failed to parse chart data</p>"}}))}).catch(r=>{let e=document.getElementById("vis");e&&(e.innerHTML="<p>Failed to load charts</p>"),console.error("Failed to fetch chart data:",r)})});})();
+(() => {
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch("/api/charts").then((r) => r.json()).then((r) => {
+      let e = document.getElementById("vis");
+      e && (e.innerHTML = "",
+        r.forEach((n, o) => {
+          let t = document.createElement("div");
+          t.id = `chart-${o}`,
+            t.className = "chart-container",
+            e.appendChild(t);
+          try {
+            let a = typeof n == "string" ? JSON.parse(n) : n;
+            window.vegaEmbed(`#chart-${o}`, a, { renderer: "svg", actions: !1 })
+              .catch((c) => {
+                console.error(`Failed to render chart ${o}:`, c),
+                  t.innerHTML = "<p>Failed to load chart</p>";
+              });
+          } catch (a) {
+            console.error(`Error parsing chart ${o}:`, a),
+              t.innerHTML = "<p>Failed to parse chart data</p>";
+          }
+        }));
+    }).catch((r) => {
+      let e = document.getElementById("vis");
+      e && (e.innerHTML = "<p>Failed to load charts</p>"),
+        console.error("Failed to fetch chart data:", r);
+    });
+  });
+})();
 //# sourceMappingURL=index.js.map

@@ -1,5 +1,5 @@
 import { handler } from "./main.ts";
-import { assertEquals, assertStringIncludes } from "https://deno.land/std@0.224.0/testing/asserts.ts";
+import { assertEquals, assertStringIncludes } from "jsr:@std/assert";
 
 Deno.test("handler returns home page with link to /measure", async () => {
   const req = new Request("http://localhost:8000/");
@@ -16,7 +16,7 @@ Deno.test("handler returns measure page with chart container", async () => {
   assertEquals(res.status, 200);
   const text = await res.text();
   assertStringIncludes(text, '<div id="vis"');
-  assertStringIncludes(text, 'vega@5');
+  assertStringIncludes(text, "vega@5");
 });
 
 Deno.test("handler returns 404 for unknown route", async () => {
@@ -25,4 +25,4 @@ Deno.test("handler returns 404 for unknown route", async () => {
   assertEquals(res.status, 404);
   const text = await res.text();
   assertEquals(text, "Not found");
-}); 
+});

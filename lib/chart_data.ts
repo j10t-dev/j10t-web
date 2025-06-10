@@ -18,11 +18,23 @@ const CACHE_EXPIRY = 3600000; // 1 hour
 const chartCache: Record<string, { data: any; timestamp: number }> = {};
 
 // Overloads for strict typing
-async function getChartJSON(type: "SINGLE", index_data: number): Promise<TopLevelSpec>;
-async function getChartJSON(type: "LR", index_data: [number, number]): Promise<TopLevelSpec>;
-async function getChartJSON(type: "SINGLE" | "LR", index_data: number | [number, number]): Promise<TopLevelSpec> {
+async function getChartJSON(
+  type: "SINGLE",
+  index_data: number,
+): Promise<TopLevelSpec>;
+async function getChartJSON(
+  type: "LR",
+  index_data: [number, number],
+): Promise<TopLevelSpec>;
+async function getChartJSON(
+  type: "SINGLE" | "LR",
+  index_data: number | [number, number],
+): Promise<TopLevelSpec> {
   const cacheKey = `${type}_${JSON.stringify(index_data)}`;
-  if (chartCache[cacheKey] && Date.now() - chartCache[cacheKey].timestamp < CACHE_EXPIRY) {
+  if (
+    chartCache[cacheKey] &&
+    Date.now() - chartCache[cacheKey].timestamp < CACHE_EXPIRY
+  ) {
     return chartCache[cacheKey].data;
   }
   let res;
@@ -40,7 +52,11 @@ async function getChartJSON(type: "SINGLE" | "LR", index_data: number | [number,
         res = await fetch(`${CHART_API_URL}/LR`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ index_L: (index_data as [number, number])[0], index_R: (index_data as [number, number])[1], style: "hover" }),
+          body: JSON.stringify({
+            index_L: (index_data as [number, number])[0],
+            index_R: (index_data as [number, number])[1],
+            style: "hover",
+          }),
         });
         break;
       default:
@@ -80,7 +96,7 @@ export async function getAllChartJSON(): Promise<TopLevelSpec[]> {
         const result = await item.promise;
         chartJSON[item.index] = result;
       } catch (_) {}
-    })
+    }),
   );
   return chartJSON.filter((chart): chart is TopLevelSpec => chart !== null);
-} 
+}

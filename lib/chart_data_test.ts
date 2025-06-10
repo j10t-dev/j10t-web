@@ -10,7 +10,12 @@ Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
     called++;
     return {
       async json() {
-        return { $schema: "https://vega.github.io/schema/vega-lite/v5.json", mock: true, url, opts } as any;
+        return {
+          $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+          mock: true,
+          url,
+          opts,
+        } as any;
       },
       ok: true,
     } as Response;
@@ -21,4 +26,4 @@ Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
   // Use type assertion to access mock property for test only
   assertEquals((data[0] as any).mock, true);
   globalThis.fetch = originalFetch;
-}); 
+});

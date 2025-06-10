@@ -12,4 +12,4 @@ await esbuild.build({
   target: ["es2020"],
 });
 
-esbuild.stop(); 
+esbuild.stop();
