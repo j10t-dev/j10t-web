@@ -1,5 +1,5 @@
 import { getAllChartJSON } from "./chart_data.ts";
-import { assertEquals } from "https://deno.land/std@0.224.0/testing/asserts.ts";
+import { assertEquals } from "jsr:@std/assert";
 
 // Save the original fetch
 const originalFetch = globalThis.fetch;
@@ -10,7 +10,7 @@ Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
     called++;
     return {
       async json() {
-        return { mock: true, url, opts };
+        return { $schema: "https://vega.github.io/schema/vega-lite/v5.json", mock: true, url, opts } as any;
       },
       ok: true,
     } as Response;
@@ -18,6 +18,7 @@ Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
   const data = await getAllChartJSON();
   assertEquals(Array.isArray(data), true);
   assertEquals(data.length > 0, true);
-  assertEquals(data[0].mock, true);
+  // Use type assertion to access mock property for test only
+  assertEquals((data[0] as any).mock, true);
   globalThis.fetch = originalFetch;
 }); 

@@ -2,20 +2,48 @@
   "version": "5",
   "specifiers": {
     "jsr:@eta-dev/eta@^3.5.0": "3.5.0",
+    "jsr:@logtape/logtape@*": "0.11.0",
+    "jsr:@luca/esbuild-deno-loader@*": "0.11.1",
+    "jsr:@std/assert@*": "1.0.13",
+    "jsr:@std/bytes@^1.0.2": "1.0.6",
     "jsr:@std/cli@^1.0.18": "1.0.19",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
+    "jsr:@std/encoding@^1.0.5": "1.0.10",
     "jsr:@std/fmt@^1.0.8": "1.0.8",
     "jsr:@std/html@^1.0.4": "1.0.4",
     "jsr:@std/http@^1.0.17": "1.0.17",
+    "jsr:@std/internal@^1.0.6": "1.0.8",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.4": "1.0.4",
+    "jsr:@std/path@^1.0.6": "1.1.0",
     "jsr:@std/path@^1.1.0": "1.1.0",
     "jsr:@std/streams@^1.0.9": "1.0.9",
-    "npm:@types/node@*": "22.15.15"
+    "npm:@types/node@*": "22.15.15",
+    "npm:esbuild@*": "0.25.5"
   },
   "jsr": {
     "@eta-dev/eta@3.5.0": {
       "integrity": "6b70827efc14c7cbf08498ac7a922ecab003641caf3852a6cb5b1b12ee58fb37"
+    },
+    "@logtape/logtape@0.11.0": {
+      "integrity": "87f90b428c7a86f4d08b7701f54171fde1f15942e4e43846fa6fc0b016c10285"
+    },
+    "@luca/esbuild-deno-loader@0.11.1": {
+      "integrity": "dc020d16d75b591f679f6b9288b10f38bdb4f24345edb2f5732affa1d9885267",
+      "dependencies": [
+        "jsr:@std/bytes",
+        "jsr:@std/encoding@^1.0.5",
+        "jsr:@std/path@^1.0.6"
+      ]
+    },
+    "@std/assert@1.0.13": {
+      "integrity": "ae0d31e41919b12c656c742b22522c32fb26ed0cba32975cb0de2a273cb68b29",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/bytes@1.0.6": {
+      "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
     },
     "@std/cli@1.0.19": {
       "integrity": "b3601a54891f89f3f738023af11960c4e6f7a45dc76cde39a6861124cba79e88"
@@ -33,14 +61,17 @@
       "integrity": "98aec8ab4080d95c21f731e3008f69c29c5012d12f1b4e553f85935db601569f",
       "dependencies": [
         "jsr:@std/cli",
-        "jsr:@std/encoding",
+        "jsr:@std/encoding@^1.0.10",
         "jsr:@std/fmt",
         "jsr:@std/html",
         "jsr:@std/media-types",
         "jsr:@std/net",
-        "jsr:@std/path",
+        "jsr:@std/path@^1.1.0",
         "jsr:@std/streams"
       ]
+    },
+    "@std/internal@1.0.8": {
+      "integrity": "fc66e846d8d38a47cffd274d80d2ca3f0de71040f855783724bb6b87f60891f5"
     },
     "@std/media-types@1.1.0": {
       "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"
@@ -56,11 +87,168 @@
     }
   },
   "npm": {
+    "@esbuild/aix-ppc64@0.25.5": {
+      "integrity": "sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA==",
+      "os": ["aix"],
+      "cpu": ["ppc64"]
+    },
+    "@esbuild/android-arm64@0.25.5": {
+      "integrity": "sha512-VGzGhj4lJO+TVGV1v8ntCZWJktV7SGCs3Pn1GRWI1SBFtRALoomm8k5E9Pmwg3HOAal2VDc2F9+PM/rEY6oIDg==",
+      "os": ["android"],
+      "cpu": ["arm64"]
+    },
+    "@esbuild/android-arm@0.25.5": {
+      "integrity": "sha512-AdJKSPeEHgi7/ZhuIPtcQKr5RQdo6OO2IL87JkianiMYMPbCtot9fxPbrMiBADOWWm3T2si9stAiVsGbTQFkbA==",
+      "os": ["android"],
+      "cpu": ["arm"]
+    },
+    "@esbuild/android-x64@0.25.5": {
+      "integrity": "sha512-D2GyJT1kjvO//drbRT3Hib9XPwQeWd9vZoBJn+bu/lVsOZ13cqNdDeqIF/xQ5/VmWvMduP6AmXvylO/PIc2isw==",
+      "os": ["android"],
+      "cpu": ["x64"]
+    },
+    "@esbuild/darwin-arm64@0.25.5": {
+      "integrity": "sha512-GtaBgammVvdF7aPIgH2jxMDdivezgFu6iKpmT+48+F8Hhg5J/sfnDieg0aeG/jfSvkYQU2/pceFPDKlqZzwnfQ==",
+      "os": ["darwin"],
+      "cpu": ["arm64"]
+    },
+    "@esbuild/darwin-x64@0.25.5": {
+      "integrity": "sha512-1iT4FVL0dJ76/q1wd7XDsXrSW+oLoquptvh4CLR4kITDtqi2e/xwXwdCVH8hVHU43wgJdsq7Gxuzcs6Iq/7bxQ==",
+      "os": ["darwin"],
+      "cpu": ["x64"]
+    },
+    "@esbuild/freebsd-arm64@0.25.5": {
+      "integrity": "sha512-nk4tGP3JThz4La38Uy/gzyXtpkPW8zSAmoUhK9xKKXdBCzKODMc2adkB2+8om9BDYugz+uGV7sLmpTYzvmz6Sw==",
+      "os": ["freebsd"],
+      "cpu": ["arm64"]
+    },
+    "@esbuild/freebsd-x64@0.25.5": {
+      "integrity": "sha512-PrikaNjiXdR2laW6OIjlbeuCPrPaAl0IwPIaRv+SMV8CiM8i2LqVUHFC1+8eORgWyY7yhQY+2U2fA55mBzReaw==",
+      "os": ["freebsd"],
+      "cpu": ["x64"]
+    },
+    "@esbuild/linux-arm64@0.25.5": {
+      "integrity": "sha512-Z9kfb1v6ZlGbWj8EJk9T6czVEjjq2ntSYLY2cw6pAZl4oKtfgQuS4HOq41M/BcoLPzrUbNd+R4BXFyH//nHxVg==",
+      "os": ["linux"],
+      "cpu": ["arm64"]
+    },
+    "@esbuild/linux-arm@0.25.5": {
+      "integrity": "sha512-cPzojwW2okgh7ZlRpcBEtsX7WBuqbLrNXqLU89GxWbNt6uIg78ET82qifUy3W6OVww6ZWobWub5oqZOVtwolfw==",
+      "os": ["linux"],
+      "cpu": ["arm"]
+    },
+    "@esbuild/linux-ia32@0.25.5": {
+      "integrity": "sha512-sQ7l00M8bSv36GLV95BVAdhJ2QsIbCuCjh/uYrWiMQSUuV+LpXwIqhgJDcvMTj+VsQmqAHL2yYaasENvJ7CDKA==",
+      "os": ["linux"],
+      "cpu": ["ia32"]
+    },
+    "@esbuild/linux-loong64@0.25.5": {
+      "integrity": "sha512-0ur7ae16hDUC4OL5iEnDb0tZHDxYmuQyhKhsPBV8f99f6Z9KQM02g33f93rNH5A30agMS46u2HP6qTdEt6Q1kg==",
+      "os": ["linux"],
+      "cpu": ["loong64"]
+    },
+    "@esbuild/linux-mips64el@0.25.5": {
+      "integrity": "sha512-kB/66P1OsHO5zLz0i6X0RxlQ+3cu0mkxS3TKFvkb5lin6uwZ/ttOkP3Z8lfR9mJOBk14ZwZ9182SIIWFGNmqmg==",
+      "os": ["linux"],
+      "cpu": ["mips64el"]
+    },
+    "@esbuild/linux-ppc64@0.25.5": {
+      "integrity": "sha512-UZCmJ7r9X2fe2D6jBmkLBMQetXPXIsZjQJCjgwpVDz+YMcS6oFR27alkgGv3Oqkv07bxdvw7fyB71/olceJhkQ==",
+      "os": ["linux"],
+      "cpu": ["ppc64"]
+    },
+    "@esbuild/linux-riscv64@0.25.5": {
+      "integrity": "sha512-kTxwu4mLyeOlsVIFPfQo+fQJAV9mh24xL+y+Bm6ej067sYANjyEw1dNHmvoqxJUCMnkBdKpvOn0Ahql6+4VyeA==",
+      "os": ["linux"],
+      "cpu": ["riscv64"]
+    },
+    "@esbuild/linux-s390x@0.25.5": {
+      "integrity": "sha512-K2dSKTKfmdh78uJ3NcWFiqyRrimfdinS5ErLSn3vluHNeHVnBAFWC8a4X5N+7FgVE1EjXS1QDZbpqZBjfrqMTQ==",
+      "os": ["linux"],
+      "cpu": ["s390x"]
+    },
+    "@esbuild/linux-x64@0.25.5": {
+      "integrity": "sha512-uhj8N2obKTE6pSZ+aMUbqq+1nXxNjZIIjCjGLfsWvVpy7gKCOL6rsY1MhRh9zLtUtAI7vpgLMK6DxjO8Qm9lJw==",
+      "os": ["linux"],
+      "cpu": ["x64"]
+    },
+    "@esbuild/netbsd-arm64@0.25.5": {
+      "integrity": "sha512-pwHtMP9viAy1oHPvgxtOv+OkduK5ugofNTVDilIzBLpoWAM16r7b/mxBvfpuQDpRQFMfuVr5aLcn4yveGvBZvw==",
+      "os": ["netbsd"],
+      "cpu": ["arm64"]
+    },
+    "@esbuild/netbsd-x64@0.25.5": {
+      "integrity": "sha512-WOb5fKrvVTRMfWFNCroYWWklbnXH0Q5rZppjq0vQIdlsQKuw6mdSihwSo4RV/YdQ5UCKKvBy7/0ZZYLBZKIbwQ==",
+      "os": ["netbsd"],
+      "cpu": ["x64"]
+    },
+    "@esbuild/openbsd-arm64@0.25.5": {
+      "integrity": "sha512-7A208+uQKgTxHd0G0uqZO8UjK2R0DDb4fDmERtARjSHWxqMTye4Erz4zZafx7Di9Cv+lNHYuncAkiGFySoD+Mw==",
+      "os": ["openbsd"],
+      "cpu": ["arm64"]
+    },
+    "@esbuild/openbsd-x64@0.25.5": {
+      "integrity": "sha512-G4hE405ErTWraiZ8UiSoesH8DaCsMm0Cay4fsFWOOUcz8b8rC6uCvnagr+gnioEjWn0wC+o1/TAHt+It+MpIMg==",
+      "os": ["openbsd"],
+      "cpu": ["x64"]
+    },
+    "@esbuild/sunos-x64@0.25.5": {
+      "integrity": "sha512-l+azKShMy7FxzY0Rj4RCt5VD/q8mG/e+mDivgspo+yL8zW7qEwctQ6YqKX34DTEleFAvCIUviCFX1SDZRSyMQA==",
+      "os": ["sunos"],
+      "cpu": ["x64"]
+    },
+    "@esbuild/win32-arm64@0.25.5": {
+      "integrity": "sha512-O2S7SNZzdcFG7eFKgvwUEZ2VG9D/sn/eIiz8XRZ1Q/DO5a3s76Xv0mdBzVM5j5R639lXQmPmSo0iRpHqUUrsxw==",
+      "os": ["win32"],
+      "cpu": ["arm64"]
+    },
+    "@esbuild/win32-ia32@0.25.5": {
+      "integrity": "sha512-onOJ02pqs9h1iMJ1PQphR+VZv8qBMQ77Klcsqv9CNW2w6yLqoURLcgERAIurY6QE63bbLuqgP9ATqajFLK5AMQ==",
+      "os": ["win32"],
+      "cpu": ["ia32"]
+    },
+    "@esbuild/win32-x64@0.25.5": {
+      "integrity": "sha512-TXv6YnJ8ZMVdX+SXWVBo/0p8LTcrUYngpWjvm91TMjjBQii7Oz11Lw5lbDV5Y0TzuhSJHwiH4hEtC1I42mMS0g==",
+      "os": ["win32"],
+      "cpu": ["x64"]
+    },
     "@types/node@22.15.15": {
       "integrity": "sha512-R5muMcZob3/Jjchn5LcO8jdKwSCbzqmPB6ruBxMcf9kbxtniZHP327s6C37iOfuw8mbKK3cAQa7sEl7afLrQ8A==",
       "dependencies": [
         "undici-types"
       ]
+    },
+    "esbuild@0.25.5": {
+      "integrity": "sha512-P8OtKZRv/5J5hhz0cUAdu/cLuPIKXpQl1R9pZtvmHWQvrAUVd0UNIPT4IB4W3rNOqVO0rlqHmCIbSwxh/c9yUQ==",
+      "optionalDependencies": [
+        "@esbuild/aix-ppc64",
+        "@esbuild/android-arm",
+        "@esbuild/android-arm64",
+        "@esbuild/android-x64",
+        "@esbuild/darwin-arm64",
+        "@esbuild/darwin-x64",
+        "@esbuild/freebsd-arm64",
+        "@esbuild/freebsd-x64",
+        "@esbuild/linux-arm",
+        "@esbuild/linux-arm64",
+        "@esbuild/linux-ia32",
+        "@esbuild/linux-loong64",
+        "@esbuild/linux-mips64el",
+        "@esbuild/linux-ppc64",
+        "@esbuild/linux-riscv64",
+        "@esbuild/linux-s390x",
+        "@esbuild/linux-x64",
+        "@esbuild/netbsd-arm64",
+        "@esbuild/netbsd-x64",
+        "@esbuild/openbsd-arm64",
+        "@esbuild/openbsd-x64",
+        "@esbuild/sunos-x64",
+        "@esbuild/win32-arm64",
+        "@esbuild/win32-ia32",
+        "@esbuild/win32-x64"
+      ],
+      "scripts": true,
+      "bin": true
     },
     "undici-types@6.21.0": {
       "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="
@@ -68,22 +256,111 @@
   },
   "redirects": {
     "https://esm.sh/@types/core-util-is@~1.0.1/index.d.ts": "https://esm.sh/@types/core-util-is@1.0.1/index.d.ts",
+    "https://esm.sh/@types/d3-array@~3.2.1/index.d.ts": "https://esm.sh/@types/d3-array@3.2.1/index.d.ts",
+    "https://esm.sh/@types/d3-color@~3.1.3/index.d.ts": "https://esm.sh/@types/d3-color@3.1.3/index.d.ts",
+    "https://esm.sh/@types/d3-delaunay@~6.0.4/index.d.ts": "https://esm.sh/@types/d3-delaunay@6.0.4/index.d.ts",
+    "https://esm.sh/@types/d3-dispatch@~3.0.6/index.d.ts": "https://esm.sh/@types/d3-dispatch@3.0.6/index.d.ts",
+    "https://esm.sh/@types/d3-dsv@~3.0.7/index.d.ts": "https://esm.sh/@types/d3-dsv@3.0.7/index.d.ts",
+    "https://esm.sh/@types/d3-force@~3.0.10/index.d.ts": "https://esm.sh/@types/d3-force@3.0.10/index.d.ts",
+    "https://esm.sh/@types/d3-format@~3.0.4/index.d.ts": "https://esm.sh/@types/d3-format@3.0.4/index.d.ts",
+    "https://esm.sh/@types/d3-geo@~3.1.0/index.d.ts": "https://esm.sh/@types/d3-geo@3.1.0/index.d.ts",
+    "https://esm.sh/@types/d3-hierarchy@~3.1.7/index.d.ts": "https://esm.sh/@types/d3-hierarchy@3.1.7/index.d.ts",
+    "https://esm.sh/@types/d3-interpolate@~3.0.4/index.d.ts": "https://esm.sh/@types/d3-interpolate@3.0.4/index.d.ts",
+    "https://esm.sh/@types/d3-path@~3.1.0/index.d.ts": "https://esm.sh/@types/d3-path@3.1.1/index.d.ts",
+    "https://esm.sh/@types/d3-quadtree@~3.0.6/index.d.ts": "https://esm.sh/@types/d3-quadtree@3.0.6/index.d.ts",
+    "https://esm.sh/@types/d3-scale-chromatic@~3.1.0/index.d.ts": "https://esm.sh/@types/d3-scale-chromatic@3.1.0/index.d.ts",
+    "https://esm.sh/@types/d3-scale@~4.0.8/index.d.ts": "https://esm.sh/@types/d3-scale@4.0.9/index.d.ts",
+    "https://esm.sh/@types/d3-shape@~3.1.7/index.d.ts": "https://esm.sh/@types/d3-shape@3.1.7/index.d.ts",
+    "https://esm.sh/@types/d3-time-format@~4.0.3/index.d.ts": "https://esm.sh/@types/d3-time-format@4.0.3/index.d.ts",
+    "https://esm.sh/@types/d3-time@~3.0.4/index.d.ts": "https://esm.sh/@types/d3-time@3.0.4/index.d.ts",
+    "https://esm.sh/@types/d3-timer@~3.0.2/index.d.ts": "https://esm.sh/@types/d3-timer@3.0.2/index.d.ts",
+    "https://esm.sh/@types/delaunator@~5.0.3/index.d.ts": "https://esm.sh/@types/delaunator@5.0.3/index.d.ts",
     "https://esm.sh/@types/immediate@~3.2.2/index.d.ts": "https://esm.sh/@types/immediate@3.2.2/index.d.ts",
     "https://esm.sh/@types/pako@~1.0.7/index.d.ts": "https://esm.sh/@types/pako@1.0.7/index.d.ts",
     "https://esm.sh/@types/readable-stream@~2.3.15/index.d.ts": "https://esm.sh/@types/readable-stream@2.3.15/index.d.ts",
+    "https://esm.sh/@types/topojson-client@~3.1.5/index.d.ts": "https://esm.sh/@types/topojson-client@3.1.5/index.d.ts",
     "https://esm.sh/@types/util-deprecate@~1.0.4/index.d.ts": "https://esm.sh/@types/util-deprecate@1.0.4/index.d.ts",
+    "https://esm.sh/build/Release/canvas.node?target=denonext": "https://esm.sh/build@0.1.4/Release/canvas.node?target=denonext",
+    "https://esm.sh/canvas?target=denonext": "https://esm.sh/canvas@3.1.0?target=denonext",
     "https://esm.sh/core-util-is@~1.0.0?target=denonext": "https://esm.sh/core-util-is@1.0.3?target=denonext",
+    "https://esm.sh/d3-array@^3.2.2?target=denonext": "https://esm.sh/d3-array@3.2.4?target=denonext",
+    "https://esm.sh/d3-array@^3.2.4?target=denonext": "https://esm.sh/d3-array@3.2.4?target=denonext",
+    "https://esm.sh/d3-color@^3.1.0?target=denonext": "https://esm.sh/d3-color@3.1.0?target=denonext",
+    "https://esm.sh/d3-delaunay@^6.0.2?target=denonext": "https://esm.sh/d3-delaunay@6.0.4?target=denonext",
+    "https://esm.sh/d3-dispatch@^3.0.1?target=denonext": "https://esm.sh/d3-dispatch@3.0.1?target=denonext",
+    "https://esm.sh/d3-dsv@^3.0.1?target=denonext": "https://esm.sh/d3-dsv@3.0.1?target=denonext",
+    "https://esm.sh/d3-force@^3.0.0?target=denonext": "https://esm.sh/d3-force@3.0.0?target=denonext",
+    "https://esm.sh/d3-format@^3.1.0?target=denonext": "https://esm.sh/d3-format@3.1.0?target=denonext",
+    "https://esm.sh/d3-geo-projection@^4.0.0?target=denonext": "https://esm.sh/d3-geo-projection@4.0.0?target=denonext",
+    "https://esm.sh/d3-geo@^3.1.0?target=denonext": "https://esm.sh/d3-geo@3.1.1?target=denonext",
+    "https://esm.sh/d3-geo@^3.1.1?target=denonext": "https://esm.sh/d3-geo@3.1.1?target=denonext",
+    "https://esm.sh/d3-hierarchy@^3.1.2?target=denonext": "https://esm.sh/d3-hierarchy@3.1.2?target=denonext",
+    "https://esm.sh/d3-interpolate@^3.0.1?target=denonext": "https://esm.sh/d3-interpolate@3.0.1?target=denonext",
+    "https://esm.sh/d3-path@^3.1.0?target=denonext": "https://esm.sh/d3-path@3.1.0?target=denonext",
+    "https://esm.sh/d3-quadtree@^3.0.1?target=denonext": "https://esm.sh/d3-quadtree@3.0.1?target=denonext",
+    "https://esm.sh/d3-scale-chromatic@^3.1.0?target=denonext": "https://esm.sh/d3-scale-chromatic@3.1.0?target=denonext",
+    "https://esm.sh/d3-scale@^4.0.2?target=denonext": "https://esm.sh/d3-scale@4.0.2?target=denonext",
+    "https://esm.sh/d3-shape@^3.2.0?target=denonext": "https://esm.sh/d3-shape@3.2.0?target=denonext",
+    "https://esm.sh/d3-time-format@^4.1.0?target=denonext": "https://esm.sh/d3-time-format@4.1.0?target=denonext",
+    "https://esm.sh/d3-time@^3.1.0?target=denonext": "https://esm.sh/d3-time@3.1.0?target=denonext",
+    "https://esm.sh/d3-timer@^3.0.1?target=denonext": "https://esm.sh/d3-timer@3.0.1?target=denonext",
+    "https://esm.sh/delaunator@5?target=denonext": "https://esm.sh/delaunator@5.0.1?target=denonext",
     "https://esm.sh/immediate@~3.0.5?target=denonext": "https://esm.sh/immediate@3.0.6?target=denonext",
+    "https://esm.sh/internmap@^2.0.3?target=denonext": "https://esm.sh/internmap@2.0.3?target=denonext",
     "https://esm.sh/isarray@~1.0.0?target=denonext": "https://esm.sh/isarray@1.0.0?target=denonext",
     "https://esm.sh/lie@~3.3.0?target=denonext": "https://esm.sh/lie@3.3.0?target=denonext",
     "https://esm.sh/pako@~1.0.2?target=denonext": "https://esm.sh/pako@1.0.11?target=denonext",
     "https://esm.sh/process-nextick-args@~2.0.0?target=denonext": "https://esm.sh/process-nextick-args@2.0.1?target=denonext",
     "https://esm.sh/readable-stream@~2.3.6?target=denonext": "https://esm.sh/readable-stream@2.3.8?target=denonext",
+    "https://esm.sh/robust-predicates@^3.0.2?target=denonext": "https://esm.sh/robust-predicates@3.0.2?target=denonext",
     "https://esm.sh/safe-buffer@~5.1.0?target=denonext": "https://esm.sh/safe-buffer@5.1.2?target=denonext",
     "https://esm.sh/safe-buffer@~5.1.1?target=denonext": "https://esm.sh/safe-buffer@5.1.2?target=denonext",
     "https://esm.sh/set-immediate-shim@~1.0.1?target=denonext": "https://esm.sh/set-immediate-shim@1.0.1?target=denonext",
     "https://esm.sh/string_decoder@~1.1.1?target=denonext": "https://esm.sh/string_decoder@1.1.1?target=denonext",
-    "https://esm.sh/util-deprecate@~1.0.1?target=denonext": "https://esm.sh/util-deprecate@1.0.2?target=denonext"
+    "https://esm.sh/topojson-client@^3.1.0?target=denonext": "https://esm.sh/topojson-client@3.1.0?target=denonext",
+    "https://esm.sh/util-deprecate@~1.0.1?target=denonext": "https://esm.sh/util-deprecate@1.0.2?target=denonext",
+    "https://esm.sh/vega-canvas@^1.2.7?target=denonext": "https://esm.sh/vega-canvas@1.2.7?target=denonext",
+    "https://esm.sh/vega-crossfilter@~4.1.3?target=denonext": "https://esm.sh/vega-crossfilter@4.1.3?target=denonext",
+    "https://esm.sh/vega-dataflow@^5.7.7?target=denonext": "https://esm.sh/vega-dataflow@5.7.7?target=denonext",
+    "https://esm.sh/vega-dataflow@~5.7.7?target=denonext": "https://esm.sh/vega-dataflow@5.7.7?target=denonext",
+    "https://esm.sh/vega-encode@~4.10.2?target=denonext": "https://esm.sh/vega-encode@4.10.2?target=denonext",
+    "https://esm.sh/vega-event-selector@^3.0.1?target=denonext": "https://esm.sh/vega-event-selector@3.0.1?target=denonext",
+    "https://esm.sh/vega-event-selector@~3.0.1?target=denonext": "https://esm.sh/vega-event-selector@3.0.1?target=denonext",
+    "https://esm.sh/vega-expression@^5.2.0?target=denonext": "https://esm.sh/vega-expression@5.2.0?target=denonext",
+    "https://esm.sh/vega-expression@~5.2.0?target=denonext": "https://esm.sh/vega-expression@5.2.0?target=denonext",
+    "https://esm.sh/vega-force@~4.2.2?target=denonext": "https://esm.sh/vega-force@4.2.2?target=denonext",
+    "https://esm.sh/vega-format@^1.1.3?target=denonext": "https://esm.sh/vega-format@1.1.3?target=denonext",
+    "https://esm.sh/vega-format@~1.1.3?target=denonext": "https://esm.sh/vega-format@1.1.3?target=denonext",
+    "https://esm.sh/vega-functions@^5.18.0?target=denonext": "https://esm.sh/vega-functions@5.18.0?target=denonext",
+    "https://esm.sh/vega-functions@~5.18.0?target=denonext": "https://esm.sh/vega-functions@5.18.0?target=denonext",
+    "https://esm.sh/vega-geo@~4.4.3?target=denonext": "https://esm.sh/vega-geo@4.4.3?target=denonext",
+    "https://esm.sh/vega-hierarchy@~4.1.3?target=denonext": "https://esm.sh/vega-hierarchy@4.1.3?target=denonext",
+    "https://esm.sh/vega-label@~1.3.1?target=denonext": "https://esm.sh/vega-label@1.3.1?target=denonext",
+    "https://esm.sh/vega-loader@^4.5.3?target=denonext": "https://esm.sh/vega-loader@4.5.3?target=denonext",
+    "https://esm.sh/vega-loader@~4.5.3?target=denonext": "https://esm.sh/vega-loader@4.5.3?target=denonext",
+    "https://esm.sh/vega-parser@~6.6.0?target=denonext": "https://esm.sh/vega-parser@6.6.0?target=denonext",
+    "https://esm.sh/vega-projection@^1.6.2?target=denonext": "https://esm.sh/vega-projection@1.6.2?target=denonext",
+    "https://esm.sh/vega-projection@~1.6.2?target=denonext": "https://esm.sh/vega-projection@1.6.2?target=denonext",
+    "https://esm.sh/vega-regression@~1.3.1?target=denonext": "https://esm.sh/vega-regression@1.3.1?target=denonext",
+    "https://esm.sh/vega-runtime@^6.2.1?target=denonext": "https://esm.sh/vega-runtime@6.2.1?target=denonext",
+    "https://esm.sh/vega-runtime@~6.2.1?target=denonext": "https://esm.sh/vega-runtime@6.2.1?target=denonext",
+    "https://esm.sh/vega-scale@^7.4.2?target=denonext": "https://esm.sh/vega-scale@7.4.2?target=denonext",
+    "https://esm.sh/vega-scale@~7.4.2?target=denonext": "https://esm.sh/vega-scale@7.4.2?target=denonext",
+    "https://esm.sh/vega-scenegraph@^4.13.1?target=denonext": "https://esm.sh/vega-scenegraph@4.13.1?target=denonext",
+    "https://esm.sh/vega-scenegraph@~4.13.1?target=denonext": "https://esm.sh/vega-scenegraph@4.13.1?target=denonext",
+    "https://esm.sh/vega-selections@^5.6.0?target=denonext": "https://esm.sh/vega-selections@5.6.0?target=denonext",
+    "https://esm.sh/vega-statistics@^1.9.0?target=denonext": "https://esm.sh/vega-statistics@1.9.0?target=denonext",
+    "https://esm.sh/vega-statistics@~1.9.0?target=denonext": "https://esm.sh/vega-statistics@1.9.0?target=denonext",
+    "https://esm.sh/vega-time@^2.1.3?target=denonext": "https://esm.sh/vega-time@2.1.3?target=denonext",
+    "https://esm.sh/vega-time@~2.1.3?target=denonext": "https://esm.sh/vega-time@2.1.3?target=denonext",
+    "https://esm.sh/vega-transforms@~4.12.1?target=denonext": "https://esm.sh/vega-transforms@4.12.1?target=denonext",
+    "https://esm.sh/vega-util@^1.17.3?target=denonext": "https://esm.sh/vega-util@1.17.3?target=denonext",
+    "https://esm.sh/vega-util@~1.17.2?target=denonext": "https://esm.sh/vega-util@1.17.3?target=denonext",
+    "https://esm.sh/vega-view-transforms@~4.6.1?target=denonext": "https://esm.sh/vega-view-transforms@4.6.1?target=denonext",
+    "https://esm.sh/vega-view@~5.16.0?target=denonext": "https://esm.sh/vega-view@5.16.0?target=denonext",
+    "https://esm.sh/vega-voronoi@~4.2.4?target=denonext": "https://esm.sh/vega-voronoi@4.2.4?target=denonext",
+    "https://esm.sh/vega-wordcloud@~4.1.6?target=denonext": "https://esm.sh/vega-wordcloud@4.1.6?target=denonext",
+    "https://esm.sh/vega@^5.24.0?target=denonext": "https://esm.sh/vega@5.33.0?target=denonext"
   },
   "remote": {
     "https://deno.land/std@0.224.0/assert/_constants.ts": "a271e8ef5a573f1df8e822a6eb9d09df064ad66a4390f21b3e31f820a38e0975",
@@ -316,10 +593,73 @@
     "https://deno.land/x/puppeteer@16.2.0/vendor/puppeteer-core/vendor/std.ts": "f40a7715328679df890400a7ed5ca6d959695f416f15f164cf3ad30bf0b00e90",
     "https://deno.land/x/puppeteer@16.2.0/vendor/puppeteer-core/vendor/zip/mod.ts": "29165da19740460ef193cd4f148c936176f22e6422b193fe6b7b1f2be78394d5",
     "https://deno.land/x/puppeteer@16.2.0/vendor/puppeteer-core/vendor/zip/types.ts": "1528d1279fbb64dd118c371331c641a3a5eff2b594336fb38a7659cf4c53b2d1",
+    "https://esm.sh/canvas@3.1.0/denonext/canvas.mjs": "a1d96a51177d4260fdb7137202eb5d44ed32fc5acaf2aec5a11e6e48883d1a18",
+    "https://esm.sh/canvas@3.1.0?target=denonext": "6dbba5ebe918d943aff4ad57eced932791d1589bf982b3da4733ec0ca6ea36c4",
     "https://esm.sh/core-util-is@1.0.3/denonext/core-util-is.mjs": "cfcf1ae63d56751cbe4b3b90b90b7eea577c5380c4adc272ddea4b7db2bdbbf2",
     "https://esm.sh/core-util-is@1.0.3?target=denonext": "6c72958f8a1c8f42016b48c984a0f3d799ea1e0cd321f499fec0bf8db916c17f",
+    "https://esm.sh/d3-array@3.2.4/denonext/d3-array.mjs": "6519a5e73c89994e9e5b3959b717052ac2fa998e81c4b911b36f6fe3bb506798",
+    "https://esm.sh/d3-array@3.2.4?target=denonext": "4266074d204ab57fcfbe3b73d6259dd41e56d864ca72d20b13e159414fe8c5f5",
+    "https://esm.sh/d3-color@3.1.0/denonext/d3-color.mjs": "2e852a0327b74fbcf7cafd66913833423b736b8bf2e163801e74cee61624073a",
+    "https://esm.sh/d3-color@3.1.0?target=denonext": "c44248d4b33f57d8791c0994e1eee000e5bbb4a9939d11e2baf5dfa669cab805",
+    "https://esm.sh/d3-delaunay@6.0.4/denonext/d3-delaunay.mjs": "f8a5321a6cceb80ef22c84a702287725800796a5fae2db372b24b051e7c6aff8",
+    "https://esm.sh/d3-delaunay@6.0.4?target=denonext": "d48fac58d92dc2e75f75663d504a1ae66c538aac6a88d98f4e110f6c1775f5df",
+    "https://esm.sh/d3-dispatch@3.0.1/denonext/d3-dispatch.mjs": "b36be2eed6f07b517775df12bde28cb0e778b9a7df04974ce9cb99f7b322a2d6",
+    "https://esm.sh/d3-dispatch@3.0.1?target=denonext": "75f32f2a0e7cdddbe15573f1a802fb6bdc46247d038a4b1a2ebde2ad86848c56",
+    "https://esm.sh/d3-dsv@3.0.1/denonext/d3-dsv.mjs": "81798ba83d26850ed74f8c336918d283ee2d3a9cf36cd330a35b770376fa04ef",
+    "https://esm.sh/d3-dsv@3.0.1?target=denonext": "df2fe1373d8adeb64c44bd1cee552acd6a9a9b6314b2288a42679b3e6638c47f",
+    "https://esm.sh/d3-force@3.0.0/denonext/d3-force.mjs": "daa176ee52b7f8f113d4b0c5e31b95bd99b0cd0cd66ca5c7445ab4bdf7c5cb71",
+    "https://esm.sh/d3-force@3.0.0?target=denonext": "1a35f3dd1ff127dc27f2b009574d90304693b0a516eac9583df8d0333d61fd8e",
+    "https://esm.sh/d3-format@3.1.0/denonext/d3-format.mjs": "de06e6fe57436ec84c146e27a2ccaf444fc5dab14b091afe1e95d985bdfd8219",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/defaultLocale.mjs": "dfb5be55e86889631b0db011102c240ff60900347f80df21fe4d9d88ad9d2f06",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/exponent.mjs": "3fabc54097b16d594809a42288cbbbb9e3f0b26e88c83633cae2ead4b858e7d4",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatDecimal.mjs": "22184045739a8af17838956f85c7b747c4b8ad4e744e338d721a96a25c1805a4",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatGroup.mjs": "bbbcd628338ae27949817f50b2fef27ec808eacbbbc022cb29d62892cc778195",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatNumerals.mjs": "546ae2fd688a53c7cab1048cc3a4d8e1f9f64546a0d8021e061bc6f30b997d0a",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatPrefixAuto.mjs": "d4058419991cfc1ff535c5d2c3e556788d935ae9d886e174a306168cb9476cb8",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatRounded.mjs": "3fe4e8c81bc53cc82ba22564eca9b51f10e59c2a6028b6bf53a24884d9200925",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatSpecifier.mjs": "d0fce28aa8ff576e938c0817f18ca2e5824fa9a29ec3443fab92851472efac27",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatTrim.mjs": "bc4bad9a5827dec90c64557083eada6653ef531c64699eec4b8fc4d2fef4f69b",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/formatTypes.mjs": "3556878fb52315588adb3c8eb91e16c98e7d91371ece737121f52143a0e7304b",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/identity.mjs": "1a5237ada3ebfa0877cfd22b0d61bd5e90177879e0b9bcb31f72f4959ccdce3f",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/locale.mjs": "18051fb152a9f4f33bbdb54249bfcee67126a47dfe469fd54c44e108b6b13ba9",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/precisionFixed.mjs": "9db700a7ea53bd880348a5c26c89c9536a724c892cd7cb153ef2133e6d7bcc34",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/precisionPrefix.mjs": "98157877e57a9ec2470e574c5cceb12da5e3344e0425e30aa9b19da6a8a6ff7b",
+    "https://esm.sh/d3-format@3.1.0/denonext/src/precisionRound.mjs": "5ed90c6636ea737e6bc1d522eb4ba60fc389ba6535dcb0c64112bf8ef843d21d",
+    "https://esm.sh/d3-format@3.1.0?target=denonext": "c0d64767d08d2e6bc97243e6ceaa1f833f6b172ab8a0173e27ab11466c546aea",
+    "https://esm.sh/d3-geo-projection@4.0.0/denonext/d3-geo-projection.mjs": "e87ed18dc0673785407abcffffd994260d688bfbd56f88153b8993fde974913e",
+    "https://esm.sh/d3-geo-projection@4.0.0?target=denonext": "505d73c6da8ab5daf686313a78c007ff11fe3586b88a4645004adc5edc4fd9e6",
+    "https://esm.sh/d3-geo@3.1.1/denonext/d3-geo.mjs": "c98c715c798ead807108505d44119407cc2c574bd9fd94c1d7594d4dfe1972d5",
+    "https://esm.sh/d3-geo@3.1.1?target=denonext": "67851d96be856de5fc4629f04304599d0632e5f9eaaa04501a70c01c58e59828",
+    "https://esm.sh/d3-hierarchy@3.1.2/denonext/d3-hierarchy.mjs": "d6bcec79fdbbb7fde8ae5efc37f08dcd3f92a46f1a8a3026faaade3a48c212fb",
+    "https://esm.sh/d3-hierarchy@3.1.2?target=denonext": "41ed0806cba567d4cf8a5d84e2a8da7c5fc480f9b1b296e9cc8955d0aac46aef",
+    "https://esm.sh/d3-interpolate@3.0.1/denonext/d3-interpolate.mjs": "32e4fd3b94b318bce3c39726e50cbeff6e475e989cccb24072a6331cc2fbef6f",
+    "https://esm.sh/d3-interpolate@3.0.1?target=denonext": "d919d1489c7be9cc2f235b39de7b446c77c912c4069d0cf1ca0a90379cce2968",
+    "https://esm.sh/d3-path@3.1.0/denonext/d3-path.mjs": "d79581e49a2f7dc620bfc74299b070d858b012456752da7f12315202a4ba7184",
+    "https://esm.sh/d3-path@3.1.0?target=denonext": "0efef59a6e67de9fe8cf8053cada892ab342eda9820e5061677c75391a11ef2e",
+    "https://esm.sh/d3-quadtree@3.0.1/denonext/d3-quadtree.mjs": "63669e70a8b12b5b242985137283e55688903456bd96757970835edeb6830d81",
+    "https://esm.sh/d3-quadtree@3.0.1?target=denonext": "d820b5c5854cf78dfd2793468094f5bb2c55c51b1d890f8503f02f980685fcd7",
+    "https://esm.sh/d3-scale-chromatic@3.1.0/denonext/d3-scale-chromatic.mjs": "08342f70bf86d6e237b6c8fe01e8de4de5ea01f4b75697365766cb9dea3c4459",
+    "https://esm.sh/d3-scale-chromatic@3.1.0?target=denonext": "8cddeaf82214dbde006b6bdabb038765d5f501bac05f05349e59070b22f806ce",
+    "https://esm.sh/d3-scale@4.0.2/denonext/d3-scale.mjs": "1115950dd06d8026626e11229c846375f294a1cd1bd7f741b93c0dcb8fb0780a",
+    "https://esm.sh/d3-scale@4.0.2?target=denonext": "f4225cdaa2d020f7ec7785a3e984c20b81f3022097a4b440e50c7825d916afa1",
+    "https://esm.sh/d3-shape@3.2.0/denonext/d3-shape.mjs": "650a67568928c8bcd1983a48623dae723c2ce2e009b5553d9567043046ff6ad6",
+    "https://esm.sh/d3-shape@3.2.0?target=denonext": "08207dbafaa679cbc1346c3c290cf3a179a32b029b5e958639ede04881285133",
+    "https://esm.sh/d3-time-format@4.1.0/denonext/d3-time-format.mjs": "6439e52bacb8523679a21f687afcf00053a5fd746f0082029623fdceed767ae4",
+    "https://esm.sh/d3-time-format@4.1.0/denonext/src/defaultLocale.mjs": "b9454dea3f10f2b51d249f5f1a8b19873afe8acbbdf119188854e99f22a809ec",
+    "https://esm.sh/d3-time-format@4.1.0/denonext/src/isoFormat.mjs": "935278d7dd8b2d40cebb6c31abd772c05f26172bff30b7b456cf05c8f899007d",
+    "https://esm.sh/d3-time-format@4.1.0/denonext/src/isoParse.mjs": "f4e93c15fa87c3862711cfdeb172b12a727795be94982e328d245a31d599557c",
+    "https://esm.sh/d3-time-format@4.1.0/denonext/src/locale.mjs": "ac17c35b00d95a540a6a66e38db2da9bbbe5b1f706be8b54409652b58d5b12b2",
+    "https://esm.sh/d3-time-format@4.1.0?target=denonext": "91bddb03aa47c57dbc225451934b777c80e911c93b82c2923a8b875c4b50da0d",
+    "https://esm.sh/d3-time@3.1.0/denonext/d3-time.mjs": "019824f1ffdc1e494d992d20c009387eb07d06985b13af28127ded7c76969ba4",
+    "https://esm.sh/d3-time@3.1.0?target=denonext": "39f91af316d7e080e5294c8e989c2193cf0179120f3b83c39aa19b9eb0cabc16",
+    "https://esm.sh/d3-timer@3.0.1/denonext/d3-timer.mjs": "eb0b5bf822496c4aad63d2ca4832ec29c8a015467f5a685184bec78d2e3e5003",
+    "https://esm.sh/d3-timer@3.0.1?target=denonext": "5ee90bdf7721811a8f2020e3779e994dfe881d0c8db53e4ea0f535a032516bc1",
+    "https://esm.sh/delaunator@5.0.1/denonext/delaunator.mjs": "94a8e377c1565641c032ebfe7ffb44d64e7793c7b6d667cb2291e21fa08c92a7",
+    "https://esm.sh/delaunator@5.0.1?target=denonext": "43d70b1ebc31c77db7943e27d277762c97a2ec72b9449acee66b5efacdb91523",
     "https://esm.sh/immediate@3.0.6/denonext/immediate.mjs": "7148ba33cb905f7aca49affbacfa6a8257cd6b89e8c3c7c728d2d0387b4cce29",
     "https://esm.sh/immediate@3.0.6?target=denonext": "fba8d9ddb37f19ff27c0b1c5b4486ab82805114b14959379d92ca05d6351c5d3",
+    "https://esm.sh/internmap@2.0.3/denonext/internmap.mjs": "09707265c3a24383ca1b71aa6d97ab980e91ad4e804f55dec34de6d24a9900b4",
+    "https://esm.sh/internmap@2.0.3?target=denonext": "235fe2491d38df4060d092e8b8e882891b7bcb595435dcf9f52d7d38b6d2c534",
     "https://esm.sh/isarray@1.0.0/denonext/isarray.mjs": "0f26133cd58fc8580f99bbfd81f6290718328dc2a683c313c36f6b1e8c174edc",
     "https://esm.sh/isarray@1.0.0?target=denonext": "00e227f6d016cb5a5f832f6f2de91dd8ab092c7ac830c551bfcf0f63284d89e6",
     "https://esm.sh/jszip@3.5.0": "e00ec443d54cea776cb696a2ef9f3ccb3590bf89aca75034ccfdbbfa7b69111d",
@@ -332,14 +672,78 @@
     "https://esm.sh/process-nextick-args@2.0.1?target=denonext": "b80260031d83086964facc0efc6e2cc8fd878d9ce14dfcf6999e508a4d8d13d0",
     "https://esm.sh/readable-stream@2.3.8/denonext/readable-stream.mjs": "738c1c2f90f84663b7bf1a4151d280079e6eab3ae3b2a5b5c759af02364b5ea4",
     "https://esm.sh/readable-stream@2.3.8?target=denonext": "a8d158c470101e7518fdf293728d4cb8b2ab2cac73140940c8a9ee5542194e13",
+    "https://esm.sh/robust-predicates@3.0.2/denonext/robust-predicates.mjs": "8333e9ebc007d4b0f6894c8cd577c0e66c5421a5b7ce8664c659e3d2143dddb2",
+    "https://esm.sh/robust-predicates@3.0.2?target=denonext": "c05d88c418e0d44a5b82d29f87f5ac1d935d117fa1122989c4162204ef38f83c",
     "https://esm.sh/safe-buffer@5.1.2/denonext/safe-buffer.mjs": "848e2c2dafb98ea738399526e4396607872d1118acf8eb56eecd2a5f3be75568",
     "https://esm.sh/safe-buffer@5.1.2?target=denonext": "3126988c629e3dc2d6126b26f654aceae10ad989622a21cb2a73ee72603f7df8",
     "https://esm.sh/set-immediate-shim@1.0.1/denonext/set-immediate-shim.mjs": "a0fc9b90f281a6541c474dbf55184ef3a9360248f53cb3fa9479480cd24cdd40",
     "https://esm.sh/set-immediate-shim@1.0.1?target=denonext": "8d30997d25a26dbcd4d79b613e6f400af85194f8e18e8e7014bc5fe3c9ffd429",
     "https://esm.sh/string_decoder@1.1.1/denonext/string_decoder.mjs": "494e5a7fae95d5326e8aee93b4adfde75e389eea7a54bc1feea8549e786da032",
     "https://esm.sh/string_decoder@1.1.1?target=denonext": "092c97b62b99368a40fa044c402188472658bc71529415f73c16f66c05aaf6bf",
+    "https://esm.sh/topojson-client@3.1.0/denonext/topojson-client.mjs": "56ef2b146e10a1b99b0fc42f2f96bd41931d42e256efd1954724aeee505a7010",
+    "https://esm.sh/topojson-client@3.1.0?target=denonext": "e664d697a59fcfdaf0bae03ea35fef8aa44351fc02631c5ccfa9354df03fff5e",
     "https://esm.sh/util-deprecate@1.0.2/denonext/util-deprecate.mjs": "083639894972cb68837eef26346c43bdd01357977149e0a4493f76192a4008b8",
-    "https://esm.sh/util-deprecate@1.0.2?target=denonext": "859f4df8ba771a4c33143185d3db6a7edb824fab1ed4f9a4b96ac0e6bc3ef1a4"
+    "https://esm.sh/util-deprecate@1.0.2?target=denonext": "859f4df8ba771a4c33143185d3db6a7edb824fab1ed4f9a4b96ac0e6bc3ef1a4",
+    "https://esm.sh/vega-canvas@1.2.7/denonext/vega-canvas.mjs": "0fae020c2058a314f5dbd40b5ca7c8a80da4fc0f5acf260b4acf36c58901d04f",
+    "https://esm.sh/vega-canvas@1.2.7?target=denonext": "e7b806be2f5005d61910ebf38526eb93bc9240c42710e7d3791bfb8e532f7ab0",
+    "https://esm.sh/vega-crossfilter@4.1.3/denonext/vega-crossfilter.mjs": "ed98dc4e618844d66e25d4feb18da2f62cc4958f87082157c3280b0aed40b633",
+    "https://esm.sh/vega-crossfilter@4.1.3?target=denonext": "a2605e509df3d24faa8c1b0adcf728910c64dfc492fea951bcb964b79c8a1da6",
+    "https://esm.sh/vega-dataflow@5.7.7/denonext/vega-dataflow.mjs": "e534c0b8328785543c31ac2b28154a1acd13435ad78ab9bbc863d75f708433ed",
+    "https://esm.sh/vega-dataflow@5.7.7?target=denonext": "b14441c7486adbd06d15cd972ca3d74c9ef58dd365ce1b0d62a22cfdae919f04",
+    "https://esm.sh/vega-encode@4.10.2/denonext/vega-encode.mjs": "3fe16e3ef8c6c8eae625b51da9bf1f66242dd67f2272f7ef972f8bb8a4cfc88c",
+    "https://esm.sh/vega-encode@4.10.2?target=denonext": "c608fc693b245b402d81e6f2343271feaf0f5c92919db1c2b48192eadcf894cb",
+    "https://esm.sh/vega-event-selector@3.0.1/denonext/vega-event-selector.mjs": "a129e131b2ae63050a180b3d277b0c53493ed53703bc2b31b992f0319bd2e321",
+    "https://esm.sh/vega-event-selector@3.0.1?target=denonext": "7865e9dff4fe2a379cf2f21b08ac071f26fcc2595af765f39c64b8ee6f7e50a7",
+    "https://esm.sh/vega-expression@5.2.0/denonext/vega-expression.mjs": "f096f8ad587e10044f0cac02069c3a95122682e21fdd795b78f8dc33f2903994",
+    "https://esm.sh/vega-expression@5.2.0?target=denonext": "d1a11da11d460d05dd9a03f197b4369272e770a327a663d99864fdb8dabb14ca",
+    "https://esm.sh/vega-force@4.2.2/denonext/vega-force.mjs": "a010da6a2e56b48096df52dc39fd9869e952abdea55acdc52ebf0e39e12a379e",
+    "https://esm.sh/vega-force@4.2.2?target=denonext": "2d04078cc4e29fc5a1e2d9d9543061c8f79819a59ae8bd0d43e5050b54effbd8",
+    "https://esm.sh/vega-format@1.1.3/denonext/vega-format.mjs": "3821aab7865b7c575eadfe7858458fe774a28005d7eaa18c7dc0ad4dfe6c2098",
+    "https://esm.sh/vega-format@1.1.3?target=denonext": "b5c896155a6cffce328215d72944eafc9cb47f8115372f423a43ea17a06893ff",
+    "https://esm.sh/vega-functions@5.18.0/denonext/vega-functions.mjs": "c85643a597cc08fb588c0b2087b8cd3f592735c632e004d5a72ea987c91888f9",
+    "https://esm.sh/vega-functions@5.18.0?target=denonext": "b379f8dbe23569dd849a20aa34a31a92279d68e4b3f1c8b733f8a4db0b479225",
+    "https://esm.sh/vega-geo@4.4.3/denonext/vega-geo.mjs": "d48091536b31217cd461c439cfc9d1be1d574ac9d62921fb20159109750aec74",
+    "https://esm.sh/vega-geo@4.4.3?target=denonext": "66223dd3b158de01783003f8f4db3401e593f09c89519e9a33ce7aebecb2b5ef",
+    "https://esm.sh/vega-hierarchy@4.1.3/denonext/vega-hierarchy.mjs": "2c0c9cf25188f05d2d592f4bd50ba436084187e112aaf1a856266a408c6229f8",
+    "https://esm.sh/vega-hierarchy@4.1.3?target=denonext": "92f8c072a20084bbb07b650b130419ec33b743e20632237cc35dbec70d363404",
+    "https://esm.sh/vega-label@1.3.1/denonext/vega-label.mjs": "52c011569d869e84972108d9b4b2d0ccbe20721a59c36c49822360cc7eded87d",
+    "https://esm.sh/vega-label@1.3.1?target=denonext": "f2a03e67f6afc43046191a9eb9e4dc3321ebc03c6ea8746975459c573a943d74",
+    "https://esm.sh/vega-lite@5.16.3": "1f32e8df1335bd4a6d809ee88c43fdcd030bcbaab8110065467b444225fab681",
+    "https://esm.sh/vega-lite@5.16.3/denonext/vega-lite.mjs": "37ce8c85ed99025e35cdc445238dd4192c2b1f613c2f8bfbfaa2954293acc8cb",
+    "https://esm.sh/vega-loader@4.5.3/denonext/vega-loader.mjs": "41479e4fc8095ba30de1774d4eaa5de6fec42564ae21218b46f6da8578ba7467",
+    "https://esm.sh/vega-loader@4.5.3?target=denonext": "14356fde9e8aee48a9689cd607307b09326b7817a0ac2df0075ec32d1d0e9489",
+    "https://esm.sh/vega-parser@6.6.0/denonext/vega-parser.mjs": "68281b4f120227f3c5d7537406361af9a0d900ec6d1c2ffad2937f500a6a503b",
+    "https://esm.sh/vega-parser@6.6.0?target=denonext": "591cbe0effdcf1f73aaefd024ab2de1509ce876f3c77806cb879c099b8ab9689",
+    "https://esm.sh/vega-projection@1.6.2/denonext/vega-projection.mjs": "36e9723b127730c616d856db75d9efeddb05a15150e7a99f2dfbfb8c6fdb096b",
+    "https://esm.sh/vega-projection@1.6.2?target=denonext": "62d211cdc303090ff46120b86be6e63de2e87b3476fb950ba8a8062c00eb99c0",
+    "https://esm.sh/vega-regression@1.3.1/denonext/vega-regression.mjs": "7cc6b14333d37d8e3706921b3f795268a0cd91350a91f090519cd165014da14b",
+    "https://esm.sh/vega-regression@1.3.1?target=denonext": "9c467ecb9c79a5f8cdfee35dc7fd2517caf78e715759597e1b07f36d7ad79512",
+    "https://esm.sh/vega-runtime@6.2.1/denonext/vega-runtime.mjs": "57108569252bd84be97c9e49392c634b277fd1e827f38d7acb4b638b37fb48b3",
+    "https://esm.sh/vega-runtime@6.2.1?target=denonext": "03cb3ccffa97472d75239634529c7352f1a11126abd4c61599ef268950135d52",
+    "https://esm.sh/vega-scale@7.4.2/denonext/vega-scale.mjs": "cd20a03770790dcf47adf0e0355224ac0c406aebb27bc873bda642e725d122d0",
+    "https://esm.sh/vega-scale@7.4.2?target=denonext": "8c732e582732bef35e3f8242e1f3cea92eeeb2070e391facd98badcc4aa75adb",
+    "https://esm.sh/vega-scenegraph@4.13.1/denonext/vega-scenegraph.mjs": "74eacd682ed6e8bc6a5ee8dbb13a054ea9055659bd2eabaae9c0f977872b654e",
+    "https://esm.sh/vega-scenegraph@4.13.1?target=denonext": "c526b59c7f131dc4e62db5994043a402e523efffb2445257ffcd5d600d0d4687",
+    "https://esm.sh/vega-selections@5.6.0/denonext/vega-selections.mjs": "c6ea814748c405226e3ceff2e5479ef105d121d03ba01e21654a9dc2cbdd257f",
+    "https://esm.sh/vega-selections@5.6.0?target=denonext": "67e7f311d401693bcb49bbc2c6857ea24d37adcdac9596f127fde8c2fb7eeecf",
+    "https://esm.sh/vega-statistics@1.9.0/denonext/vega-statistics.mjs": "f17f1112869d1b9b223dca43a0c041a4d58b2b0e13e1d7d6dd16aeecc1e07496",
+    "https://esm.sh/vega-statistics@1.9.0?target=denonext": "6c1073e330c4ee30a4b980501dc77f90792d21d42fdfe327d6bf6ee7f1dde060",
+    "https://esm.sh/vega-time@2.1.3/denonext/vega-time.mjs": "a48573f23a973e4bdcf4d655a2f30b5154330bc6a349280699ae35ac06693560",
+    "https://esm.sh/vega-time@2.1.3?target=denonext": "368a89237f567f309dac53d0b0e915eee5400a4fb2c0b0df8359b8b058b18e0d",
+    "https://esm.sh/vega-transforms@4.12.1/denonext/vega-transforms.mjs": "bfd0f0b3d5039b68317929b55d6d016671854393275e34a28c0680b3a373fe63",
+    "https://esm.sh/vega-transforms@4.12.1?target=denonext": "79d90ee61354f69dc26e129bf647f0e6b5c77fd440626a001ddc20d70b669da3",
+    "https://esm.sh/vega-util@1.17.3/denonext/vega-util.mjs": "166518303bf63b1fdbcd6b925a4abb855bf23caef49ff66adaae06ca92c58a9a",
+    "https://esm.sh/vega-util@1.17.3?target=denonext": "42a9b7e1ab7f4a8ebc079a8d05e134ff2d28cf5f3c4b699bbf93c94b537cb846",
+    "https://esm.sh/vega-view-transforms@4.6.1/denonext/vega-view-transforms.mjs": "10ae904ce88d07fe993c9d39e19627f0acd2d0c161c5e36258a7aee2e400b6a7",
+    "https://esm.sh/vega-view-transforms@4.6.1?target=denonext": "387c649827a7bb47c12097865f6154d40d8d4bfc93aae039dd85a6a215f083c0",
+    "https://esm.sh/vega-view@5.16.0/denonext/vega-view.mjs": "1055ff7f0df30ebd6def59b28073d061c63257842d435f4349577704fa018ca1",
+    "https://esm.sh/vega-view@5.16.0?target=denonext": "bdccebd8e14904a64298584e1297223926f7dd98d9ee938485e9e987b3c39bd1",
+    "https://esm.sh/vega-voronoi@4.2.4/denonext/vega-voronoi.mjs": "a2ab19e3be899865d74ce6e0d7e95a7821d2595078f3521c2ec9e87ea49cc590",
+    "https://esm.sh/vega-voronoi@4.2.4?target=denonext": "15d1a2da783f2eb65e5e04bb7d7cd920f28a5e715e9091095de453868df4591f",
+    "https://esm.sh/vega-wordcloud@4.1.6/denonext/vega-wordcloud.mjs": "859ae9c939bca1174cebf21dc8b77ee2315e024dac3fa14db46fce07e9902820",
+    "https://esm.sh/vega-wordcloud@4.1.6?target=denonext": "2d73b0abd2bc5fd82321b294ddc59f75eb0c7830e63ac6ce4f2a3385c5def79e",
+    "https://esm.sh/vega@5.33.0/denonext/vega.mjs": "120cd4f8d7a84812789220e8286fc9b459896deb0aa90e7af22031488ef6213f",
+    "https://esm.sh/vega@5.33.0?target=denonext": "0859d0dc9c0342199d08cc2c282d20b9e3073916fa74514d2b9b10efc94b3f40"
   },
   "workspace": {
     "dependencies": [
