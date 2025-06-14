@@ -3,14 +3,12 @@ import {
   normalize,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { contentType } from "jsr:@std/media-types";
 
 export function getContentType(path: string): string {
-  if (path.endsWith(".js")) return "application/javascript";
-  if (path.endsWith(".css")) return "text/css";
-  if (path.endsWith(".svg")) return "image/svg+xml";
-  if (path.endsWith(".ico")) return "image/x-icon";
-  if (path.endsWith(".json")) return "application/json";
-  return "application/octet-stream";
+  const match = path.match(/\.[^.]+$/);
+  const ext = match ? match[0] : "";
+  return contentType(ext) ?? "application/octet-stream";
 }
 
 /**

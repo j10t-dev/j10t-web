@@ -11,7 +11,7 @@ const eta = new Eta({ views: VIEWS_DIR });
 const router = new Router({ publicDir: PUBLIC_DIR, eta });
 
 export async function handler(req: Request): Promise<Response> {
-  return router.handle(req);
+  return await router.handle(req);
 }
 
 if (import.meta.main) {

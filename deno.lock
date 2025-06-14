@@ -13,6 +13,7 @@
     "jsr:@std/html@^1.0.4": "1.0.4",
     "jsr:@std/http@^1.0.17": "1.0.17",
     "jsr:@std/internal@^1.0.6": "1.0.8",
+    "jsr:@std/media-types@*": "1.1.0",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.4": "1.0.4",
     "jsr:@std/path@^1.0.6": "1.1.0",
@@ -64,7 +65,7 @@
         "jsr:@std/encoding@^1.0.10",
         "jsr:@std/fmt",
         "jsr:@std/html",
-        "jsr:@std/media-types",
+        "jsr:@std/media-types@^1.1.0",
         "jsr:@std/net",
         "jsr:@std/path@^1.1.0",
         "jsr:@std/streams"
