@@ -1,6 +1,7 @@
 {
   "tasks": {
     "start": "deno run --allow-net --allow-read main.ts",
+    "dev": "deno run --allow-net --allow-read --watch main.ts",
     "test": "deno test --allow-net --allow-read --allow-run --allow-env --allow-write",
     "bundle": "deno run -A esbuild.bundle.ts"
   },
@@ -11,6 +12,6 @@
   },
   "compilerOptions": {
     "strict": true,
-    "check": true
+    "lib": ["dom", "esnext", "deno.ns"]
   }
 }

@@ -85,6 +85,6 @@ export async function handler(req: Request): Promise<Response> {
 }
 
 if (import.meta.main) {
-  console.log("Listening on http://localhost:8000");
+  logInfo("Listening on http://localhost:8000");
   Deno.serve({ port: 8000 }, handler);
 }

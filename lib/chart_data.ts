@@ -8,6 +8,7 @@ const LR_CHARTS: Record<string, [number, number]> = {
 };
 
 const SINGLE_CHARTS: Record<string, number> = {
+  Weight: 4,
   Hips: 9,
   Waist: 10,
   Chest: 11,

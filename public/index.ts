@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+globalThis.addEventListener("DOMContentLoaded", () => {
   fetch("/api/charts")
     .then((r: Response) => r.json())
     .then((data: TopLevelSpec[]) => {
@@ -23,25 +23,23 @@ window.addEventListener("DOMContentLoaded", () => {
         chartDiv.className = "chart-container";
         visContainer.appendChild(chartDiv);
         try {
-          const spec: TopLevelSpec = typeof chartSpec === "string"
-            ? JSON.parse(chartSpec)
+          const spec = typeof chartSpec === "string"
+            ? JSON.parse(chartSpec) as TopLevelSpec
             : chartSpec;
-          window.vegaEmbed(`#chart-${index}`, spec, {
+
+          (globalThis as typeof window).vegaEmbed(`#chart-${index}`, spec, {
             renderer: "svg",
             actions: false,
-          }).catch((error: Error) => {
-            console.error(`Failed to render chart ${index}:`, error);
+          }).catch((_error: Error) => {
             chartDiv.innerHTML = `<p>Failed to load chart</p>`;
           });
-        } catch (error) {
-          console.error(`Error parsing chart ${index}:`, error);
+        } catch (_error) {
           chartDiv.innerHTML = `<p>Failed to parse chart data</p>`;
         }
       });
     })
-    .catch((err: Error) => {
+    .catch((_err: Error) => {
       const visContainer = document.getElementById("vis");
       if (visContainer) visContainer.innerHTML = "<p>Failed to load charts</p>";
-      console.error("Failed to fetch chart data:", err);
     });
 });

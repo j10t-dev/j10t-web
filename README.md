@@ -28,3 +28,43 @@ vanilla JS. No React or heavy frameworks.
 ## To-do
 
 - Add more pages/styles
+
+## API Documentation
+
+### GET /api/charts
+
+Returns an array of [Vega-Lite TopLevelSpec](https://vega.github.io/vega-lite/docs/spec.html) chart specifications for all supported measurements.
+
+**Request:**
+- Method: `GET`
+- URL: `/api/charts`
+- Body: _None_
+
+**Response:**
+- Status: `200 OK`
+- Content-Type: `application/json`
+- Body: JSON array of Vega-Lite TopLevelSpec objects. Each object describes a chart. Example structure:
+
+  ```json
+  [
+    {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "data": { ... },
+      "mark": "bar",
+      "encoding": { ... },
+      ...
+    },
+    ...
+  ]
+  ```
+  See [Vega-Lite documentation](https://vega.github.io/vega-lite/docs/spec.html) for the full schema.
+
+**Error Responses:**
+- Status: `500 Internal Server Error`
+- Content-Type: `application/json`
+- Body: `{ "error": "Failed to fetch chart data" }`
+
+**Notes:**
+- The endpoint does not require authentication.
+- The response array may be empty if no charts are available.
+- All chart specifications conform to the Vega-Lite TopLevelSpec format.
