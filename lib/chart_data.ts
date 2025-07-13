@@ -113,6 +113,8 @@ async function getChartJSON(
   }
 }
 
+export { getChartJSON, LR_CHARTS, SINGLE_CHARTS };
+
 export async function getAllChartJSON(): Promise<TopLevelSpec[]> {
   const chartJSON: (TopLevelSpec | null)[] = [];
   const promises: { promise: Promise<TopLevelSpec>; index: number }[] = [];

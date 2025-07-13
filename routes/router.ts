@@ -27,9 +27,10 @@ export class Router {
     if (url.pathname.startsWith("/public/")) {
       return await this.staticHandler.handle(url, req);
     }
+    if (url.pathname.startsWith("/api/charts")) {
+      return await this.chartHandler.handle(req);
+    }
     switch (url.pathname) {
-      case "/api/charts":
-        return await this.chartHandler.handle(req);
       case "/measure":
         return await this.pageHandler.handle("measure");
       case "/":
