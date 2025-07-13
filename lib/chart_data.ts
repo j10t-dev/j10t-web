@@ -1,43 +1,43 @@
 import type { TopLevelSpec } from "vega-lite";
 import { logError, logInfo } from "./logger.ts";
 
-const LR_CHARTS: Record<string, [number, number]> = {
-  Calves: [5, 6],
-  Thighs: [7, 8],
-  Forearms: [12, 13],
-  Biceps: [14, 15],
+const LR_CHARTS: Record<string, string> = {
+  Calves: "calves",
+  Thighs: "thighs",
+  Forearms: "forearms",
+  Biceps: "biceps",
 };
 
-const SINGLE_CHARTS: Record<string, number> = {
-  Weight: 4,
-  Hips: 9,
-  Waist: 10,
-  Chest: 11,
+const SINGLE_CHARTS: Record<string, string> = {
+  Weight: "weight",
+  Hips: "hips",
+  Waist: "waist",
+  Chest: "chest",
 };
 
-const CHART_API_URL = "http://127.0.0.1:8888/charts";
+const CHART_API_URL = "http://127.0.0.1:8888/sqlite-charts";
 const CACHE_EXPIRY = 3600000; // 1 hour
 const chartCache: Record<string, { data: any; timestamp: number }> = {};
 
 // Overloads for strict typing
 async function getChartJSON(
   type: "SINGLE",
-  index_data: number,
+  table_name: string,
 ): Promise<TopLevelSpec>;
 async function getChartJSON(
   type: "LR",
-  index_data: [number, number],
+  table_name: string,
 ): Promise<TopLevelSpec>;
 async function getChartJSON(
   type: "SINGLE" | "LR",
-  index_data: number | [number, number],
+  table_name: string,
 ): Promise<TopLevelSpec> {
-  const cacheKey = `${type}_${JSON.stringify(index_data)}`;
+  const cacheKey = `${type}_${table_name}`;
   if (
     chartCache[cacheKey] &&
     Date.now() - chartCache[cacheKey].timestamp < CACHE_EXPIRY
   ) {
-    logInfo("Chart data served from cache", { type, index_data });
+    logInfo("Chart data served from cache", { type, table_name });
     return chartCache[cacheKey].data;
   }
 
@@ -51,15 +51,11 @@ async function getChartJSON(
     switch (type) {
       case "SINGLE":
         endpoint = `${CHART_API_URL}/single`;
-        requestBody = { index: index_data, style: "hover" };
+        requestBody = { table_name, style: "hover", with_impute: true };
         break;
       case "LR":
         endpoint = `${CHART_API_URL}/LR`;
-        requestBody = {
-          index_L: (index_data as [number, number])[0],
-          index_R: (index_data as [number, number])[1],
-          style: "hover",
-        };
+        requestBody = { table_name, style: "hover" };
         break;
       default:
         throw new Error("Unknown chart type");
@@ -68,7 +64,7 @@ async function getChartJSON(
     logInfo("Making chart request to lifts-be", {
       endpoint,
       type,
-      index_data,
+      table_name,
       requestBody,
     });
 
@@ -91,7 +87,7 @@ async function getChartJSON(
     logInfo("Chart request completed successfully", {
       endpoint,
       type,
-      index_data,
+      table_name,
       duration_ms: duration,
       status: res.status,
     });
@@ -104,13 +100,13 @@ async function getChartJSON(
     logError("Chart request failed", {
       endpoint,
       type,
-      index_data,
+      table_name,
       duration_ms: duration,
       error: error instanceof Error ? error.message : String(error),
     });
 
     if (chartCache[cacheKey]) {
-      logInfo("Falling back to cached data after error", { type, index_data });
+      logInfo("Falling back to cached data after error", { type, table_name });
       return chartCache[cacheKey].data;
     }
     throw error;
