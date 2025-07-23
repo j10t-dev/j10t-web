@@ -10,6 +10,24 @@ export class ChartDataHandler {
   async handle(req: Request): Promise<Response> {
     const url = new URL(req.url);
 
+    // Handle weight endpoint specifically
+    if (url.pathname === "/api/weight") {
+      try {
+        const chartData = await getChartJSON("SINGLE", SINGLE_CHARTS["Weight"]);
+        return new Response(JSON.stringify(chartData), {
+          headers: { "content-type": "application/json" },
+        });
+      } catch (error) {
+        logError("Failed to fetch weight chart", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return new Response(
+          JSON.stringify({ error: "Failed to fetch weight chart data" }),
+          { status: 500, headers: { "content-type": "application/json" } },
+        );
+      }
+    }
+
     // Handle individual chart requests: /api/charts/{type}/{name}
     const pattern = new URLPattern({ pathname: "/api/charts/:type/:name" });
     const match = pattern.exec(url);

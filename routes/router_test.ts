@@ -59,6 +59,15 @@ Deno.test("Router handles / (index)", async () => {
   assertEquals(await res.text(), "index");
 });
 
+Deno.test("Router handles /weight", async () => {
+  const router = new Router({ publicDir: "", eta: {} as any });
+  (router as any).pageHandler = new MockPageRenderHandler();
+  const req = new Request("http://localhost/weight");
+  const res = await router.handle(req);
+  assertEquals(res.status, 200);
+  assertEquals(await res.text(), "weight");
+});
+
 Deno.test("Router returns 404 for unknown route", async () => {
   const router = new Router({ publicDir: "", eta: {} as any });
   const req = new Request("http://localhost/unknown");
