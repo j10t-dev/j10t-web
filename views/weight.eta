@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weight</title>
+  <link rel="icon" href="/measure/icons/tape.ico" />
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <main>
+    <h1>WEIGHT</h1>
+    <div id="weight-chart"></div>
+  </main>
+  <script>
+    async function loadWeightChart() {
+      try {
+        const response = await fetch('/api/weight');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const chartSpec = await response.json();
+        await vegaEmbed('#weight-chart', chartSpec, {
+          renderer: 'svg',
+          actions: false,
+          config: {
+            autosize: {
+              type: 'fit',
+              contains: 'content'
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Failed to load weight chart:', error);
+        document.getElementById('weight-chart').innerHTML = '<p>Failed to load weight chart</p>';
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadWeightChart);
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    main {
+      width: 100%;
+      margin: 0 auto;
+    }
+    
+    #weight-chart {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    
+    #weight-chart svg {
+      width: 100% !important;
+      height: auto !important;
+      max-width: 100%;
+    }
+    
+    .chart-container {
+      margin-bottom: 20px;
+    }
+  </style>
+</body>
+</html>

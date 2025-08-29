@@ -8,6 +8,7 @@ vanholtz.co (just because its cool)
 azuki.com
 laurie herault <https://www.laurieherault.com/articles/a-thermal-receipt-printer-cured-my-procrastination> - single column format (blog). Progress bar.
 ordep.dev - basic column layout
+https://dwyer.co.za/static/claude-code-is-all-you-need.html - the splash
 
 ## Blog la\yout
 

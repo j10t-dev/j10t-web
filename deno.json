@@ -3,7 +3,8 @@
     "start": "deno run --allow-net --allow-read main.ts",
     "dev": "deno run --allow-net --allow-read --watch main.ts",
     "test": "deno test --allow-net --allow-read --allow-run --allow-env --allow-write",
-    "bundle": "deno run -A esbuild.bundle.ts"
+    "bundle": "deno run -A esbuild.bundle.ts",
+    "build-blog": "deno run --allow-read --allow-write --allow-env build-blog.ts"
   },
   "imports": {
     "@eta-dev/eta": "jsr:@eta-dev/eta@^3.5.0",

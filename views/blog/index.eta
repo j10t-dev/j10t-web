@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 2rem; 
+            line-height: 1.6; 
+        }
+        .post-list { list-style: none; padding: 0; }
+        .post-item { 
+            margin: 2rem 0; 
+            padding: 1rem 0; 
+            border-bottom: 1px solid #eee; 
+        }
+        .post-date { color: #666; font-size: 0.9rem; }
+        .post-title { margin: 0.5rem 0; }
+        .post-title a { text-decoration: none; color: #333; }
+        .post-title a:hover { color: #0066cc; }
+    </style>
+</head>
+<body>
+    <h1>Blog</h1>
+    
+    <% if (it.posts.length === 0) { %>
+        <p>No posts yet.</p>
+    <% } else { %>
+        <ul class="post-list">
+            <% it.posts.forEach(post => { %>
+                <li class="post-item">
+                    <div class="post-date"><%= post.date %></div>
+                    <h2 class="post-title">
+                        <a href="/blog/<%= post.slug %>"><%= post.title %></a>
+                    </h2>
+                </li>
+            <% }) %>
+        </ul>
+    <% } %>
+</body>
+</html>

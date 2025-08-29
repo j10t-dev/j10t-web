@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Run production server**: `deno task start`
 - **Run tests**: `deno task test`
 - **Bundle frontend assets**: `deno task bundle`
+- **Build blog posts**: `deno run --allow-read --allow-write build-blog.ts`
 - **Run single test file**: `deno test --allow-net --allow-read --allow-run --allow-env --allow-write <file_path>`
 
 ## Architecture Overview
@@ -17,30 +18,42 @@ This is a Deno-based web application that serves Vega-Lite charts for fitness me
 ### Core Components
 
 - **main.ts**: Entry point that sets up the Eta templating engine and Router
-- **Router (routes/router.ts)**: Central request dispatcher with three handler classes:
+- **Router (routes/router.ts)**: Central request dispatcher with four handler classes:
   - `StaticFileHandler`: Serves static files from `/public/` directory
-  - `ChartDataHandler`: Provides chart data via `/api/charts` endpoint
-  - `PageRenderHandler`: Renders HTML pages using Eta templates
+  - `ChartDataHandler`: Provides chart data via `/api/charts` endpoint and individual chart endpoints (e.g., `/api/weight`)
+  - `PageRenderHandler`: Renders HTML pages using Eta templates (supports `/measure/`, `/weight/` views)
+  - `BlogHandler`: Serves blog posts from generated TypeScript modules (`/blog/` routes)
 
 ### Data Flow
 
-1. Chart data is fetched from external API at `http://127.0.0.1:8888/charts`
+1. Chart data is fetched from SQLite backend API at `http://127.0.0.1:8888/sqlite-charts`
 2. Data is cached for 1 hour to reduce external API calls
 3. Charts are categorized as either SINGLE (single measurement) or LR (left/right measurements)
 4. Frontend renders charts client-side using Vega-Lite library
+5. Individual chart endpoints support progressive loading (e.g., `/api/weight` for weight-only view)
 
 ### Key Libraries
 
 - **@eta-dev/eta**: Server-side templating engine
 - **@std/http**: Deno's standard HTTP utilities
+- **@deno/gfm**: GitHub Flavored Markdown rendering for blog posts
 - **vega-lite**: Chart specification and rendering (client-side)
 
 ## Project-Specific Guidelines
+
+### Blog Implementation
+- Blog posts are written in markdown in `/content/*.md` directory
+- Build script converts markdown to TypeScript modules in `/posts/` directory
+- Posts support frontmatter (title, date) or auto-generate from filename
+- Blog routes: `/blog/` (index) and `/blog/[slug]` (individual posts)
+- No JavaScript required for core blog functionality
 
 ### Chart Data Handling
 - Always use fetch for HTTP requests to maintain consistency
 - Implement proper error handling with fallback to cached data
 - Chart types are strictly typed: `TopLevelSpec` from vega-lite
+- SQLite backend provides `/single` and `/LR` endpoints with POST requests
+- Individual chart views support progressive loading for better performance
 
 ### Performance Considerations
 - Bundle size optimization is critical (deployment target: Raspberry Pi)

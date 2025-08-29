@@ -1,6 +1,7 @@
 import { StaticFileHandler } from "./static.ts";
 import { ChartDataHandler } from "./charts.ts";
 import { PageRenderHandler } from "./index.ts";
+import { BlogHandler } from "./blog.ts";
 import { logError } from "../lib/logger.ts";
 import { Eta } from "@eta-dev/eta";
 
@@ -15,11 +16,13 @@ export class Router {
   private staticHandler: StaticFileHandler;
   private chartHandler: ChartDataHandler;
   private pageHandler: PageRenderHandler;
+  private blogHandler: BlogHandler;
 
   constructor({ publicDir, eta }: RouterOptions) {
     this.staticHandler = new StaticFileHandler(publicDir);
     this.chartHandler = new ChartDataHandler();
     this.pageHandler = new PageRenderHandler(eta);
+    this.blogHandler = new BlogHandler(eta);
   }
 
   async handle(req: Request): Promise<Response> {
@@ -29,6 +32,9 @@ export class Router {
     }
     if (url.pathname.startsWith("/api/charts") || url.pathname === "/api/weight") {
       return await this.chartHandler.handle(req);
+    }
+    if (url.pathname.startsWith("/blog")) {
+      return await this.blogHandler.handle(req);
     }
     switch (url.pathname) {
       case "/measure":
