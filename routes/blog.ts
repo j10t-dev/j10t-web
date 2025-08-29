@@ -64,7 +64,7 @@ export class BlogHandler {
 
       this.posts.set(post.slug, post);
     } catch (error) {
-      console.error(`Failed to load post ${fileName}:`, error.message);
+      console.error(`Failed to load post ${fileName}:`, error instanceof Error ? error.message : String(error));
       // Don't throw here to allow other posts to load
     }
   }
