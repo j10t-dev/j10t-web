@@ -12,16 +12,18 @@ export interface BlogPost {
 export class BlogHandler {
   private eta: Eta;
   private posts: Map<string, BlogPost> = new Map();
+  private postsDir: string;
 
-  constructor(eta: Eta) {
+  constructor(eta: Eta, postsDir: string = "./posts") {
     this.eta = eta;
+    this.postsDir = postsDir;
     this.loadPosts();
   }
 
   private async loadPosts() {
     try {
       // Load all generated blog posts
-      for await (const entry of walk("./posts", { exts: [".ts"] })) {
+      for await (const entry of walk(this.postsDir, { exts: [".ts"] })) {
         await this.loadSinglePost(entry.path);
       }
     } catch (error) {
@@ -44,7 +46,7 @@ export class BlogHandler {
     }
     
     // Construct safe path within posts directory
-    const sanitizedPath = join("./posts", fileName);
+    const sanitizedPath = join(this.postsDir, fileName);
 
     try {
       // Use absolute import path to prevent directory traversal

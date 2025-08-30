@@ -10,7 +10,7 @@ await configure({
   },
   loggers: [
     {
-      category: ["lifts-fe"],
+      category: ["j10t-web"],
       lowestLevel: "info",
       sinks: ["console"],
     },

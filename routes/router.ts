@@ -10,6 +10,7 @@ export type RouteHandler = (req: Request) => Promise<Response>;
 export interface RouterOptions {
   publicDir: string;
   eta: Eta;
+  postsDir?: string;
 }
 
 export class Router {
@@ -18,11 +19,11 @@ export class Router {
   private pageHandler: PageRenderHandler;
   private blogHandler: BlogHandler;
 
-  constructor({ publicDir, eta }: RouterOptions) {
+  constructor({ publicDir, eta, postsDir }: RouterOptions) {
     this.staticHandler = new StaticFileHandler(publicDir);
     this.chartHandler = new ChartDataHandler();
     this.pageHandler = new PageRenderHandler(eta);
-    this.blogHandler = new BlogHandler(eta);
+    this.blogHandler = new BlogHandler(eta, postsDir);
   }
 
   async handle(req: Request): Promise<Response> {

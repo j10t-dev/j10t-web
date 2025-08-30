@@ -1,6 +1,6 @@
 import { getLogger } from "jsr:@logtape/logtape";
 
-const logger = getLogger(["lifts-fe"]);
+const logger = getLogger(["j10t-web"]);
 
 export function logInfo(
   message: string,
