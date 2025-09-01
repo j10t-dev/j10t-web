@@ -1,12 +1,12 @@
 import { assertEquals, assertStringIncludes, assert } from "@std/assert";
-import { Router } from "../routes/router.ts";
+import { Router } from "../../routes/router.ts";
 import { 
   BlogTestHelpers, 
   BlogTestCleanup, 
   BlogTestData, 
   waitForPostsToLoad,
   TEST_PATHS
-} from "./blog-test-helpers.ts";
+} from "../helpers/blog_test_helpers.ts";
 
 Deno.test("Blog Integration - End-to-end blog index", async () => {
   await BlogTestCleanup.cleanupEverything();

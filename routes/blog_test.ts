@@ -1,7 +1,7 @@
 import { assertEquals, assertStringIncludes, assertRejects, assert } from "@std/assert";
-import { BlogHandler, BlogPost } from "../routes/blog.ts";
+import { BlogHandler, BlogPost } from "./blog.ts";
 import { Eta } from "@eta-dev/eta";
-import { BlogTestHelpers, BlogTestCleanup, BlogTestData, waitForPostsToLoad } from "./blog-test-helpers.ts";
+import { BlogTestHelpers, BlogTestCleanup, BlogTestData, waitForPostsToLoad } from "../tests/helpers/blog_test_helpers.ts";
 
 // Mock Eta instance for testing
 const mockEta = new Eta({
@@ -9,7 +9,7 @@ const mockEta = new Eta({
   cache: false
 });
 
-import { TEST_PATHS } from "./blog-test-helpers.ts";
+import { TEST_PATHS } from "../tests/helpers/blog_test_helpers.ts";
 
 Deno.test("BlogHandler - Constructor and initialization", async () => {
   await BlogTestCleanup.cleanupPosts();

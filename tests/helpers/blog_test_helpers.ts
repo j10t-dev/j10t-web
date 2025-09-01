@@ -3,7 +3,7 @@
  * Provides common functionality for creating, managing, and cleaning up test posts and content
  */
 
-import { BlogPost, BlogHandler } from "../routes/blog.ts";
+import { BlogPost, BlogHandler } from "../../routes/blog.ts";
 import { Eta } from "@eta-dev/eta";
 
 // Default test post structure
@@ -140,7 +140,7 @@ export class BlogTestHelpers {
    * Import a generated post module safely
    */
   static async importGeneratedPost(slug: string): Promise<{ post: BlogPost }> {
-    const url = new URL(`../${TEST_PATHS.generatedPosts}/${slug}.ts`, import.meta.url).href;
+    const url = new URL(`../../${TEST_PATHS.generatedPosts}/${slug}.ts`, import.meta.url).href;
     return await import(url);
   }
 }

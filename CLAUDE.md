@@ -11,6 +11,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Build blog posts**: `deno run --allow-read --allow-write build-blog.ts`
 - **Run single test file**: `deno test --allow-net --allow-read --allow-run --allow-env --allow-write <file_path>`
 
+## Test Structure Guidelines
+
+### Test Organization
+- **Unit tests**: Co-located with source files using `_test.ts` suffix (e.g., `router.ts` → `router_test.ts`)
+- **Integration tests**: Located in `/tests/integration/` directory
+- **Test helpers**: Located in `/tests/helpers/` directory
+- **Naming convention**: Use `_test.ts` suffix consistently (Deno standard)
+
+### Test File Locations
+```
+lib/
+  chart_data.ts
+  chart_data_test.ts      # Unit tests co-located
+  logger.ts
+  logger_test.ts          # Unit tests co-located
+
+routes/
+  blog.ts
+  blog_test.ts           # Unit tests co-located
+  router.ts
+  router_test.ts         # Unit tests co-located
+
+tests/
+  integration/           # Multi-module integration tests
+    blog_integration_test.ts
+  helpers/              # Test utilities and helpers
+    blog_test_helpers.ts
+```
+
+### Test Commands
+- **Run all tests**: `deno task test`
+- **Run unit tests only**: `deno test **/*_test.ts --ignore=tests/`
+- **Run integration tests only**: `deno test tests/integration/`
+- **Run specific test file**: `deno test --allow-all path/to/file_test.ts`
+
 ## Architecture Overview
 
 This is a Deno-based web application that serves Vega-Lite charts for fitness measurement tracking. The architecture follows a clean separation of concerns:

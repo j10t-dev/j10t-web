@@ -1,12 +1,12 @@
 import { assertEquals, assertStringIncludes, assert } from "@std/assert";
 import { exists } from "@std/fs";
-import { buildPosts } from "../build-blog.ts";
+import { buildPosts } from "./build-blog.ts";
 import { 
   BlogTestHelpers, 
   BlogTestCleanup, 
   BlogTestData, 
   TEST_PATHS 
-} from "./blog-test-helpers.ts";
+} from "./tests/helpers/blog_test_helpers.ts";
 
 Deno.test("Build Blog - Process markdown with frontmatter", async () => {
   await BlogTestCleanup.cleanupAll();
