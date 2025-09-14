@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Measurements</title>
   <link rel="icon" href="/measure/icons/tape.ico" />
+  <link rel="stylesheet" href="/public/charts.css" />
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -14,10 +15,5 @@
     <h1>MEASUREMENTS</h1>
     <div id="vis"></div>
   </main>
-  <style>
-    .chart-container {
-      margin-bottom: 20px;
-    }
-  </style>
 </body>
 </html> 

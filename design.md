@@ -1,14 +1,18 @@
 # Sites to yoink
 
-Brittany Chiang
-rehan.fun
-nashe.dev
-perryw.ca (the contents / case studies for blog?)
-vanholtz.co (just because its cool)
-azuki.com
-laurie herault <https://www.laurieherault.com/articles/a-thermal-receipt-printer-cured-my-procrastination> - single column format (blog). Progress bar.
-ordep.dev - basic column layout
+https://brittanychiang.com/  - very cool splash
+rehan.fun - c.v / experience page. Bit too stylized but interesting
+nashe.dev - basic but clean
+perryw.ca (the contents / case studies for blog?) //currently dead
+laurie herault <https://www.laurieherault.com/articles/a-thermal-receipt-printer-cured-my-procrastination> - single column format (blog). Progress bar at bottom.
 https://dwyer.co.za/static/claude-code-is-all-you-need.html - the splash
+Clean blog layout - https://www.seangoedecke.com/the-simplest-thing-that-could-possibly-work/
+
+ordep.dev - basic column layout, interesting side layout.
+
+
+## Cool but not for copying 
+vanholtz.co (just because its cool)
 
 ## Blog la\yout
 

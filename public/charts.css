@@ -1,0 +1,33 @@
+/* Charts Domain Styles */
+
+/* Base layout for chart pages */
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+main {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Chart containers */
+.chart-container {
+  margin-bottom: 20px;
+}
+
+#weight-chart {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#weight-chart svg {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+}
+
+#vis {
+  width: 100%;
+}

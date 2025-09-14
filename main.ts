@@ -1,6 +1,6 @@
 import { fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { Eta } from "@eta-dev/eta";
-import { configure, getConsoleSink, type LogRecord } from "jsr:@logtape/logtape";
+import { configure, getConsoleSink } from "jsr:@logtape/logtape";
 import { logInfo } from "./lib/logger.ts";
 import { Router } from "./routes/router.ts";
 
