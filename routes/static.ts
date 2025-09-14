@@ -30,7 +30,7 @@ export class StaticFileHandler {
       if (this.isNotModified(req, headers)) {
         return new Response(null, { status: 304, headers });
       }
-      return new Response(file, { headers });
+      return new Response(file as BodyInit, { headers });
     } catch (err) {
       logError("Static file not found", {
         path: url.pathname,

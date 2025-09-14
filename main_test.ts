@@ -1,13 +1,15 @@
 import { handler } from "./main.ts";
 import { assertEquals, assertStringIncludes } from "jsr:@std/assert";
 
-Deno.test("handler returns home page with link to /measure", async () => {
+Deno.test("handler returns home page with navigation and recent posts", async () => {
   const req = new Request("http://localhost:8000/");
   const res = await handler(req);
   assertEquals(res.status, 200);
   const text = await res.text();
-  assertStringIncludes(text, "/measure");
-  assertStringIncludes(text, "Lifts FE Home");
+  assertStringIncludes(text, "about");
+  assertStringIncludes(text, "words");
+  assertStringIncludes(text, "Recent");
+  assertStringIncludes(text, "j10t");
 });
 
 Deno.test("handler returns measure page with chart container", async () => {

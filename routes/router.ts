@@ -38,13 +38,16 @@ export class Router {
       return await this.blogHandler.handle(req);
     }
     switch (url.pathname) {
+      case "/about":
+        return await this.pageHandler.handle("about", { title: "About", currentPage: "about" });
       case "/measure":
-        return await this.pageHandler.handle("measure");
+        return await this.pageHandler.handle("measure", { title: "Measurements", currentPage: "measure" });
       case "/weight":
-        return await this.pageHandler.handle("weight");
+        return await this.pageHandler.handle("weight", { title: "Weight", currentPage: "weight" });
       case "/":
       case "/index.html":
-        return await this.pageHandler.handle("index");
+        const posts = this.blogHandler.getAllPosts();
+        return await this.pageHandler.handle("index", { title: "j10t", currentPage: "home", posts });
       default:
         logError("Route not found", { path: url.pathname });
         return new Response("Not found", { status: 404 });

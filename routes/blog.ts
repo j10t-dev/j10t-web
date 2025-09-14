@@ -99,7 +99,17 @@ export class BlogHandler {
       const posts = Array.from(this.posts.values())
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       
-      const html = await this.eta.render("blog/index", { posts });
+      const templateData = { posts, currentPage: "blog", title: "Blog" };
+      
+      // Render the blog index content first
+      const content = await this.eta.render("blog/index", templateData);
+      
+      // Then render it within the base layout
+      const html = await this.eta.render("layouts/base", {
+        ...templateData,
+        body: content
+      });
+      
       return new Response(html, {
         headers: { "Content-Type": "text/html; charset=utf-8" }
       });
@@ -119,5 +129,10 @@ export class BlogHandler {
       console.error("Failed to render blog post:", error);
       return new Response("Internal server error", { status: 500 });
     }
+  }
+
+  getAllPosts(): BlogPost[] {
+    return Array.from(this.posts.values())
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 }

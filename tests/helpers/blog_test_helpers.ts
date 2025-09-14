@@ -79,28 +79,53 @@ export class BlogTestHelpers {
    */
   static async setupTemplates(): Promise<void> {
     await Deno.mkdir(`${TEST_PATHS.templates}/blog`, { recursive: true });
+    await Deno.mkdir(`${TEST_PATHS.templates}/layouts`, { recursive: true });
+    await Deno.mkdir(`${TEST_PATHS.templates}/components`, { recursive: true });
     
-    const indexTemplate = `<!DOCTYPE html>
-<html>
-<head><title>Blog</title></head>
+    // Base layout template
+    const baseLayout = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= it.title || 'j10t' %></title>
+    <link rel="stylesheet" href="/public/styles.css" />
+</head>
 <body>
-  <h1>Blog</h1>
-  <% if (it.posts.length === 0) { %>
-    <p>No posts yet.</p>
-  <% } else { %>
-    <ul class="post-list">
-      <% it.posts.forEach(post => { %>
-        <li class="post-item">
-          <div class="post-date"><%= post.date %></div>
-          <h2 class="post-title">
-            <a href="/blog/<%= post.slug %>"><%= post.title %></a>
-          </h2>
-        </li>
-      <% }) %>
-    </ul>
-  <% } %>
+    <%~ include("../components/header", { currentPage: it.currentPage }) %>
+    
+    <main>
+        <%~ it.body %>
+    </main>
 </body>
 </html>`;
+
+    // Header component
+    const headerComponent = `<header class="site-header">
+    <nav class="main-nav">
+        <a href="/" class="nav-link <%= it.currentPage === 'home' ? 'active' : '' %>">home</a>
+        <a href="/about" class="nav-link <%= it.currentPage === 'about' ? 'active' : '' %>">about</a>
+        <a href="/blog" class="nav-link <%= it.currentPage === 'blog' ? 'active' : '' %>">words</a>
+    </nav>
+</header>`;
+    
+    // Blog index template (just content, no HTML wrapper)
+    const indexTemplate = `<h1>Blog</h1>
+
+<% if (it.posts.length === 0) { %>
+    <p>No posts yet.</p>
+<% } else { %>
+    <ul class="post-list">
+        <% it.posts.forEach(post => { %>
+            <li class="post-item">
+                <div class="post-date"><%= post.date %></div>
+                <h2 class="post-title">
+                    <a href="/blog/<%= post.slug %>"><%= post.title %></a>
+                </h2>
+            </li>
+        <% }) %>
+    </ul>
+<% } %>`;
 
     const postTemplate = `<!DOCTYPE html>
 <html>
@@ -115,6 +140,8 @@ export class BlogTestHelpers {
 </body>
 </html>`;
 
+    await Deno.writeTextFile(`${TEST_PATHS.templates}/layouts/base.eta`, baseLayout);
+    await Deno.writeTextFile(`${TEST_PATHS.templates}/components/header.eta`, headerComponent);
     await Deno.writeTextFile(`${TEST_PATHS.templates}/blog/index.eta`, indexTemplate);
     await Deno.writeTextFile(`${TEST_PATHS.templates}/blog/post.eta`, postTemplate);
   }

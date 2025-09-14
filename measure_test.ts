@@ -54,7 +54,13 @@ Deno.test({
   name: "teardown server",
   fn: async () => {
     if (serverProcess) {
-      serverProcess.kill("SIGTERM");
+      try {
+        serverProcess.kill("SIGTERM");
+        await serverProcess.status;
+      } catch (_error) {
+        // Process may already be terminated
+      }
+      serverProcess = undefined;
     }
   },
   sanitizeResources: false,

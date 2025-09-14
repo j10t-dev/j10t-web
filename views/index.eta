@@ -1,13 +1,1 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Lifts FE Home</title>
-</head>
-<body>
-  <main>
-    <h1><a href="/measure">MEASURE</a></h1>
-    <p>Welcome to the Deno/HTMX/Eta rewrite of Lifts FE.</p>
-  </main>
-</body>
-</html>
+<%~ include("components/recents", { posts: it.posts }) %>

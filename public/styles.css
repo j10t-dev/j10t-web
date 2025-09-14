@@ -1,53 +1,135 @@
-/* Website/Blog Domain Styles - Inspired by nashe.dev & seangoedecke.com */
+/* Website/Blog Domain Styles - Inspired by seangoedecke.com */
 
-/* Base typography and layout */
+/* CSS Reset and base setup */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+html {
+  background-color: #222222 !important;
+}
+
+/* Color scheme - dark mode like Sean Goedecke's site */
 body { 
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  font-size: 100%;
+  font-size: 1rem;
   max-width: 800px; 
   margin: 0 auto; 
   padding: 2rem; 
   line-height: 1.75;
-  background-color: #1a1a1a;
-  color: #e0e0e0;
+  background-color: #222222 !important;
+  color: #d3d3d3 !important;
+  min-height: 100vh;
 }
 
 /* Typography hierarchy */
 h1, h2, h3, h4, h5, h6 {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   font-weight: 600;
   margin-top: 2.5rem;
   margin-bottom: 1.25rem;
-  line-height: 1.3;
+  line-height: 1.1;
   color: #ffffff;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
-h5 { font-size: 1rem; }
+h1 { 
+  font-size: 2.5rem; 
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 0;
+}
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { 
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+h5 { font-size: 0.9rem; }
 h6 { font-size: 0.76rem; }
 
 p, li, blockquote {
   margin-bottom: 1.75rem;
+  font-size: 1rem;
 }
 
+/* Links with Sean's styling */
 a {
-  color: #66b3ff;
+  color: #add8e6;
   text-decoration: none;
+  transition: all 0.2s ease;
 }
 
 a:hover {
-  color: #4da6ff;
+  color: #87ceeb;
   text-decoration: underline;
 }
 
-/* Navigation */
+/* Header and Navigation */
+.site-header {
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.main-nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: #d3d3d3;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  font-family: 'Merriweather', serif;
+}
+
+.nav-link:hover {
+  color: #add8e6;
+  text-decoration: none;
+  box-shadow: 0 2px 0 #add8e6;
+}
+
+.nav-link.active {
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: 0 2px 0 #ffffff;
+}
+
+/* Homepage hero section */
+.homepage-hero {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 2rem 0 0.5rem 0;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+
+/* Section titles - white like Sean's site */
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+}
+
 .back-link {
   font-size: 0.9rem;
   margin-bottom: 2rem;
@@ -82,11 +164,11 @@ a:hover {
 
 .post-title a { 
   text-decoration: none; 
-  color: #ffffff;
+  color: #add8e6;
 }
 
 .post-title a:hover { 
-  color: #66b3ff;
+  color: #87ceeb;
 }
 
 /* Blog post content */
