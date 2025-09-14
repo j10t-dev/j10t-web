@@ -23,7 +23,13 @@ Deno.test({
       } catch (_) {}
       await new Promise((r) => setTimeout(r, 100));
     }
-    if (!ready) throw new Error("Server did not start in time");
+    if (!ready) {
+      if (serverProcess) {
+        serverProcess.kill("SIGTERM");
+        await serverProcess.status;
+      }
+      throw new Error("Server did not start in time");
+    }
   },
   sanitizeResources: false,
   sanitizeOps: false,
