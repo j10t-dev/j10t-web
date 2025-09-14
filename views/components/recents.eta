@@ -1,0 +1,17 @@
+<section class="recents">
+    <h2 class="section-title">Recent posts</h2>
+    <% if (it.posts && it.posts.length > 0) { %>
+        <ul class="post-list">
+            <% it.posts.slice(0, 5).forEach(post => { %>
+                <li class="post-item">
+                    <div class="post-date"><%= post.date %></div>
+                    <h3 class="post-title">
+                        <a href="/blog/<%= post.slug %>"><%= post.title %></a>
+                    </h3>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No posts yet.</p>
+    <% } %>
+</section>

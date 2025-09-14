@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= it.title || 'j10t' %></title>
+    <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+    <% if (it.currentPage === 'home') { %>
+    <div class="homepage-hero">
+        <h1 class="hero-title">jack gwinnett</h1>
+    </div>
+    <% } %>
+    
+    <%~ include("../components/header", { currentPage: it.currentPage }) %>
+    
+    <main>
+        <%~ it.body %>
+    </main>
+</body>
+</html>

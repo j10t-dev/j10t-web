@@ -1,0 +1,7 @@
+<header class="site-header">
+    <nav class="main-nav">
+        <a href="/" class="nav-link <%= it.currentPage === 'home' ? 'active' : '' %>">home</a>
+        <a href="/about" class="nav-link <%= it.currentPage === 'about' ? 'active' : '' %>">about</a>
+        <a href="/blog" class="nav-link <%= it.currentPage === 'blog' ? 'active' : '' %>">words</a>
+    </nav>
+</header>
