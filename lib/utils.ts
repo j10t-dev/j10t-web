@@ -2,8 +2,8 @@ import {
   join,
   normalize,
   relative,
-} from "https://deno.land/std@0.224.0/path/mod.ts";
-import { contentType } from "jsr:@std/media-types";
+} from "@std/path";
+import { contentType } from "@std/media-types";
 
 export function getContentType(path: string): string {
   const match = path.match(/\.[^.]+$/);

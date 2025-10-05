@@ -1,6 +1,6 @@
-import { fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { fromFileUrl, join } from "@std/path";
 import { Eta } from "@eta-dev/eta";
-import { configure, getConsoleSink } from "jsr:@logtape/logtape";
+import { configure, getConsoleSink } from "@logtape/logtape";
 import { logInfo } from "./lib/logger.ts";
 import { Router } from "./routes/router.ts";
 
@@ -11,12 +11,12 @@ await configure({
   loggers: [
     {
       category: ["j10t-web"],
-      lowestLevel: "info",
+      level: "info",
       sinks: ["console"],
     },
     {
       category: ["logtape", "meta"],
-      lowestLevel: "warning",
+      level: "warning",
       sinks: ["console"],
     },
   ],

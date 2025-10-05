@@ -28,6 +28,7 @@ vanilla JS. No React or heavy frameworks.
 ## To-do
 
 - Add more pages/styles
+- This README is junk and too claude-ified.
 
 ## API Documentation
 

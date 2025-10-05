@@ -1,4 +1,4 @@
-import { getLogger } from "jsr:@logtape/logtape";
+import { getLogger } from "@logtape/logtape";
 
 const logger = getLogger(["j10t-web"]);
 

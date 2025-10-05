@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { StaticFileHandler } from "./static.ts";
-import { assertEquals } from "jsr:@std/assert";
+import { assertEquals } from "@std/assert";
 
 const mockFile = new Uint8Array([1, 2, 3]);
 const mockFileInfo = {

@@ -1,6 +1,6 @@
 import { Eta } from "@eta-dev/eta";
-import { walk } from "jsr:@std/fs@^1.0.0/walk";
-import { basename, join } from "jsr:@std/path@^1.1.0";
+import { walk } from "@std/fs/walk";
+import { basename, join } from "@std/path";
 
 export interface BlogPost {
   title: string;

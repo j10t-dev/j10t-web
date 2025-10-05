@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { ChartDataHandler as OriginalChartDataHandler } from "./charts.ts";
-import { assertEquals } from "jsr:@std/assert";
+import { assertEquals } from "@std/assert";
 
 // Subclass for dependency injection
 class ChartDataHandler extends OriginalChartDataHandler {

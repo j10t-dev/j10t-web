@@ -3,7 +3,7 @@ import { StaticFileHandler } from "./static.ts";
 import { ChartDataHandler } from "./charts.ts";
 import { PageRenderHandler } from "./index.ts";
 import { BlogHandler } from "./blog.ts";
-import { assertEquals } from "jsr:@std/assert";
+import { assertEquals } from "@std/assert";
 
 // Mock handlers extending real classes
 class MockStaticFileHandler extends StaticFileHandler {

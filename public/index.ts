@@ -1,4 +1,4 @@
-import type { TopLevelSpec } from "https://esm.sh/vega-lite@5.16.3";
+import type { TopLevelSpec } from "vega-lite@5";
 
 declare global {
   interface Window {

@@ -1,5 +1,5 @@
 import { handler } from "./main.ts";
-import { assertEquals, assertStringIncludes } from "jsr:@std/assert";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 
 Deno.test("handler returns home page with navigation and recent posts", async () => {
   const req = new Request("http://localhost:8000/");

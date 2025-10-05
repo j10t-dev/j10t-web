@@ -1,6 +1,6 @@
 import { getContentType } from "./utils.ts";
 import { sanitizePath } from "./utils.ts";
-import { assertEquals } from "jsr:@std/assert";
+import { assertEquals } from "@std/assert";
 
 Deno.test("getContentType returns correct MIME types", () => {
   assertEquals(getContentType("foo.js"), "text/javascript; charset=UTF-8");

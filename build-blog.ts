@@ -1,7 +1,6 @@
-import { extract } from "jsr:@std/front-matter@^1.0.0/yaml";
-import { render } from "jsr:@deno/gfm@^0.8.0";
-import { walk } from "jsr:@std/fs@^1.0.0/walk";
-import { basename } from "jsr:@std/path@^1.1.0";
+import { extract } from "@std/front-matter/yaml";
+import { render } from "@deno/gfm";
+import { walk } from "@std/fs/walk";
 
 export async function buildPosts(contentDir = "./content", postsDir = "./posts") {
   console.log("Building blog posts...");
