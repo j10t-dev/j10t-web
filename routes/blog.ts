@@ -1,13 +1,16 @@
 import { Eta } from "@eta-dev/eta";
 import { walk } from "@std/fs/walk";
 import { basename, join } from "@std/path";
+import { z } from "zod";
 
-export interface BlogPost {
-  title: string;
-  date: string;
-  slug: string;
-  html: string;
-}
+export const BlogPostSchema = z.object({
+  title: z.string().min(1, "Title cannot be empty"),
+  date: z.date(),
+  slug: z.string().regex(/^[a-zA-Z0-9_-]+$/, "Slug must only contain alphanumeric characters, hyphens, and underscores"),
+  html: z.string().min(1, "HTML content cannot be empty"),
+});
+
+export type BlogPost = z.infer<typeof BlogPostSchema>;
 
 export class BlogHandler {
   private eta: Eta;
@@ -52,19 +55,20 @@ export class BlogHandler {
       // Use absolute import path to prevent directory traversal
       const absolutePath = new URL(sanitizedPath, import.meta.resolve("../")).href;
       const module = await import(absolutePath);
-      
+
       if (!module.post || typeof module.post !== 'object') {
         throw new Error(`Invalid post format in ${fileName}`);
       }
 
-      const post = module.post as BlogPost;
-      
-      // Validate post structure
-      if (!post.title || !post.date || !post.slug || !post.html) {
-        throw new Error(`Invalid post structure in ${fileName}: missing required fields`);
+      // Validate post structure with Zod
+      const parseResult = BlogPostSchema.safeParse(module.post);
+
+      if (!parseResult.success) {
+        const errorMessages = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+        throw new Error(`Invalid post structure in ${fileName}: ${errorMessages}`);
       }
 
-      this.posts.set(post.slug, post);
+      this.posts.set(parseResult.data.slug, parseResult.data);
     } catch (error) {
       console.error(`Failed to load post ${fileName}:`, error instanceof Error ? error.message : String(error));
       // Don't throw here to allow other posts to load
@@ -73,32 +77,32 @@ export class BlogHandler {
 
   async handle(req: Request): Promise<Response> {
     const url = new URL(req.url);
-    
+
     if (url.pathname === "/blog" || url.pathname === "/blog/") {
-      return this.renderBlogIndex();
+      return await this.renderBlogIndex();
     }
-    
+
     const slug = url.pathname.replace("/blog/", "");
-    
-    // Validate slug to prevent path traversal and ensure it's safe
+
     if (!slug.match(/^[a-zA-Z0-9_-]+$/)) {
       return new Response("Invalid post identifier", { status: 400 });
     }
-    
+
     const post = this.posts.get(slug);
-    
+
     if (!post) {
       return new Response("Post not found", { status: 404 });
     }
-    
-    return this.renderBlogPost(post);
+
+    return await this.renderBlogPost(post);
   }
 
   private async renderBlogIndex(): Promise<Response> {
     try {
       const posts = Array.from(this.posts.values())
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      
+        .sort((a, b) => b.date.getTime() - a.date.getTime())
+        .map(p => ({ ...p, date: p.date.toISOString().split('T')[0] }));
+
       const templateData = { posts, currentPage: "blog", title: "Blog" };
       
       // Render the blog index content first
@@ -121,7 +125,8 @@ export class BlogHandler {
 
   private async renderBlogPost(post: BlogPost): Promise<Response> {
     try {
-      const html = await this.eta.render("blog/post", { post });
+      const formattedPost = { ...post, date: post.date.toISOString().split('T')[0] };
+      const html = await this.eta.render("blog/post", { post: formattedPost });
       return new Response(html, {
         headers: { "Content-Type": "text/html; charset=utf-8" }
       });
@@ -133,6 +138,11 @@ export class BlogHandler {
 
   getAllPosts(): BlogPost[] {
     return Array.from(this.posts.values())
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
+  }
+
+  getFormattedPosts() {
+    return this.getAllPosts()
+      .map(p => ({ ...p, date: p.date.toISOString().split('T')[0] }));
   }
 }

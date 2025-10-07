@@ -1,5 +1,6 @@
 import type { TopLevelSpec } from "vega-lite";
 import { logError, logInfo } from "./logger.ts";
+import { z } from "zod";
 
 const LR_CHARTS: Record<string, string> = {
   Calves: "calves",
@@ -18,6 +19,21 @@ const SINGLE_CHARTS: Record<string, string> = {
 const CHART_API_URL = "http://127.0.0.1:8888/sqlite-charts";
 const CACHE_EXPIRY = 3600000; // 1 hour
 const chartCache: Record<string, { data: any; timestamp: number }> = {};
+
+// Zod schema for Vega-Lite chart specification
+// This validates the basic structure of TopLevelSpec responses
+const VegaLiteSpecSchema = z.object({
+  $schema: z.string().optional(),
+  mark: z.any().optional(),
+  encoding: z.any().optional(),
+  data: z.any().optional(),
+  layer: z.any().optional(),
+  vconcat: z.any().optional(),
+  hconcat: z.any().optional(),
+  facet: z.any().optional(),
+  repeat: z.any().optional(),
+  spec: z.any().optional(),
+}).passthrough();
 
 // Overloads for strict typing
 async function getChartJSON(
@@ -81,7 +97,21 @@ async function getChartJSON(
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
 
-    data = await res.json();
+    const rawData = await res.json();
+
+    const parseResult = VegaLiteSpecSchema.safeParse(rawData);
+
+    if (!parseResult.success) {
+      logError("Invalid chart data structure from API", {
+        endpoint,
+        type,
+        table_name,
+        errors: parseResult.error.errors,
+      });
+      throw new Error(`Invalid chart data structure: ${parseResult.error.message}`);
+    }
+
+    data = parseResult.data as TopLevelSpec;
     chartCache[cacheKey] = { data, timestamp: Date.now() };
 
     logInfo("Chart request completed successfully", {
@@ -113,7 +143,7 @@ async function getChartJSON(
   }
 }
 
-export { getChartJSON, LR_CHARTS, SINGLE_CHARTS };
+export { getChartJSON, LR_CHARTS, SINGLE_CHARTS, VegaLiteSpecSchema };
 
 export async function getAllChartJSON(): Promise<TopLevelSpec[]> {
   const chartJSON: (TopLevelSpec | null)[] = [];

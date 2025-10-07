@@ -19,7 +19,8 @@
     "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.0",
     "esbuild": "npm:esbuild@^0.24.0",
     "vega-lite": "https://esm.sh/vega-lite@6.2.0",
-    "vega-lite@5": "https://esm.sh/vega-lite@5.16.3"
+    "vega-lite@5": "https://esm.sh/vega-lite@5.16.3",
+    "zod": "npm:zod@^3.24.1"
   },
   "compilerOptions": {
     "strict": true,

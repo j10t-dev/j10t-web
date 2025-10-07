@@ -1,5 +1,5 @@
 import { assertEquals, assertStringIncludes, assertRejects, assert } from "@std/assert";
-import { BlogHandler, BlogPost } from "./blog.ts";
+import { BlogHandler, BlogPost, BlogPostSchema } from "./blog.ts";
 import { Eta } from "@eta-dev/eta";
 import { BlogTestHelpers, BlogTestCleanup, BlogTestData, waitForPostsToLoad } from "../tests/helpers/blog_test_helpers.ts";
 
@@ -21,10 +21,9 @@ Deno.test("BlogHandler - Constructor and initialization", async () => {
 
 Deno.test("BlogHandler - Handle blog index route", async () => {
   await BlogTestCleanup.cleanupPosts();
-  
-  // Create test posts
-  await BlogTestHelpers.createPost("test-first", { title: "First Post", date: "2024-08-29" });
-  await BlogTestHelpers.createPost("test-second", { title: "Second Post", date: "2024-08-30" });
+
+  await BlogTestHelpers.createPost("test-first", { title: "First Post", date: new Date("2024-08-29") });
+  await BlogTestHelpers.createPost("test-second", { title: "Second Post", date: new Date("2024-08-30") });
   
   const handler = new BlogHandler(mockEta, TEST_PATHS.posts);
   
@@ -184,6 +183,135 @@ Deno.test("BlogHandler - Post sorting by date", async () => {
   // Posts should be in reverse chronological order (newest first)
   assert(newPostIndex < middlePostIndex, "New Post (2024-12-31) should come before Middle Post (2024-06-15)");
   assert(middlePostIndex < oldPostIndex, "Middle Post (2024-06-15) should come before Old Post (2024-01-01)");
-  
+
   await BlogTestCleanup.cleanupPosts();
+});
+
+Deno.test("BlogPostSchema - Validates valid blog post", () => {
+  const validPost = {
+    title: "Test Post",
+    date: new Date("2024-08-30"),
+    slug: "test-post",
+    html: "<p>Test content</p>"
+  };
+
+  const result = BlogPostSchema.safeParse(validPost);
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.title, "Test Post");
+    assert(result.data.date instanceof Date);
+    assertEquals(result.data.slug, "test-post");
+  }
+});
+
+Deno.test("BlogPostSchema - Rejects empty title", () => {
+  const invalidPost = {
+    title: "",
+    date: new Date("2024-08-30"),
+    slug: "test-post",
+    html: "<p>Test content</p>"
+  };
+
+  const result = BlogPostSchema.safeParse(invalidPost);
+  assertEquals(result.success, false);
+  if (!result.success) {
+    assertStringIncludes(result.error.errors[0].message, "empty");
+  }
+});
+
+Deno.test("BlogPostSchema - Rejects invalid date format", () => {
+  const invalidDates = [
+    "08-30-2024",      // Wrong format
+    "2024/08/30",      // Wrong separator
+    "2024-8-30",       // Missing leading zero
+    "not a date",      // Not a date
+  ];
+
+  for (const date of invalidDates) {
+    const invalidPost = {
+      title: "Test",
+      date,
+      slug: "test",
+      html: "<p>Test</p>"
+    };
+
+    const result = BlogPostSchema.safeParse(invalidPost);
+    assertEquals(result.success, false, `Should reject date: ${date}`);
+  }
+});
+
+Deno.test("BlogPostSchema - Rejects invalid slug format", () => {
+  const invalidSlugs = [
+    "test post",           // Spaces not allowed
+    "test.post",          // Dots not allowed
+    "test/post",          // Slashes not allowed
+    "test@post",          // Special chars not allowed
+    "<script>",           // HTML not allowed
+    "",                   // Empty not allowed
+  ];
+
+  for (const slug of invalidSlugs) {
+    const invalidPost = {
+      title: "Test",
+      date: new Date("2024-08-30"),
+      slug,
+      html: "<p>Test</p>"
+    };
+
+    const result = BlogPostSchema.safeParse(invalidPost);
+    assertEquals(result.success, false, `Should reject slug: ${slug}`);
+  }
+});
+
+Deno.test("BlogPostSchema - Accepts valid slug patterns", () => {
+  const validSlugs = [
+    "hello-world",
+    "my_post_123",
+    "POST-WITH-NUMBERS-2024",
+    "simple",
+    "under_score",
+    "dash-case",
+    "MixedCase-with_both",
+  ];
+
+  for (const slug of validSlugs) {
+    const validPost = {
+      title: "Test",
+      date: new Date("2024-08-30"),
+      slug,
+      html: "<p>Test</p>"
+    };
+
+    const result = BlogPostSchema.safeParse(validPost);
+    assertEquals(result.success, true, `Should accept slug: ${slug}`);
+  }
+});
+
+Deno.test("BlogPostSchema - Rejects empty HTML content", () => {
+  const invalidPost = {
+    title: "Test",
+    date: new Date("2024-08-30"),
+    slug: "test",
+    html: ""
+  };
+
+  const result = BlogPostSchema.safeParse(invalidPost);
+  assertEquals(result.success, false);
+  if (!result.success) {
+    assertStringIncludes(result.error.errors[0].message, "empty");
+  }
+});
+
+Deno.test("BlogPostSchema - Rejects missing fields", () => {
+  const missingFieldTests = [
+    { date: new Date("2024-08-30"), slug: "test", html: "<p>Test</p>" }, // Missing title
+    { title: "Test", slug: "test", html: "<p>Test</p>" },       // Missing date
+    { title: "Test", date: new Date("2024-08-30"), html: "<p>Test</p>" }, // Missing slug
+    { title: "Test", date: new Date("2024-08-30"), slug: "test" },        // Missing html
+  ];
+
+  for (const testCase of missingFieldTests) {
+    const result = BlogPostSchema.safeParse(testCase);
+    assertEquals(result.success, false, `Should reject: ${JSON.stringify(testCase)}`);
+  }
 });

@@ -6,10 +6,9 @@
 import { BlogPost, BlogHandler } from "../../routes/blog.ts";
 import { Eta } from "@eta-dev/eta";
 
-// Default test post structure
 export interface TestPostOptions {
   title?: string;
-  date?: string;
+  date?: Date;
   slug?: string;
   html?: string;
 }
@@ -33,14 +32,19 @@ export class BlogTestHelpers {
   static async createPost(slug: string, options: TestPostOptions = {}): Promise<BlogPost> {
     const post: BlogPost = {
       title: options.title || "Test Post",
-      date: options.date || "2024-08-29",
+      date: options.date || new Date("2024-08-29"),
       slug: options.slug || slug,
       html: options.html || "<h1>Test Content</h1>",
     };
-    
+
     await Deno.mkdir(TEST_PATHS.posts, { recursive: true });
-    
-    const postContent = `export const post = ${JSON.stringify(post)};`;
+
+    const postContent = `export const post = {
+  title: ${JSON.stringify(post.title)},
+  date: new Date(${JSON.stringify(post.date.toISOString())}),
+  slug: ${JSON.stringify(post.slug)},
+  html: ${JSON.stringify(post.html)}
+};`;
     await Deno.writeTextFile(`${TEST_PATHS.posts}/${slug}.ts`, postContent);
     return post;
   }
@@ -290,9 +294,9 @@ ${content}`;
    */
   static sortingTestPosts(): Array<{ slug: string } & TestPostOptions> {
     return [
-      { slug: "test-old", title: "Old Post", date: "2024-01-01", html: "<h1>Old Content</h1>" },
-      { slug: "test-new", title: "New Post", date: "2024-12-31", html: "<h1>New Content</h1>" },
-      { slug: "test-middle", title: "Middle Post", date: "2024-06-15", html: "<h1>Middle Content</h1>" },
+      { slug: "test-old", title: "Old Post", date: new Date("2024-01-01"), html: "<h1>Old Content</h1>" },
+      { slug: "test-new", title: "New Post", date: new Date("2024-12-31"), html: "<h1>New Content</h1>" },
+      { slug: "test-middle", title: "Middle Post", date: new Date("2024-06-15"), html: "<h1>Middle Content</h1>" },
     ];
   }
 

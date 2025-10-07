@@ -14,8 +14,8 @@ Deno.test("Blog Integration - End-to-end blog index", async () => {
   
   // Create test posts directly in the real posts directory
   await BlogTestHelpers.createPosts([
-    { slug: "first-post", title: "First Test Post", date: "2024-08-28", html: "<h1>First Post</h1><p>This is the first test post for integration testing.</p>" },
-    { slug: "second-post", title: "Second Test Post", date: "2024-08-29", html: "<h1>Second Post</h1><p>This is the second test post.</p>" }
+    { slug: "first-post", title: "First Test Post", date: new Date("2024-08-28"), html: "<h1>First Post</h1><p>This is the first test post for integration testing.</p>" },
+    { slug: "second-post", title: "Second Test Post", date: new Date("2024-08-29"), html: "<h1>Second Post</h1><p>This is the second test post.</p>" }
   ]);
   
   const router = new Router({
@@ -53,7 +53,7 @@ Deno.test("Blog Integration - End-to-end individual post", async () => {
   
   await BlogTestHelpers.createPost("first-post", {
     title: "First Test Post",
-    date: "2024-08-28",
+    date: new Date("2024-08-28"),
     html: "<h1>First Post</h1><p>This is the first test post for <strong>integration</strong> testing.</p>"
   });
   
@@ -89,8 +89,8 @@ Deno.test("Blog Integration - Router handles blog routes correctly", async () =>
   await BlogTestHelpers.setupTemplates();
   
   await BlogTestHelpers.createPosts([
-    { slug: "first-post", title: "First Test Post", date: "2024-08-28", html: "<h1>First Post</h1>" },
-    { slug: "second-post", title: "Second Test Post", date: "2024-08-29", html: "<h1>Second Post</h1>" }
+    { slug: "first-post", title: "First Test Post", date: new Date("2024-08-28"), html: "<h1>First Post</h1>" },
+    { slug: "second-post", title: "Second Test Post", date: new Date("2024-08-29"), html: "<h1>Second Post</h1>" }
   ]);
   
   const router = new Router({
@@ -127,7 +127,7 @@ Deno.test("Blog Integration - Non-existent post returns 404", async () => {
   
   await BlogTestHelpers.createPost("existing-post", {
     title: "Existing Post",
-    date: "2024-08-28",
+    date: new Date("2024-08-28"),
     html: "<h1>Exists</h1>"
   });
   

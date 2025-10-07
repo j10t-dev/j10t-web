@@ -1,57 +1,47 @@
 import { extract } from "@std/front-matter/yaml";
 import { render } from "@deno/gfm";
 import { walk } from "@std/fs/walk";
+import { z } from "zod";
+
+const FrontmatterSchema = z.object({
+  title: z.string().min(1),
+  date: z.date(),
+}).passthrough();
+
+export type Frontmatter = z.infer<typeof FrontmatterSchema>;
 
 export async function buildPosts(contentDir = "./content", postsDir = "./posts") {
   console.log("Building blog posts...");
-  
-  // Clear existing generated posts
+
   try {
     await Deno.remove(postsDir, { recursive: true });
   } catch {
-    // Directory doesn't exist, that's fine
+    // Noting to remove
   }
   await Deno.mkdir(postsDir, { recursive: true });
-
-  // Process each markdown file in content directory
   for await (const entry of walk(contentDir, { exts: [".md"] })) {
     console.log(`Processing: ${entry.path}`);
-    
+
     const content = await Deno.readTextFile(entry.path);
-    
-    // Extract frontmatter or use filename as title
-    let title, body, date;
-    try {
-      const parsed = extract(content);
-      const attrs = parsed.attrs as Record<string, unknown>;
-      title = (attrs.title as string) || entry.name.replace('.md', '');
-      if (attrs.date) {
-        if (typeof attrs.date === 'string') {
-          // If it's already a string, just take the date part
-          date = attrs.date.split('T')[0];
-        } else {
-          // If it's a Date object, convert to ISO string and take date part
-          date = new Date(attrs.date as string | number | Date).toISOString().split('T')[0];
-        }
-      } else {
-        date = new Date().toISOString().split('T')[0];
-      }
-      body = parsed.body;
-    } catch {
-      // No frontmatter, use filename as title
-      title = entry.name.replace('.md', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      date = new Date().toISOString().split('T')[0];
-      body = content;
+    const parsed = extract(content);
+    const parseResult = FrontmatterSchema.safeParse(parsed.attrs);
+
+    if (!parseResult.success) {
+      console.error(`Invalid frontmatter in ${entry.path}:`);
+      console.error(parseResult.error.errors);
+      throw new Error(`Build failed: Invalid frontmatter in ${entry.path}`);
     }
 
-    // Convert markdown to HTML
+    const attrs = parseResult.data;
+    const title = attrs.title;
+    const date = attrs.date.toISOString().split('T')[0];
+    const body = parsed.body;
+
     const html = render(body);
     const slug = entry.name.replace('.md', '');
-
-    // Generate TypeScript module
     const tsContent = `export const post = {
   title: ${JSON.stringify(title)},
-  date: ${JSON.stringify(date)},
+  date: new Date(${JSON.stringify(date)}),
   slug: ${JSON.stringify(slug)},
   html: ${JSON.stringify(html)}
 };`;
@@ -62,6 +52,8 @@ export async function buildPosts(contentDir = "./content", postsDir = "./posts")
   
   console.log("Blog build complete!");
 }
+
+export { FrontmatterSchema };
 
 if (import.meta.main) {
   await buildPosts();

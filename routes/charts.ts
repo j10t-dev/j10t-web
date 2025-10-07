@@ -5,6 +5,19 @@ import {
   SINGLE_CHARTS,
 } from "../lib/chart_data.ts";
 import { logError, logInfo } from "../lib/logger.ts";
+import { z } from "zod";
+
+// Zod schema for chart URL path parameters
+export const ChartParamsSchema = z.object({
+  type: z.enum(["single", "lr"], {
+    errorMap: () => ({ message: "Chart type must be 'single' or 'lr'" })
+  }),
+  name: z.string()
+    .min(1, "Chart name cannot be empty")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Chart name must only contain alphanumeric characters, hyphens, and underscores")
+});
+
+export type ChartParams = z.infer<typeof ChartParamsSchema>;
 
 export class ChartDataHandler {
   async handle(req: Request): Promise<Response> {
@@ -35,24 +48,35 @@ export class ChartDataHandler {
     if (match) {
       const { type, name } = match.pathname.groups;
 
-      if (!type || !name) {
+      // Validate URL parameters with Zod
+      const paramsResult = ChartParamsSchema.safeParse({ type, name });
+
+      if (!paramsResult.success) {
+        const errorMessages = paramsResult.error.errors.map(e => e.message).join(', ');
+        logError("Invalid chart path parameters", {
+          type,
+          name,
+          errors: paramsResult.error.errors,
+        });
         return new Response(
-          JSON.stringify({ error: "Invalid chart path" }),
+          JSON.stringify({ error: `Invalid chart path: ${errorMessages}` }),
           { status: 400, headers: { "content-type": "application/json" } },
         );
       }
 
+      const validParams = paramsResult.data;
+
       try {
         let chartData;
-        const capitalizedName = name.charAt(0).toUpperCase() +
-          name.slice(1).toLowerCase();
+        const capitalizedName = validParams.name.charAt(0).toUpperCase() +
+          validParams.name.slice(1).toLowerCase();
 
-        if (type === "single" && capitalizedName in SINGLE_CHARTS) {
+        if (validParams.type === "single" && capitalizedName in SINGLE_CHARTS) {
           chartData = await getChartJSON(
             "SINGLE",
             SINGLE_CHARTS[capitalizedName],
           );
-        } else if (type === "lr" && capitalizedName in LR_CHARTS) {
+        } else if (validParams.type === "lr" && capitalizedName in LR_CHARTS) {
           chartData = await getChartJSON("LR", LR_CHARTS[capitalizedName]);
         } else {
           return new Response(
@@ -66,8 +90,8 @@ export class ChartDataHandler {
         });
       } catch (error) {
         logError("Failed to fetch individual chart", {
-          type,
-          name,
+          type: validParams.type,
+          name: validParams.name,
           error: error instanceof Error ? error.message : String(error),
         });
         return new Response(

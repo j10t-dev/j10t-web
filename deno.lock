@@ -42,7 +42,8 @@
     "npm:marked-gfm-heading-id@^3.1.0": "3.2.0_marked@12.0.2",
     "npm:marked@12": "12.0.2",
     "npm:prismjs@^1.29.0": "1.30.0",
-    "npm:sanitize-html@^2.11.0": "2.17.0"
+    "npm:sanitize-html@^2.11.0": "2.17.0",
+    "npm:zod@^3.24.1": "3.25.76"
   },
   "jsr": {
     "@deno/gfm@0.8.2": {
@@ -599,6 +600,9 @@
     },
     "undici-types@6.21.0": {
       "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="
+    },
+    "zod@3.25.76": {
+      "integrity": "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="
     }
   },
   "redirects": {
@@ -1207,7 +1211,8 @@
       "jsr:@std/http@^1.0.17",
       "jsr:@std/media-types@1",
       "jsr:@std/path@^1.1.0",
-      "npm:esbuild@0.24"
+      "npm:esbuild@0.24",
+      "npm:zod@^3.24.1"
     ]
   }
 }

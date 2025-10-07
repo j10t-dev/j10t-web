@@ -1,6 +1,6 @@
 import { assertEquals, assertStringIncludes, assert } from "@std/assert";
 import { exists } from "@std/fs";
-import { buildPosts } from "./build-blog.ts";
+import { buildPosts, FrontmatterSchema } from "./build-blog.ts";
 import { 
   BlogTestHelpers, 
   BlogTestCleanup, 
@@ -42,8 +42,7 @@ const hello = "world";
   
   assertEquals(module.post.title, "Test Post");
   assertEquals(module.post.slug, "test-post");
-  // Date should be valid format (actual parsing may vary)
-  assert(module.post.date.match(/^\d{4}-\d{2}-\d{2}$/), `Date should be in YYYY-MM-DD format, got: ${module.post.date}`);
+  assert(module.post.date instanceof Date, "Date should be a Date object");
   assertStringIncludes(module.post.html, "<h1");
   assertStringIncludes(module.post.html, "My Test Post");
   assertStringIncludes(module.post.html, "<strong>test</strong>");
@@ -53,36 +52,6 @@ const hello = "world";
   await BlogTestCleanup.cleanupAll();
 });
 
-Deno.test("Build Blog - Process markdown without frontmatter", async () => {
-  await BlogTestCleanup.cleanupAll();
-  
-  // Create test markdown file without frontmatter
-  const markdownContent = BlogTestData.markdownPlain(`# Simple Post
-
-This is a simple post without frontmatter.
-
-It should still work fine.`);
-
-  await BlogTestHelpers.createMarkdownContent("simple-post.md", markdownContent);
-  
-  // Use the actual buildPosts function
-  await buildPosts(TEST_PATHS.content, TEST_PATHS.generatedPosts);
-  
-  // Check that the TypeScript file was generated
-  assert(await exists(`${TEST_PATHS.generatedPosts}/simple-post.ts`));
-  
-  // Import and validate the generated content
-  const module = await BlogTestHelpers.importGeneratedPost("simple-post");
-  
-  assertEquals(module.post.title, "Simple Post"); // Should be generated from filename
-  assertEquals(module.post.slug, "simple-post");
-  assert(module.post.date.match(/^\d{4}-\d{2}-\d{2}$/), "Date should be valid format");
-  assertStringIncludes(module.post.html, "<h1");
-  assertStringIncludes(module.post.html, "Simple Post");
-  assertStringIncludes(module.post.html, "simple post without frontmatter");
-  
-  await BlogTestCleanup.cleanupAll();
-});
 
 Deno.test("Build Blog - Handle special characters in content", async () => {
   await BlogTestCleanup.cleanupAll();
@@ -134,64 +103,123 @@ Deno.test("Build Blog - Empty content directory", async () => {
   await BlogTestCleanup.cleanupAll();
 });
 
-Deno.test("Build Blog - Invalid frontmatter handling", async () => {
-  await BlogTestCleanup.cleanupAll();
-  
-  // Create markdown with malformed frontmatter
-  const markdownContent = BlogTestData.brokenFrontmatterMarkdown();
-
-  await BlogTestHelpers.createMarkdownContent("broken-frontmatter.md", markdownContent);
-  
-  // Use the actual buildPosts function
-  await buildPosts(TEST_PATHS.content, TEST_PATHS.generatedPosts);
-  
-  // Should fall back to filename-based title generation
-  assert(await exists(`${TEST_PATHS.generatedPosts}/broken-frontmatter.ts`));
-  
-  const module = await BlogTestHelpers.importGeneratedPost("broken-frontmatter");
-  
-  assertEquals(module.post.title, "Broken Frontmatter"); // From filename
-  assertEquals(module.post.slug, "broken-frontmatter");
-  assert(module.post.date.match(/^\d{4}-\d{2}-\d{2}$/), "Date should be valid format");
-  // Should include the malformed frontmatter as content since parsing failed
-  assertStringIncludes(module.post.html, "title:");
-  
-  await BlogTestCleanup.cleanupAll();
-});
 
 Deno.test("Build Blog - Multiple posts processing", async () => {
   await BlogTestCleanup.cleanupAll();
-  
-  // Create multiple test posts using helper
+
   const posts = [
     { filename: "first.md", content: BlogTestData.markdownWithFrontmatter("First Post", "2024-01-01", "# First Post\nContent of first post.") },
     { filename: "second.md", content: BlogTestData.markdownWithFrontmatter("Second Post", "2024-06-15", "# Second Post\nContent of second post.") },
-    { filename: "third.md", content: BlogTestData.markdownPlain("# Third Post Without Frontmatter\nContent of third post.") }
+    { filename: "third.md", content: BlogTestData.markdownWithFrontmatter("Third Post", "2024-12-31", "# Third Post\nContent of third post.") }
   ];
 
   await BlogTestHelpers.createMarkdownFiles(posts);
-  
-  // Use the actual buildPosts function
   await buildPosts(TEST_PATHS.content, TEST_PATHS.generatedPosts);
-  
-  // Check that all TypeScript files were generated
+
   assert(await exists(`${TEST_PATHS.generatedPosts}/first.ts`));
   assert(await exists(`${TEST_PATHS.generatedPosts}/second.ts`));
   assert(await exists(`${TEST_PATHS.generatedPosts}/third.ts`));
-  
-  // Verify content of each post
+
   const firstModule = await BlogTestHelpers.importGeneratedPost("first");
   const secondModule = await BlogTestHelpers.importGeneratedPost("second");
   const thirdModule = await BlogTestHelpers.importGeneratedPost("third");
-  
+
   assertEquals(firstModule.post.title, "First Post");
-  assertEquals(firstModule.post.date, "2024-01-01");
-  
+  assertEquals(firstModule.post.date.toISOString().split('T')[0], "2024-01-01");
+
   assertEquals(secondModule.post.title, "Second Post");
-  assertEquals(secondModule.post.date, "2024-06-15");
-  
-  assertEquals(thirdModule.post.title, "Third"); // Generated from filename
+  assertEquals(secondModule.post.date.toISOString().split('T')[0], "2024-06-15");
+
+  assertEquals(thirdModule.post.title, "Third Post");
   assertEquals(thirdModule.post.slug, "third");
-  
+
   await BlogTestCleanup.cleanupAll();
+});
+
+Deno.test("FrontmatterSchema - Rejects string date", () => {
+  const validFrontmatter = {
+    title: "My Blog Post",
+    date: "2024-08-30"
+  };
+
+  const result = FrontmatterSchema.safeParse(validFrontmatter);
+  assertEquals(result.success, false);
+});
+
+Deno.test("FrontmatterSchema - Validates frontmatter with Date object", () => {
+  const validFrontmatter = {
+    title: "My Blog Post",
+    date: new Date("2024-08-30")
+  };
+
+  const result = FrontmatterSchema.safeParse(validFrontmatter);
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.title, "My Blog Post");
+    assert(result.data.date instanceof Date);
+  }
+});
+
+Deno.test("FrontmatterSchema - Rejects missing title", () => {
+  const frontmatter = {
+    date: new Date("2024-08-30")
+  };
+
+  const result = FrontmatterSchema.safeParse(frontmatter);
+  assertEquals(result.success, false);
+});
+
+Deno.test("FrontmatterSchema - Rejects missing date", () => {
+  const frontmatter = {
+    title: "Only Title"
+  };
+
+  const result = FrontmatterSchema.safeParse(frontmatter);
+  assertEquals(result.success, false);
+});
+
+Deno.test("FrontmatterSchema - Rejects empty frontmatter", () => {
+  const minimalFrontmatter = {};
+
+  const result = FrontmatterSchema.safeParse(minimalFrontmatter);
+  assertEquals(result.success, false);
+});
+
+Deno.test("FrontmatterSchema - Rejects invalid title type", () => {
+  const invalidFrontmatter = {
+    title: 123,
+    date: new Date("2024-08-30")
+  };
+
+  const result = FrontmatterSchema.safeParse(invalidFrontmatter);
+  assertEquals(result.success, false);
+});
+
+Deno.test("FrontmatterSchema - Rejects non-date types", () => {
+  const testCases = [
+    { title: "Test", date: "2024-08-30" },
+    { title: "Test", date: 1234567890 },
+    { title: "Test", date: true },
+  ];
+
+  for (const testCase of testCases) {
+    const result = FrontmatterSchema.safeParse(testCase);
+    assertEquals(result.success, false);
+  }
+});
+
+Deno.test("FrontmatterSchema - Allows additional properties", () => {
+  const frontmatterWithExtras = {
+    title: "Test",
+    date: new Date("2024-08-30"),
+    author: "John Doe",
+    tags: ["test", "blog"]
+  };
+
+  const result = FrontmatterSchema.safeParse(frontmatterWithExtras);
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.title, "Test");
+    assertEquals((result.data as any).author, "John Doe");
+  }
 });
