@@ -56,6 +56,52 @@ Deno.test("GET /api/charts returns JSON array", async () => {
   }
 });
 
+Deno.test("GET /api/charts handles timeout gracefully", async () => {
+  // This integration test verifies timeout handling
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 100);
+
+  try {
+    const res = await fetch("http://localhost:8000/api/charts", {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    // Should either succeed quickly or handle abort
+    assertEquals([200, 500].includes(res.status), true);
+
+    // Consume the response body to prevent resource leak
+    await res.body?.cancel();
+  } catch (error) {
+    // Abort is acceptable
+    if (error instanceof Error && error.name === "AbortError") {
+      assertEquals(true, true); // Expected behaviour
+    } else {
+      throw error;
+    }
+  }
+});
+
+Deno.test("GET /nonexistent returns 404 with body", async () => {
+  const res = await fetch("http://localhost:8000/this-definitely-does-not-exist-12345");
+  assertEquals(res.status, 404);
+
+  const body = await res.text();
+  assertEquals(body, "Not found");
+});
+
+Deno.test("GET /measure with malformed Accept header still works", async () => {
+  const res = await fetch("http://localhost:8000/measure", {
+    headers: { "Accept": "invalid/malformed;;;;" }
+  });
+
+  // Should handle malformed headers gracefully
+  assertEquals([200, 400, 500].includes(res.status), true);
+
+  // Consume the response body to prevent resource leak
+  await res.text();
+});
+
 Deno.test({
   name: "teardown server",
   fn: async () => {

@@ -336,8 +336,26 @@ The frontmatter is broken but content should be processed.`;
 }
 
 /**
- * Wait helper for async operations
+ * Wait for a condition to become true with timeout
+ * @param condition Function that returns true when ready
+ * @param timeoutMs Maximum time to wait (default 5000ms)
+ * @param pollIntervalMs How often to check (default 50ms)
  */
-export function waitForPostsToLoad(ms = 300): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+export async function waitForCondition(
+  condition: () => boolean | Promise<boolean>,
+  timeoutMs = 5000,
+  pollIntervalMs = 50
+): Promise<void> {
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeoutMs) {
+    const result = await Promise.resolve(condition());
+    if (result) {
+      return; // Condition met
+    }
+    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
+  }
+
+  throw new Error(`Condition not met within ${timeoutMs}ms`);
 }
+

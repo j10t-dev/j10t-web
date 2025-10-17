@@ -1,66 +1,35 @@
 // deno-lint-ignore-file no-explicit-any
-import { ChartDataHandler as OriginalChartDataHandler, ChartParamsSchema } from "./charts.ts";
+import { ChartDataHandler, ChartParamsSchema } from "./charts.ts";
 import { assertEquals, assertStringIncludes } from "@std/assert";
 
-// Subclass for dependency injection
-class ChartDataHandler extends OriginalChartDataHandler {
-  constructor(private deps: { getAllChartJSON: () => Promise<any>, getChartJSON: (type: string, name: string) => Promise<any>, logInfo: (...args: any[]) => void, logError: (...args: any[]) => void }) {
-    super();
-  }
-  override async handle(req: Request): Promise<Response> {
-    const url = new URL(req.url);
-
-    // Handle weight endpoint specifically
-    if (url.pathname === "/weight") {
-      try {
-        const chartData = await this.deps.getChartJSON("SINGLE", "weight");
-        return new Response(JSON.stringify(chartData), {
-          headers: { "content-type": "application/json" },
-        });
-      } catch (error) {
-        this.deps.logError("Failed to fetch weight chart", {
-          error: error instanceof Error ? error.message : String(error),
-        });
-        return new Response(
-          JSON.stringify({ error: "Failed to fetch weight chart data" }),
-          { status: 500, headers: { "content-type": "application/json" } },
-        );
-      }
-    }
-
-    try {
-      const data = await this.deps.getAllChartJSON();
-      this.deps.logInfo("Fetched chart data", { count: data.length });
-      return new Response(JSON.stringify(data), {
-        headers: { "content-type": "application/json" },
-      });
-    } catch (error) {
-      this.deps.logError("Failed to fetch chart data", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return new Response(
-        JSON.stringify({ error: "Failed to fetch chart data" }),
-        {
-          status: 500,
-          headers: { "content-type": "application/json" },
-        },
-      );
-    }
-  }
-}
-
 Deno.test("ChartDataHandler returns chart data on success", async () => {
-  const mockData = [{ foo: "bar" }];
+  const mockData = [
+    {
+      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+      mark: "line",
+      encoding: {
+        x: { field: "date", type: "temporal" },
+        y: { field: "value", type: "quantitative" }
+      },
+      data: { values: [{ date: "2024-01-01", value: 70 }] },
+      width: 800,
+      height: 400
+    }
+  ];
+
   const handler = new ChartDataHandler({
     getAllChartJSON: () => Promise.resolve(mockData),
     getChartJSON: () => Promise.resolve({ weight: "chart" }),
     logInfo: () => {},
     logError: () => {},
   });
+
   const res = await handler.handle(new Request("http://localhost/api/charts"));
   assertEquals(res.status, 200);
   const body = await res.json();
   assertEquals(body, mockData);
+  assertEquals(body[0].$schema, "https://vega.github.io/schema/vega-lite/v5.json");
+  assertEquals(body[0].mark, "line");
 });
 
 Deno.test("ChartDataHandler returns 500 on error", async () => {
@@ -77,7 +46,18 @@ Deno.test("ChartDataHandler returns 500 on error", async () => {
 });
 
 Deno.test("ChartDataHandler handles /weight endpoint", async () => {
-  const mockWeightChart = { data: "weight chart" };
+  const mockWeightChart = {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    mark: "line",
+    encoding: {
+      x: { field: "date", type: "temporal" },
+      y: { field: "value", type: "quantitative", title: "Weight (kg)" }
+    },
+    data: { values: [{ date: "2024-01-01", value: 70 }] },
+    width: 800,
+    height: 400
+  };
+
   const handler = new ChartDataHandler({
     getAllChartJSON: () => Promise.resolve([]),
     getChartJSON: (type: string, name: string) => {
@@ -89,10 +69,11 @@ Deno.test("ChartDataHandler handles /weight endpoint", async () => {
     logInfo: () => {},
     logError: () => {},
   });
-  const res = await handler.handle(new Request("http://localhost/weight"));
+  const res = await handler.handle(new Request("http://localhost/api/weight"));
   assertEquals(res.status, 200);
   const body = await res.json();
   assertEquals(body, mockWeightChart);
+  assertEquals(body.$schema, "https://vega.github.io/schema/vega-lite/v5.json");
 });
 
 Deno.test("ChartDataHandler returns 500 for /weight endpoint on error", async () => {
@@ -102,7 +83,7 @@ Deno.test("ChartDataHandler returns 500 for /weight endpoint on error", async ()
     logInfo: () => {},
     logError: () => {},
   });
-  const res = await handler.handle(new Request("http://localhost/weight"));
+  const res = await handler.handle(new Request("http://localhost/api/weight"));
   assertEquals(res.status, 500);
   const body = await res.json();
   assertEquals(body.error, "Failed to fetch weight chart data");

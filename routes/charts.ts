@@ -19,19 +19,39 @@ export const ChartParamsSchema = z.object({
 
 export type ChartParams = z.infer<typeof ChartParamsSchema>;
 
+// Dependencies interface for testing
+export interface ChartDataHandlerDeps {
+  getAllChartJSON: () => Promise<any>;
+  getChartJSON: (type: "SINGLE" | "LR" | string, name: string) => Promise<any>;
+  logInfo: (...args: any[]) => void;
+  logError: (...args: any[]) => void;
+}
+
 export class ChartDataHandler {
+  private deps: ChartDataHandlerDeps;
+
+  constructor(deps?: ChartDataHandlerDeps) {
+    // Use provided dependencies or default to real implementations
+    this.deps = deps ?? {
+      getAllChartJSON,
+      getChartJSON: getChartJSON as ChartDataHandlerDeps['getChartJSON'],
+      logInfo,
+      logError,
+    };
+  }
+
   async handle(req: Request): Promise<Response> {
     const url = new URL(req.url);
 
     // Handle weight endpoint specifically
     if (url.pathname === "/api/weight") {
       try {
-        const chartData = await getChartJSON("SINGLE", SINGLE_CHARTS["Weight"]);
+        const chartData = await this.deps.getChartJSON("SINGLE", SINGLE_CHARTS["Weight"]);
         return new Response(JSON.stringify(chartData), {
           headers: { "content-type": "application/json" },
         });
       } catch (error) {
-        logError("Failed to fetch weight chart", {
+        this.deps.logError("Failed to fetch weight chart", {
           error: error instanceof Error ? error.message : String(error),
         });
         return new Response(
@@ -53,7 +73,7 @@ export class ChartDataHandler {
 
       if (!paramsResult.success) {
         const errorMessages = paramsResult.error.errors.map(e => e.message).join(', ');
-        logError("Invalid chart path parameters", {
+        this.deps.logError("Invalid chart path parameters", {
           type,
           name,
           errors: paramsResult.error.errors,
@@ -72,12 +92,12 @@ export class ChartDataHandler {
           validParams.name.slice(1).toLowerCase();
 
         if (validParams.type === "single" && capitalizedName in SINGLE_CHARTS) {
-          chartData = await getChartJSON(
+          chartData = await this.deps.getChartJSON(
             "SINGLE",
             SINGLE_CHARTS[capitalizedName],
           );
         } else if (validParams.type === "lr" && capitalizedName in LR_CHARTS) {
-          chartData = await getChartJSON("LR", LR_CHARTS[capitalizedName]);
+          chartData = await this.deps.getChartJSON("LR", LR_CHARTS[capitalizedName]);
         } else {
           return new Response(
             JSON.stringify({ error: "Chart not found" }),
@@ -89,7 +109,7 @@ export class ChartDataHandler {
           headers: { "content-type": "application/json" },
         });
       } catch (error) {
-        logError("Failed to fetch individual chart", {
+        this.deps.logError("Failed to fetch individual chart", {
           type: validParams.type,
           name: validParams.name,
           error: error instanceof Error ? error.message : String(error),
@@ -103,13 +123,13 @@ export class ChartDataHandler {
 
     // Handle all charts request: /api/charts
     try {
-      const data = await getAllChartJSON();
-      logInfo("Fetched chart data", { count: data.length });
+      const data = await this.deps.getAllChartJSON();
+      this.deps.logInfo("Fetched chart data", { count: data.length });
       return new Response(JSON.stringify(data), {
         headers: { "content-type": "application/json" },
       });
     } catch (error) {
-      logError("Failed to fetch chart data", {
+      this.deps.logError("Failed to fetch chart data", {
         error: error instanceof Error ? error.message : String(error),
       });
       return new Response(

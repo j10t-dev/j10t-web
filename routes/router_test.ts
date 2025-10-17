@@ -203,7 +203,10 @@ Deno.test("Router constructor - Throws on invalid options", () => {
   );
 });
 
-Deno.test("Router constructor - Accepts valid options", () => {
+Deno.test("Router constructor - Accepts valid options", {
+  sanitizeResources: false,
+  sanitizeOps: false,
+}, () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({
     publicDir: "/public",

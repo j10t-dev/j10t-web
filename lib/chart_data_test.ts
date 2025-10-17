@@ -6,7 +6,7 @@ const originalFetch = globalThis.fetch;
 
 Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
   let called = 0;
-  globalThis.fetch = async (url, opts) => {
+  const mockFetch = async (url: string | URL | Request, opts?: RequestInit) => {
     called++;
     return {
       json() {
@@ -20,12 +20,17 @@ Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
       ok: true,
     } as Response;
   };
-  const data = await getAllChartJSON();
-  assertEquals(Array.isArray(data), true);
-  assertEquals(data.length > 0, true);
-  // Use type assertion to access mock property for test only
-  assertEquals((data[0] as any).mock, true);
-  globalThis.fetch = originalFetch;
+
+  try {
+    globalThis.fetch = mockFetch as any;
+    const data = await getAllChartJSON();
+    assertEquals(Array.isArray(data), true);
+    assertEquals(data.length > 0, true);
+    // Use type assertion to access mock property for test only
+    assertEquals((data[0] as any).mock, true);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 Deno.test("VegaLiteSpecSchema validates valid chart specification", () => {
@@ -80,7 +85,7 @@ Deno.test("VegaLiteSpecSchema rejects non-object values", () => {
 });
 
 Deno.test("getChartJSON rejects invalid API response", async () => {
-  globalThis.fetch = async () => {
+  const mockFetch = async () => {
     return {
       async json() {
         return "invalid data";
@@ -91,13 +96,16 @@ Deno.test("getChartJSON rejects invalid API response", async () => {
     } as unknown as Response;
   };
 
-  await assertRejects(
-    async () => await getChartJSON("SINGLE", "test-invalid"),
-    Error,
-    "Invalid chart data structure"
-  );
-
-  globalThis.fetch = originalFetch;
+  try {
+    globalThis.fetch = mockFetch;
+    await assertRejects(
+      async () => await getChartJSON("SINGLE", "test-invalid"),
+      Error,
+      "Invalid chart data structure"
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 Deno.test("getChartJSON validates and accepts valid response", async () => {
@@ -107,7 +115,7 @@ Deno.test("getChartJSON validates and accepts valid response", async () => {
     data: { values: [{ x: 1, y: 2 }] }
   };
 
-  globalThis.fetch = async () => {
+  const mockFetch = async () => {
     return {
       async json() {
         return mockValidSpec;
@@ -118,9 +126,12 @@ Deno.test("getChartJSON validates and accepts valid response", async () => {
     } as unknown as Response;
   };
 
-  const result = await getChartJSON("SINGLE", "test-valid-weight");
-  assertEquals((result as any).mark, "line");
-  assertEquals((result as any).$schema, mockValidSpec.$schema);
-
-  globalThis.fetch = originalFetch;
+  try {
+    globalThis.fetch = mockFetch;
+    const result = await getChartJSON("SINGLE", "test-valid-weight");
+    assertEquals((result as any).mark, "line");
+    assertEquals((result as any).$schema, mockValidSpec.$schema);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

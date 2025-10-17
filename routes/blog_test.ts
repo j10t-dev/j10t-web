@@ -1,7 +1,7 @@
 import { assertEquals, assertStringIncludes, assertRejects, assert } from "@std/assert";
 import { BlogHandler, BlogPost, BlogPostSchema } from "./blog.ts";
 import { Eta } from "@eta-dev/eta";
-import { BlogTestHelpers, BlogTestCleanup, BlogTestData, waitForPostsToLoad } from "../tests/helpers/blog_test_helpers.ts";
+import { BlogTestHelpers, BlogTestCleanup, BlogTestData, waitForCondition } from "../tests/helpers/blog_test_helpers.ts";
 
 // Mock Eta instance for testing
 const mockEta = new Eta({
@@ -26,10 +26,10 @@ Deno.test("BlogHandler - Handle blog index route", async () => {
   await BlogTestHelpers.createPost("test-second", { title: "Second Post", date: new Date("2024-08-30") });
   
   const handler = new BlogHandler(mockEta, TEST_PATHS.posts);
-  
-  // Wait a moment for posts to load
-  await waitForPostsToLoad(100);
-  
+
+  // Wait for posts to actually load
+  await waitForCondition(() => handler.getAllPosts().length >= 2, 5000);
+
   const request = new Request("http://localhost:8000/blog/");
   const response = await handler.handle(request);
   
@@ -48,10 +48,10 @@ Deno.test("BlogHandler - Handle individual blog post", async () => {
   });
   
   const handler = new BlogHandler(mockEta, TEST_PATHS.posts);
-  
+
   // Wait for posts to load
-  await waitForPostsToLoad(100);
-  
+  await waitForCondition(() => handler.getAllPosts().length >= 1, 5000);
+
   const request = new Request("http://localhost:8000/blog/test-individual");
   const response = await handler.handle(request);
   
@@ -131,10 +131,10 @@ Deno.test("BlogHandler - Security: URL normalization prevents traversal", async 
   await BlogTestHelpers.createPost("admin", { title: "Admin Post" });
   
   const handler = new BlogHandler(mockEta, TEST_PATHS.posts);
-  
+
   // Wait for posts to load
-  await waitForPostsToLoad(100);
-  
+  await waitForCondition(() => handler.getAllPosts().length >= 1, 5000);
+
   // These URLs get normalized by URL constructor to /blog/admin
   const traversalAttempts = [
     "http://localhost:8000/blog/test/../admin",
@@ -160,10 +160,10 @@ Deno.test("BlogHandler - Post sorting by date", async () => {
   await BlogTestHelpers.createPosts(BlogTestData.sortingTestPosts());
   
   const handler = new BlogHandler(mockEta, TEST_PATHS.posts);
-  
+
   // Wait for posts to load
-  await waitForPostsToLoad(100);
-  
+  await waitForCondition(() => handler.getAllPosts().length >= 3, 5000);
+
   const request = new Request("http://localhost:8000/blog/");
   const response = await handler.handle(request);
   
