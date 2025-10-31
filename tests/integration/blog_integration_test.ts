@@ -1,5 +1,5 @@
 import { assertEquals, assertStringIncludes, assert } from "@std/assert";
-import { Router } from "../../routes/router.ts";
+import { Router } from "../../src/routes/router.ts";
 import {
   BlogTestHelpers,
   BlogTestCleanup,

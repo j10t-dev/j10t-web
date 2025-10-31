@@ -14,16 +14,48 @@ vanilla JS. No React or heavy frameworks.
 1. Install [Deno](https://deno.land/manual/getting_started/installation)
 2. Run the server:
    ```sh
-   deno run --allow-net --allow-read main.ts
+   deno task dev
    ```
 3. Open your browser at [http://localhost:8000](http://localhost:8000)
 
+## Development Commands
+
+- `deno task dev` — Start development server with file watching
+- `deno task start` — Run production server
+- `deno task test` — Run all tests
+- `deno task bundle` — Bundle frontend assets
+- `deno task build-blog` — Build blog posts from markdown
+
+## Deployment
+
+Deploy to Raspberry Pi:
+
+```bash
+rsync -av \
+  --exclude='node_modules' \
+  --exclude='.git' \
+  --exclude='*.log' \
+  --exclude='.DS_Store' \
+  --exclude='deno.lock' \
+  --exclude='backlog.md' \
+  --exclude='docs/' \
+  --exclude='content/' \
+  ./ admin@pihost.local:/home/admin/opt/j10t-web/
+```
+
 ## Project Structure
 
-- `main.ts` — Deno server entry point
-- `routes/` — API endpoints (e.g., chart data)
-- `views/` — HTML templates
-- `public/` — Static assets (JS, CSS, Vega libs)
+```
+.
+├── build/           # Build scripts
+├── src/             # Application source code
+│   ├── main.ts     # Server entry point
+│   ├── lib/        # Shared utilities
+│   └── routes/     # Route handlers and API endpoints
+├── tests/           # Test files
+├── views/           # HTML templates
+└── public/          # Static assets (JS, CSS, Vega libs)
+```
 
 ## To-do
 

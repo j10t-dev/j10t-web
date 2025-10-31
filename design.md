@@ -20,6 +20,8 @@ vanholtz.co (just because its cool)
 
 'Marginalia'
 
+https://hojberg.xyz/the-programmer-identity-crisis/ - footnotes on sidebar! 
+
 ## Design principles
 
 Blog = noJS

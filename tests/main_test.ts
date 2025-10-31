@@ -1,4 +1,4 @@
-import { handler } from "./main.ts";
+import { handler } from "../src/main.ts";
 import { assertEquals, assertStringIncludes } from "@std/assert";
 
 Deno.test("handler returns home page with navigation and recent posts", async () => {

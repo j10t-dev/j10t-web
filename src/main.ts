@@ -23,11 +23,12 @@ await configure({
 });
 
 const __dirname = fromFileUrl(new URL(".", import.meta.url));
-const PUBLIC_DIR = join(__dirname, "public");
-const VIEWS_DIR = join(__dirname, "views");
+const PUBLIC_DIR = join(__dirname, "..", "public");
+const VIEWS_DIR = join(__dirname, "..", "views");
+const POSTS_DIR = join(__dirname, "..", "posts");
 
 const eta = new Eta({ views: VIEWS_DIR });
-const router = new Router({ publicDir: PUBLIC_DIR, eta });
+const router = new Router({ publicDir: PUBLIC_DIR, eta, postsDir: POSTS_DIR });
 
 export async function handler(req: Request): Promise<Response> {
   return await router.handle(req);

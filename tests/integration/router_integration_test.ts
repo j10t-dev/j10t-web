@@ -1,5 +1,5 @@
 import { assertEquals, assertStringIncludes } from "@std/assert";
-import { Router } from "../../routes/router.ts";
+import { Router } from "../../src/routes/router.ts";
 import { Eta } from "@eta-dev/eta";
 
 Deno.test("Router integration - Static file handler serves actual files", async () => {

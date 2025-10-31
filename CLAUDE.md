@@ -2,13 +2,33 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Structure
+
+```
+.
+├── build/              # Build and bundling scripts
+│   ├── build-blog.ts
+│   └── esbuild.bundle.ts
+├── src/                # Application source code
+│   ├── main.ts        # Server entry point
+│   ├── lib/           # Shared utilities and helpers
+│   └── routes/        # Route handlers (blog, charts, static, etc.)
+├── tests/              # All test files
+│   ├── helpers/       # Test utilities
+│   └── integration/   # Integration tests
+├── views/              # Eta templates (HTML)
+├── posts/              # Generated blog posts (TypeScript modules)
+├── public/             # Static assets (CSS, JS, Vega libs)
+└── content/            # Markdown source files for blog posts
+```
+
 ## Development Commands
 
 - **Start development server**: `deno task dev` (includes file watching)
 - **Run production server**: `deno task start`
 - **Run tests**: `deno task test`
 - **Bundle frontend assets**: `deno task bundle`
-- **Build blog posts**: `deno run --allow-read --allow-write build-blog.ts`
+- **Build blog posts**: `deno task build-blog`
 - **Run single test file**: `deno test --allow-net --allow-read --allow-run --allow-env --allow-write <file_path>`
 
 ## Test Structure Guidelines
@@ -21,28 +41,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Test File Locations
 ```
-lib/
-  chart_data.ts
-  chart_data_test.ts      # Unit tests co-located
-  logger.ts
-  logger_test.ts          # Unit tests co-located
+build/
+  build-blog.ts               # Build scripts
+  esbuild.bundle.ts
 
-routes/
-  blog.ts
-  blog_test.ts           # Unit tests co-located
-  router.ts
-  router_test.ts         # Unit tests co-located
+src/
+  main.ts                     # Application entry point
+  lib/
+    chart_data.ts
+    chart_data_test.ts        # Unit tests co-located
+    logger.ts
+    logger_test.ts            # Unit tests co-located
+    utils.ts
+    utils_test.ts
+
+  routes/
+    blog.ts
+    blog_test.ts             # Unit tests co-located
+    router.ts
+    router_test.ts           # Unit tests co-located
+    charts.ts
+    charts_test.ts
+    static.ts
+    static_test.ts
+    index.ts
+    index_test.ts
 
 tests/
-  integration/           # Multi-module integration tests
+  main_test.ts               # Main entry point tests
+  measure_test.ts            # Measurement tests
+  build_blog_test.ts         # Build script tests
+  integration/               # Multi-module integration tests
     blog_integration_test.ts
-  helpers/              # Test utilities and helpers
+  helpers/                  # Test utilities and helpers
     blog_test_helpers.ts
 ```
 
 ### Test Commands
 - **Run all tests**: `deno task test`
-- **Run unit tests only**: `deno test **/*_test.ts --ignore=tests/`
+- **Run unit tests in src**: `deno test src/`
+- **Run tests directory**: `deno test tests/`
 - **Run integration tests only**: `deno test tests/integration/`
 - **Run specific test file**: `deno test --allow-all path/to/file_test.ts`
 
@@ -52,8 +90,8 @@ This is a Deno-based web application that serves Vega-Lite charts for fitness me
 
 ### Core Components
 
-- **main.ts**: Entry point that sets up the Eta templating engine and Router
-- **Router (routes/router.ts)**: Central request dispatcher with four handler classes:
+- **src/main.ts**: Entry point that sets up the Eta templating engine and Router
+- **Router (src/routes/router.ts)**: Central request dispatcher with four handler classes:
   - `StaticFileHandler`: Serves static files from `/public/` directory
   - `ChartDataHandler`: Provides chart data via `/api/charts` endpoint and individual chart endpoints (e.g., `/api/weight`)
   - `PageRenderHandler`: Renders HTML pages using Eta templates (supports `/measure/`, `/weight/` views)

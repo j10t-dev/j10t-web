@@ -3,8 +3,9 @@
  * Provides common functionality for creating, managing, and cleaning up test posts and content
  */
 
-import { BlogPost, BlogHandler } from "../../routes/blog.ts";
+import { BlogPost, BlogHandler } from "../../src/routes/blog.ts";
 import { Eta } from "@eta-dev/eta";
+import { join } from "@std/path";
 
 export interface TestPostOptions {
   title?: string;
@@ -14,11 +15,13 @@ export interface TestPostOptions {
 }
 
 // Test directory paths - isolated from production directories
+// Using absolute paths to ensure consistency across different test locations
+const projectRoot = Deno.cwd();
 export const TEST_PATHS = {
-  posts: "./test-posts-isolated",
-  content: "./test-content", 
-  generatedPosts: "./test-generated-posts",
-  templates: "./test-views",
+  posts: join(projectRoot, "tests/test-posts-isolated"),
+  content: join(projectRoot, "tests/test-content"),
+  generatedPosts: join(projectRoot, "tests/test-generated-posts"),
+  templates: join(projectRoot, "tests/test-views"),
 } as const;
 
 /**
@@ -171,7 +174,8 @@ export class BlogTestHelpers {
    * Import a generated post module safely
    */
   static async importGeneratedPost(slug: string): Promise<{ post: BlogPost }> {
-    const url = new URL(`../../${TEST_PATHS.generatedPosts}/${slug}.ts`, import.meta.url).href;
+    const filePath = join(TEST_PATHS.generatedPosts, `${slug}.ts`);
+    const url = new URL(`file://${filePath}`).href;
     return await import(url);
   }
 }
