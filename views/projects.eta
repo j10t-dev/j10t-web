@@ -1,0 +1,9 @@
+<h1>Projects</h1>
+
+<p>Toys, tools and projects</p>
+
+<ul>
+    <li><a href="https://mood.j10t.dev">Mood Tracker</a> - Bullet Journal style mood tracker for 2026. </li>
+    <li><a href="https://hipster.j10t.dev">Youtube Hipster</a> - Closed alpha. Find out if you really did know them before they were famous. </li>
+    <!-- Add more projects as needed -->
+</ul>

@@ -58,6 +58,8 @@ export class Router {
     switch (url.pathname) {
       case "/about":
         return await this.pageHandler.handle("about", { title: "About", currentPage: "about" });
+      case "/projects":
+        return await this.pageHandler.handle("projects", { title: "Projects", currentPage: "projects" });
       case "/measure":
         return await this.pageHandler.handle("measure", { title: "Measurements", currentPage: "measure" });
       case "/weight":
