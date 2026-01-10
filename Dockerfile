@@ -20,7 +20,7 @@ COPY --from=builder /app/deno.lock /app/deno.lock
 COPY --from=builder /deno-dir /deno-dir
 
 # Use existing non-root deno user from base image
-RUN chown -R deno:deno /app
+RUN chown -R deno:deno /app /deno-dir
 USER deno
 
 EXPOSE 8000
