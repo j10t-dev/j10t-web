@@ -1,6 +1,6 @@
 .git
 .gitignore
-*.md
+README.md
 tests/
 .claude/
 .vscode/
