@@ -4,7 +4,8 @@ import {
   BlogTestHelpers,
   BlogTestCleanup,
   BlogTestData,
-  TEST_PATHS
+  TEST_PATHS,
+  waitForCondition
 } from "../helpers/blog_test_helpers.ts";
 
 Deno.test("Blog Integration - End-to-end blog index", async () => {
@@ -21,17 +22,17 @@ Deno.test("Blog Integration - End-to-end blog index", async () => {
     eta: BlogTestHelpers.createTestEta(),
     postsDir: TEST_PATHS.posts
   });
-  
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
+
+  await waitForCondition(() => router.blogHandler.getAllPosts().length >= 2);
+
   const request = new Request("http://localhost:8000/blog/");
   const response = await router.handle(request);
-  
+
   assertEquals(response.status, 200);
   assertEquals(response.headers.get("Content-Type"), "text/html; charset=utf-8");
-  
+
   const html = await response.text();
-  
+
   assertStringIncludes(html, "First Test Post");
   assertStringIncludes(html, "Second Test Post");
   assertStringIncludes(html, "2024-08-28");
@@ -57,9 +58,9 @@ Deno.test("Blog Integration - End-to-end individual post", async () => {
     eta: BlogTestHelpers.createTestEta(),
     postsDir: TEST_PATHS.posts
   });
-  
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
+
+  await waitForCondition(() => router.blogHandler.getAllPosts().length >= 1);
+
   const request = new Request("http://localhost:8000/blog/first-post");
   const response = await router.handle(request);
   
@@ -91,9 +92,9 @@ Deno.test("Blog Integration - Router handles blog routes correctly", async () =>
     eta: BlogTestHelpers.createTestEta(),
     postsDir: TEST_PATHS.posts
   });
-  
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
+
+  await waitForCondition(() => router.blogHandler.getAllPosts().length >= 2);
+
   const testUrls = [
     "http://localhost:8000/blog",
     "http://localhost:8000/blog/",
@@ -127,9 +128,9 @@ Deno.test("Blog Integration - Non-existent post returns 404", async () => {
     eta: BlogTestHelpers.createTestEta(),
     postsDir: TEST_PATHS.posts
   });
-  
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
+
+  await waitForCondition(() => router.blogHandler.getAllPosts().length >= 1);
+
   const request = new Request("http://localhost:8000/blog/non-existent-post");
   const response = await router.handle(request);
   
@@ -150,12 +151,12 @@ Deno.test("Blog Integration - Empty blog works correctly", async () => {
     eta: BlogTestHelpers.createTestEta(),
     postsDir: TEST_PATHS.posts
   });
-  
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
+
+  await waitForCondition(() => router.blogHandler.getAllPosts().length >= 0);
+
   const request = new Request("http://localhost:8000/blog/");
   const response = await router.handle(request);
-  
+
   assertEquals(response.status, 200);
   const html = await response.text();
   assertStringIncludes(html, "No posts yet");
@@ -175,13 +176,13 @@ Deno.test("Blog Integration - Posts sorted by date (newest first)", async () => 
     postsDir: TEST_PATHS.posts
   });
 
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await waitForCondition(() => router.blogHandler.getAllPosts().length >= 3);
 
   const request = new Request("http://localhost:8000/blog/");
   const response = await router.handle(request);
-  
+
   const html = await response.text();
-  
+
   const newPostIndex = html.indexOf("New Post");
   const middlePostIndex = html.indexOf("Middle Post");
   const oldPostIndex = html.indexOf("Old Post");
