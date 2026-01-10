@@ -25,7 +25,11 @@ export class Router {
   private staticHandler: StaticFileHandler;
   private chartHandler: ChartDataHandler;
   private pageHandler: PageRenderHandler;
-  private blogHandler: BlogHandler;
+  private _blogHandler: BlogHandler;
+
+  get blogHandler(): BlogHandler {
+    return this._blogHandler;
+  }
 
   constructor(options: RouterOptions) {
     // Validate options with Zod
@@ -41,7 +45,7 @@ export class Router {
     this.staticHandler = new StaticFileHandler(publicDir);
     this.chartHandler = new ChartDataHandler();
     this.pageHandler = new PageRenderHandler(eta);
-    this.blogHandler = new BlogHandler(eta, postsDir);
+    this._blogHandler = new BlogHandler(eta, postsDir);
   }
 
   async handle(req: Request): Promise<Response> {
@@ -53,7 +57,7 @@ export class Router {
       return await this.chartHandler.handle(req);
     }
     if (url.pathname.startsWith("/blog")) {
-      return await this.blogHandler.handle(req);
+      return await this._blogHandler.handle(req);
     }
     switch (url.pathname) {
       case "/health":
@@ -70,7 +74,7 @@ export class Router {
         return await this.pageHandler.handle("weight", { title: "Weight", currentPage: "weight" });
       case "/":
       case "/index.html": {
-        const posts = this.blogHandler.getFormattedPosts();
+        const posts = this._blogHandler.getFormattedPosts();
         return await this.pageHandler.handle("index", { title: "j10t", currentPage: "home", posts });
       }
       default:
@@ -78,4 +82,4 @@ export class Router {
         return new Response("Not found", { status: 404 });
     }
   }
-} 
+}

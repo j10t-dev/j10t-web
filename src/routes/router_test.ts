@@ -66,7 +66,7 @@ Deno.test("Router handles / (index)", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).pageHandler = new MockPageRenderHandler();
-  (router as any).blogHandler = new MockBlogHandler();
+  (router as any)._blogHandler = new MockBlogHandler();
   const req = new Request("http://localhost/");
   const res = await router.handle(req);
   assertEquals(res.status, 200);
