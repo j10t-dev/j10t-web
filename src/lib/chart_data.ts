@@ -16,7 +16,7 @@ const SINGLE_CHARTS: Record<string, string> = {
   Chest: "chest",
 };
 
-const CHART_API_URL = "http://127.0.0.1:8888/sqlite-charts";
+const CHART_API_URL = Deno.env.get("CHART_API_URL") ?? "http://127.0.0.1:8888/sqlite-charts";
 const CACHE_EXPIRY = 3600000; // 1 hour
 const chartCache: Record<string, { data: any; timestamp: number }> = {};
 

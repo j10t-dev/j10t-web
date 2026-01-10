@@ -56,6 +56,10 @@ export class Router {
       return await this.blogHandler.handle(req);
     }
     switch (url.pathname) {
+      case "/health":
+        return new Response(JSON.stringify({ status: "ok" }), {
+          headers: { "Content-Type": "application/json" },
+        });
       case "/about":
         return await this.pageHandler.handle("about", { title: "About", currentPage: "about" });
       case "/projects":

@@ -6,7 +6,7 @@ Deno.test({
   name: "setup server",
   fn: async () => {
     const command = new Deno.Command("deno", {
-      args: ["run", "--allow-net", "--allow-read", "src/main.ts"],
+      args: ["run", "--allow-net", "--allow-read", "--allow-env=CHART_API_URL", "src/main.ts"],
       stdout: "null",
       stderr: "null",
     });
