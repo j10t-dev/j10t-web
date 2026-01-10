@@ -1,6 +1,9 @@
-import type { TopLevelSpec } from "vega-lite";
 import { logError, logInfo } from "./logger.ts";
 import { z } from "zod";
+
+// Local type definition to avoid pulling in vega-lite's native dependencies (canvas)
+// This is a minimal representation - the actual spec is validated by Zod
+type TopLevelSpec = Record<string, unknown>;
 
 const LR_CHARTS: Record<string, string> = {
   Calves: "calves",

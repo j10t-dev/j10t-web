@@ -1,4 +1,5 @@
-import type { TopLevelSpec } from "vega-lite@5";
+// Vega-Lite spec type - actual library loaded via CDN in templates
+type TopLevelSpec = Record<string, unknown>;
 
 declare global {
   interface Window {
