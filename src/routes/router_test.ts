@@ -103,6 +103,17 @@ Deno.test("Router handles /projects", async () => {
   assertEquals(await res.text(), "projects with title,currentPage");
 });
 
+Deno.test("Router handles /health endpoint", async () => {
+  const mockEta = new Eta({ views: "./views" });
+  const router = new Router({ publicDir: "/public", eta: mockEta });
+  const req = new Request("http://localhost/health");
+  const res = await router.handle(req);
+  assertEquals(res.status, 200);
+  assertEquals(res.headers.get("Content-Type"), "application/json");
+  const body = await res.json();
+  assertEquals(body, { status: "ok" });
+});
+
 Deno.test("Router returns 404 for unknown route", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
