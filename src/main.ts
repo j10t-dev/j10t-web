@@ -22,10 +22,10 @@ await configure({
   ],
 });
 
-const __dirname = import.meta.dir;
-const PUBLIC_DIR = join(__dirname, "..", "public");
-const VIEWS_DIR = join(__dirname, "..", "views");
-const POSTS_DIR = join(__dirname, "..", "posts");
+const baseDir = process.cwd();
+const PUBLIC_DIR = join(baseDir, "public");
+const VIEWS_DIR = join(baseDir, "views");
+const POSTS_DIR = join(baseDir, "posts");
 
 const eta = new Eta({ views: VIEWS_DIR });
 const router = new Router({ publicDir: PUBLIC_DIR, eta, postsDir: POSTS_DIR });
