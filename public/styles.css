@@ -255,6 +255,7 @@ input.sidenote-toggle {
 /* The sidenote content - hidden by default (mobile) */
 .sidenote {
   display: none;
+  font-weight: normal;
 }
 
 /* Mobile: tap number to expand inline */
