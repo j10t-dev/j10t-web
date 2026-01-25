@@ -30,6 +30,7 @@ yarn-error.log*
 .env.production.local
 
 .serena/
+.playwright-mcp/
 
 # Compiled binary
 j10t-web
