@@ -1,42 +1,42 @@
-import { assertEquals, assertStringIncludes } from "@std/assert";
-import { PageRenderHandler } from "./index.ts";
-import { Eta } from "@eta-dev/eta";
+import { test, expect } from "bun:test";
+import { PageRenderHandler } from "./index";
+import { Eta } from "eta";
 
 const testEta = new Eta({
   views: "./views",
   cache: false
 });
 
-Deno.test("PageRenderHandler - Constructor", () => {
+test("PageRenderHandler - Constructor", () => {
   const handler = new PageRenderHandler(testEta);
-  assertEquals(typeof handler, "object");
+  expect(typeof handler).toBe("object");
 });
 
-Deno.test("PageRenderHandler - handle renders template with data", async () => {
+test("PageRenderHandler - handle renders template with data", async () => {
   const handler = new PageRenderHandler(testEta);
 
   const response = await handler.handle("index", { posts: [{ title: "Test Post", date: "2024-01-01", slug: "test" }] });
 
-  assertEquals(response instanceof Response, true);
-  assertEquals(response.headers.get("content-type"), "text/html");
+  expect(response instanceof Response).toBe(true);
+  expect(response.headers.get("content-type")).toBe("text/html");
 
   const html = await response.text();
-  assertStringIncludes(html, "Test Post");
+  expect(html).toContain("Test Post");
 });
 
-Deno.test("PageRenderHandler - handle returns Response object", async () => {
+test("PageRenderHandler - handle returns Response object", async () => {
   const handler = new PageRenderHandler(testEta);
 
   const response = await handler.handle("measure");
 
-  assertEquals(response instanceof Response, true);
-  assertEquals(response.headers.get("content-type"), "text/html");
+  expect(response instanceof Response).toBe(true);
+  expect(response.headers.get("content-type")).toBe("text/html");
 
   const html = await response.text();
-  assertStringIncludes(html, "<!DOCTYPE html>");
+  expect(html).toContain("<!DOCTYPE html>");
 });
 
-Deno.test("PageRenderHandler - handle different template names", async () => {
+test("PageRenderHandler - handle different template names", async () => {
   const handler = new PageRenderHandler(testEta);
 
   const templates = [
@@ -46,22 +46,22 @@ Deno.test("PageRenderHandler - handle different template names", async () => {
 
   for (const template of templates) {
     const response = await handler.handle(template.name);
-    assertEquals(response instanceof Response, true);
-    assertEquals(response.headers.get("content-type"), "text/html");
+    expect(response instanceof Response).toBe(true);
+    expect(response.headers.get("content-type")).toBe("text/html");
 
     const html = await response.text();
-    assertStringIncludes(html, template.expectedContent);
+    expect(html).toContain(template.expectedContent);
   }
 });
 
-Deno.test("PageRenderHandler - handle works with empty data", async () => {
+test("PageRenderHandler - handle works with empty data", async () => {
   const handler = new PageRenderHandler(testEta);
 
   const response = await handler.handle("measure");
-  assertEquals(response instanceof Response, true);
-  assertEquals(response.headers.get("content-type"), "text/html");
+  expect(response instanceof Response).toBe(true);
+  expect(response.headers.get("content-type")).toBe("text/html");
 
   const html = await response.text();
-  assertStringIncludes(html, "<!DOCTYPE html>");
-  assertStringIncludes(html, "MEASUREMENTS");
+  expect(html).toContain("<!DOCTYPE html>");
+  expect(html).toContain("MEASUREMENTS");
 });

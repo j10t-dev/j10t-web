@@ -1,9 +1,9 @@
-import { StaticFileHandler } from "./static.ts";
-import { ChartDataHandler } from "./charts.ts";
-import { PageRenderHandler } from "./index.ts";
-import { BlogHandler } from "./blog.ts";
-import { logError } from "../lib/logger.ts";
-import { Eta } from "@eta-dev/eta";
+import { StaticFileHandler } from "./static";
+import { ChartDataHandler } from "./charts";
+import { PageRenderHandler } from "./index";
+import { BlogHandler } from "./blog";
+import { logError } from "../lib/logger";
+import { Eta } from "eta";
 import { z } from "zod";
 
 export type RouteHandler = (req: Request) => Promise<Response>;

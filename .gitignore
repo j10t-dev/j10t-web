@@ -29,3 +29,7 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+.serena/
+
+# Compiled binary
+j10t-web

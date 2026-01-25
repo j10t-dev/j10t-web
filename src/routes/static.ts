@@ -1,5 +1,7 @@
-import { getContentType, sanitizePath } from "../lib/utils.ts";
-import { logError } from "../lib/logger.ts";
+import { getContentType, sanitizePath } from "../lib/utils";
+import { logError } from "../lib/logger";
+import { stat, readFile } from "node:fs/promises";
+import type { Stats } from "node:fs";
 
 export interface StaticFileResponse {
   file: Uint8Array;
@@ -9,23 +11,30 @@ export interface StaticFileResponse {
 export class StaticFileHandler {
   private getContentType: typeof getContentType;
   private sanitizePath: typeof sanitizePath;
+  private stat: typeof stat;
+  private readFile: typeof readFile;
+
   constructor(
     private publicDir: string,
     opts?: {
-      getContentType?: typeof getContentType,
-      sanitizePath?: typeof sanitizePath,
+      getContentType?: typeof getContentType;
+      sanitizePath?: typeof sanitizePath;
+      stat?: typeof stat;
+      readFile?: typeof readFile;
     }
   ) {
     this.getContentType = opts?.getContentType ?? getContentType;
     this.sanitizePath = opts?.sanitizePath ?? sanitizePath;
+    this.stat = opts?.stat ?? stat;
+    this.readFile = opts?.readFile ?? readFile;
   }
 
   async handle(url: URL, req: Request): Promise<Response> {
     try {
       const relPath = url.pathname.replace("/public/", "");
       const filePath = this.sanitizePath(this.publicDir, relPath);
-      const fileInfo = await Deno.stat(filePath);
-      if (!fileInfo.isFile) throw new Error("Not a file");
+      const fileInfo = await this.stat(filePath);
+      if (!fileInfo.isFile()) throw new Error("Not a file");
       const { file, headers } = await this.getStaticFileResponse(filePath, fileInfo);
       if (this.isNotModified(req, headers)) {
         return new Response(null, { status: 304, headers });
@@ -40,8 +49,8 @@ export class StaticFileHandler {
     }
   }
 
-  private async getStaticFileResponse(filePath: string, fileInfo: Deno.FileInfo): Promise<StaticFileResponse> {
-    const file = await Deno.readFile(filePath);
+  private async getStaticFileResponse(filePath: string, fileInfo: Stats): Promise<StaticFileResponse> {
+    const file = new Uint8Array(await this.readFile(filePath));
     const contentType = this.getContentType(filePath);
     const lastModified = fileInfo.mtime?.toUTCString() ?? undefined;
     const etag = `W/\"${fileInfo.size}-${fileInfo.mtime?.getTime() ?? 0}\"`;

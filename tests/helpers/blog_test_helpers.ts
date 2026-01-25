@@ -3,9 +3,10 @@
  * Provides common functionality for creating, managing, and cleaning up test posts and content
  */
 
-import { BlogPost, BlogHandler } from "../../src/routes/blog.ts";
-import { Eta } from "@eta-dev/eta";
-import { join } from "@std/path";
+import { BlogPost, BlogHandler } from "../../src/routes/blog";
+import { Eta } from "eta";
+import { join } from "node:path";
+import { mkdir, writeFile, readdir, rm } from "node:fs/promises";
 
 export interface TestPostOptions {
   title?: string;
@@ -16,7 +17,7 @@ export interface TestPostOptions {
 
 // Test directory paths - isolated from production directories
 // Using absolute paths to ensure consistency across different test locations
-const projectRoot = Deno.cwd();
+const projectRoot = process.cwd();
 export const TEST_PATHS = {
   posts: join(projectRoot, "tests/test-posts-isolated"),
   content: join(projectRoot, "tests/test-content"),
@@ -40,7 +41,7 @@ export class BlogTestHelpers {
       html: options.html || "<h1>Test Content</h1>",
     };
 
-    await Deno.mkdir(TEST_PATHS.posts, { recursive: true });
+    await mkdir(TEST_PATHS.posts, { recursive: true });
 
     const postContent = `export const post = {
   title: ${JSON.stringify(post.title)},
@@ -48,7 +49,7 @@ export class BlogTestHelpers {
   slug: ${JSON.stringify(post.slug)},
   html: ${JSON.stringify(post.html)}
 };`;
-    await Deno.writeTextFile(`${TEST_PATHS.posts}/${slug}.ts`, postContent);
+    await writeFile(`${TEST_PATHS.posts}/${slug}.ts`, postContent, "utf-8");
     return post;
   }
 
@@ -67,17 +68,17 @@ export class BlogTestHelpers {
    * Create test markdown content in the content directory
    */
   static async createMarkdownContent(filename: string, content: string): Promise<void> {
-    await Deno.mkdir(TEST_PATHS.content, { recursive: true });
-    await Deno.writeTextFile(`${TEST_PATHS.content}/${filename}`, content);
+    await mkdir(TEST_PATHS.content, { recursive: true });
+    await writeFile(`${TEST_PATHS.content}/${filename}`, content, "utf-8");
   }
 
   /**
    * Create multiple markdown content files at once
    */
   static async createMarkdownFiles(files: Array<{ filename: string; content: string }>): Promise<void> {
-    await Deno.mkdir(TEST_PATHS.content, { recursive: true });
+    await mkdir(TEST_PATHS.content, { recursive: true });
     for (const { filename, content } of files) {
-      await Deno.writeTextFile(`${TEST_PATHS.content}/${filename}`, content);
+      await writeFile(`${TEST_PATHS.content}/${filename}`, content, "utf-8");
     }
   }
 
@@ -85,9 +86,9 @@ export class BlogTestHelpers {
    * Set up test templates for blog rendering
    */
   static async setupTemplates(): Promise<void> {
-    await Deno.mkdir(`${TEST_PATHS.templates}/blog`, { recursive: true });
-    await Deno.mkdir(`${TEST_PATHS.templates}/layouts`, { recursive: true });
-    await Deno.mkdir(`${TEST_PATHS.templates}/components`, { recursive: true });
+    await mkdir(`${TEST_PATHS.templates}/blog`, { recursive: true });
+    await mkdir(`${TEST_PATHS.templates}/layouts`, { recursive: true });
+    await mkdir(`${TEST_PATHS.templates}/components`, { recursive: true });
     
     // Base layout template
     const baseLayout = `<!DOCTYPE html>
@@ -147,10 +148,10 @@ export class BlogTestHelpers {
 </body>
 </html>`;
 
-    await Deno.writeTextFile(`${TEST_PATHS.templates}/layouts/base.eta`, baseLayout);
-    await Deno.writeTextFile(`${TEST_PATHS.templates}/components/header.eta`, headerComponent);
-    await Deno.writeTextFile(`${TEST_PATHS.templates}/blog/index.eta`, indexTemplate);
-    await Deno.writeTextFile(`${TEST_PATHS.templates}/blog/post.eta`, postTemplate);
+    await writeFile(`${TEST_PATHS.templates}/layouts/base.eta`, baseLayout, "utf-8");
+    await writeFile(`${TEST_PATHS.templates}/components/header.eta`, headerComponent, "utf-8");
+    await writeFile(`${TEST_PATHS.templates}/blog/index.eta`, indexTemplate, "utf-8");
+    await writeFile(`${TEST_PATHS.templates}/blog/post.eta`, postTemplate, "utf-8");
   }
 
   /**
@@ -190,9 +191,10 @@ export class BlogTestCleanup {
    */
   static async cleanupPosts(): Promise<void> {
     try {
-      for await (const entry of Deno.readDir(TEST_PATHS.posts)) {
-        if (entry.name.startsWith("test-")) {
-          await Deno.remove(`${TEST_PATHS.posts}/${entry.name}`);
+      const entries = await readdir(TEST_PATHS.posts);
+      for (const entry of entries) {
+        if (entry.startsWith("test-")) {
+          await rm(`${TEST_PATHS.posts}/${entry}`);
         }
       }
     } catch {
@@ -205,7 +207,7 @@ export class BlogTestCleanup {
    */
   static async cleanupAllPosts(): Promise<void> {
     try {
-      await Deno.remove(TEST_PATHS.posts, { recursive: true });
+      await rm(TEST_PATHS.posts, { recursive: true });
     } catch {
       // Directory might not exist
     }
@@ -216,7 +218,7 @@ export class BlogTestCleanup {
    */
   static async cleanupContent(): Promise<void> {
     try {
-      await Deno.remove(TEST_PATHS.content, { recursive: true });
+      await rm(TEST_PATHS.content, { recursive: true });
     } catch {
       // Directory might not exist
     }
@@ -227,7 +229,7 @@ export class BlogTestCleanup {
    */
   static async cleanupGeneratedPosts(): Promise<void> {
     try {
-      await Deno.remove(TEST_PATHS.generatedPosts, { recursive: true });
+      await rm(TEST_PATHS.generatedPosts, { recursive: true });
     } catch {
       // Directory might not exist
     }
@@ -238,7 +240,7 @@ export class BlogTestCleanup {
    */
   static async cleanupTemplates(): Promise<void> {
     try {
-      await Deno.remove(TEST_PATHS.templates, { recursive: true });
+      await rm(TEST_PATHS.templates, { recursive: true });
     } catch {
       // Directory might not exist
     }

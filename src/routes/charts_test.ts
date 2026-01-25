@@ -1,8 +1,8 @@
 // deno-lint-ignore-file no-explicit-any
-import { ChartDataHandler, ChartParamsSchema } from "./charts.ts";
-import { assertEquals, assertStringIncludes } from "@std/assert";
+import { ChartDataHandler, ChartParamsSchema } from "./charts";
+import { test, expect } from "bun:test";
 
-Deno.test("ChartDataHandler returns chart data on success", async () => {
+test("ChartDataHandler returns chart data on success", async () => {
   const mockData = [
     {
       $schema: "https://vega.github.io/schema/vega-lite/v5.json",
@@ -25,14 +25,14 @@ Deno.test("ChartDataHandler returns chart data on success", async () => {
   });
 
   const res = await handler.handle(new Request("http://localhost/api/charts"));
-  assertEquals(res.status, 200);
+  expect(res.status).toBe(200);
   const body = await res.json();
-  assertEquals(body, mockData);
-  assertEquals(body[0].$schema, "https://vega.github.io/schema/vega-lite/v5.json");
-  assertEquals(body[0].mark, "line");
+  expect(body).toEqual(mockData);
+  expect(body[0].$schema).toBe("https://vega.github.io/schema/vega-lite/v5.json");
+  expect(body[0].mark).toBe("line");
 });
 
-Deno.test("ChartDataHandler returns 500 on error", async () => {
+test("ChartDataHandler returns 500 on error", async () => {
   const handler = new ChartDataHandler({
     getAllChartJSON: () => { throw new Error("fail"); },
     getChartJSON: () => Promise.resolve({ weight: "chart" }),
@@ -40,12 +40,12 @@ Deno.test("ChartDataHandler returns 500 on error", async () => {
     logError: () => {},
   });
   const res = await handler.handle(new Request("http://localhost/api/charts"));
-  assertEquals(res.status, 500);
+  expect(res.status).toBe(500);
   const body = await res.json();
-  assertEquals(body.error, "Failed to fetch chart data");
+  expect(body.error).toBe("Failed to fetch chart data");
 });
 
-Deno.test("ChartDataHandler handles /weight endpoint", async () => {
+test("ChartDataHandler handles /weight endpoint", async () => {
   const mockWeightChart = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     mark: "line",
@@ -70,13 +70,13 @@ Deno.test("ChartDataHandler handles /weight endpoint", async () => {
     logError: () => {},
   });
   const res = await handler.handle(new Request("http://localhost/api/weight"));
-  assertEquals(res.status, 200);
+  expect(res.status).toBe(200);
   const body = await res.json();
-  assertEquals(body, mockWeightChart);
-  assertEquals(body.$schema, "https://vega.github.io/schema/vega-lite/v5.json");
+  expect(body).toEqual(mockWeightChart);
+  expect(body.$schema).toBe("https://vega.github.io/schema/vega-lite/v5.json");
 });
 
-Deno.test("ChartDataHandler returns 500 for /weight endpoint on error", async () => {
+test("ChartDataHandler returns 500 for /weight endpoint on error", async () => {
   const handler = new ChartDataHandler({
     getAllChartJSON: () => Promise.resolve([]),
     getChartJSON: () => { throw new Error("weight fetch failed"); },
@@ -84,66 +84,66 @@ Deno.test("ChartDataHandler returns 500 for /weight endpoint on error", async ()
     logError: () => {},
   });
   const res = await handler.handle(new Request("http://localhost/api/weight"));
-  assertEquals(res.status, 500);
+  expect(res.status).toBe(500);
   const body = await res.json();
-  assertEquals(body.error, "Failed to fetch weight chart data");
+  expect(body.error).toBe("Failed to fetch weight chart data");
 });
 
-Deno.test("ChartParamsSchema - Validates valid chart parameters", () => {
+test("ChartParamsSchema - Validates valid chart parameters", () => {
   const validParams = {
     type: "single",
     name: "weight"
   };
 
   const result = ChartParamsSchema.safeParse(validParams);
-  assertEquals(result.success, true);
+  expect(result.success).toBe(true);
   if (result.success) {
-    assertEquals(result.data.type, "single");
-    assertEquals(result.data.name, "weight");
+    expect(result.data.type).toBe("single");
+    expect(result.data.name).toBe("weight");
   }
 });
 
-Deno.test("ChartParamsSchema - Validates lr chart type", () => {
+test("ChartParamsSchema - Validates lr chart type", () => {
   const validParams = {
     type: "lr",
     name: "biceps"
   };
 
   const result = ChartParamsSchema.safeParse(validParams);
-  assertEquals(result.success, true);
+  expect(result.success).toBe(true);
   if (result.success) {
-    assertEquals(result.data.type, "lr");
-    assertEquals(result.data.name, "biceps");
+    expect(result.data.type).toBe("lr");
+    expect(result.data.name).toBe("biceps");
   }
 });
 
-Deno.test("ChartParamsSchema - Rejects invalid chart type", () => {
+test("ChartParamsSchema - Rejects invalid chart type", () => {
   const invalidParams = {
     type: "invalid",
     name: "weight"
   };
 
   const result = ChartParamsSchema.safeParse(invalidParams);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
   if (!result.success) {
-    assertStringIncludes(result.error.errors[0].message, "single");
+    expect(result.error.errors[0].message).toContain("single");
   }
 });
 
-Deno.test("ChartParamsSchema - Rejects empty name", () => {
+test("ChartParamsSchema - Rejects empty name", () => {
   const invalidParams = {
     type: "single",
     name: ""
   };
 
   const result = ChartParamsSchema.safeParse(invalidParams);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
   if (!result.success) {
-    assertStringIncludes(result.error.errors[0].message, "empty");
+    expect(result.error.errors[0].message).toContain("empty");
   }
 });
 
-Deno.test("ChartParamsSchema - Rejects invalid name characters", () => {
+test("ChartParamsSchema - Rejects invalid name characters", () => {
   const invalidNames = [
     "weight chart",     // Space
     "weight.chart",     // Dot
@@ -159,11 +159,11 @@ Deno.test("ChartParamsSchema - Rejects invalid name characters", () => {
     };
 
     const result = ChartParamsSchema.safeParse(invalidParams);
-    assertEquals(result.success, false, `Should reject name: ${name}`);
+    expect(result.success).toBe(false);
   }
 });
 
-Deno.test("ChartParamsSchema - Accepts valid name patterns", () => {
+test("ChartParamsSchema - Accepts valid name patterns", () => {
   const validNames = [
     "weight",
     "biceps-left",
@@ -179,24 +179,24 @@ Deno.test("ChartParamsSchema - Accepts valid name patterns", () => {
     };
 
     const result = ChartParamsSchema.safeParse(validParams);
-    assertEquals(result.success, true, `Should accept name: ${name}`);
+    expect(result.success).toBe(true);
   }
 });
 
-Deno.test("ChartParamsSchema - Rejects missing type", () => {
+test("ChartParamsSchema - Rejects missing type", () => {
   const invalidParams = {
     name: "weight"
   };
 
   const result = ChartParamsSchema.safeParse(invalidParams);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
 });
 
-Deno.test("ChartParamsSchema - Rejects missing name", () => {
+test("ChartParamsSchema - Rejects missing name", () => {
   const invalidParams = {
     type: "single"
   };
 
   const result = ChartParamsSchema.safeParse(invalidParams);
-  assertEquals(result.success, false);
-}); 
+  expect(result.success).toBe(false);
+});

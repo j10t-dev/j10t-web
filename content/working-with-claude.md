@@ -1,6 +1,7 @@
 ---
-title:  Working With claude
+title: Working With Claude
 date: 2025-11-02
+draft: true
 ---
 
 DRAFT THOUGHTS: 

@@ -1,14 +1,14 @@
-import { assertEquals, assertStringIncludes, assert } from "@std/assert";
-import { Router } from "../../src/routes/router.ts";
+import { test, expect } from "bun:test";
+import { Router } from "../../src/routes/router";
 import {
   BlogTestHelpers,
   BlogTestCleanup,
   BlogTestData,
   TEST_PATHS,
   waitForCondition
-} from "../helpers/blog_test_helpers.ts";
+} from "../helpers/blog_test_helpers";
 
-Deno.test("Blog Integration - End-to-end blog index", async () => {
+test("Blog Integration - End-to-end blog index", async () => {
   await BlogTestCleanup.cleanupEverything();
   await BlogTestHelpers.setupTemplates();
   
@@ -28,22 +28,22 @@ Deno.test("Blog Integration - End-to-end blog index", async () => {
   const request = new Request("http://localhost:8000/blog/");
   const response = await router.handle(request);
 
-  assertEquals(response.status, 200);
-  assertEquals(response.headers.get("Content-Type"), "text/html; charset=utf-8");
+  expect(response.status).toBe(200);
+  expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
 
   const html = await response.text();
 
-  assertStringIncludes(html, "First Test Post");
-  assertStringIncludes(html, "Second Test Post");
-  assertStringIncludes(html, "2024-08-28");
-  assertStringIncludes(html, "2024-08-29");
-  assertStringIncludes(html, "/blog/first-post");
-  assertStringIncludes(html, "/blog/second-post");
+  expect(html).toContain("First Test Post");
+  expect(html).toContain("Second Test Post");
+  expect(html).toContain("2024-08-28");
+  expect(html).toContain("2024-08-29");
+  expect(html).toContain("/blog/first-post");
+  expect(html).toContain("/blog/second-post");
   
   await BlogTestCleanup.cleanupEverything();
 });
 
-Deno.test("Blog Integration - End-to-end individual post", async () => {
+test("Blog Integration - End-to-end individual post", async () => {
   await BlogTestCleanup.cleanupEverything();
   await BlogTestHelpers.setupTemplates();
   
@@ -64,21 +64,21 @@ Deno.test("Blog Integration - End-to-end individual post", async () => {
   const request = new Request("http://localhost:8000/blog/first-post");
   const response = await router.handle(request);
   
-  assertEquals(response.status, 200);
-  assertEquals(response.headers.get("Content-Type"), "text/html; charset=utf-8");
+  expect(response.status).toBe(200);
+  expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
   
   const html = await response.text();
   
-  assertStringIncludes(html, "First Test Post");
-  assertStringIncludes(html, "2024-08-28");
-  assertStringIncludes(html, "This is the first test post");
-  assertStringIncludes(html, "integration"); 
-  assertStringIncludes(html, "← Back to Blog");
+  expect(html).toContain("First Test Post");
+  expect(html).toContain("2024-08-28");
+  expect(html).toContain("This is the first test post");
+  expect(html).toContain("integration"); 
+  expect(html).toContain("← Back to Blog");
   
   await BlogTestCleanup.cleanupEverything();
 });
 
-Deno.test("Blog Integration - Router handles blog routes correctly", async () => {
+test("Blog Integration - Router handles blog routes correctly", async () => {
   await BlogTestCleanup.cleanupEverything();
   await BlogTestHelpers.setupTemplates();
   
@@ -106,14 +106,14 @@ Deno.test("Blog Integration - Router handles blog routes correctly", async () =>
     const request = new Request(url);
     const response = await router.handle(request);
     
-    assertEquals(response.status, 200, `URL should return 200: ${url}`);
-    assertEquals(response.headers.get("Content-Type"), "text/html; charset=utf-8");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
   }
   
   await BlogTestCleanup.cleanupEverything();
 });
 
-Deno.test("Blog Integration - Non-existent post returns 404", async () => {
+test("Blog Integration - Non-existent post returns 404", async () => {
   await BlogTestCleanup.cleanupEverything();
   await BlogTestHelpers.setupTemplates();
   
@@ -134,17 +134,17 @@ Deno.test("Blog Integration - Non-existent post returns 404", async () => {
   const request = new Request("http://localhost:8000/blog/non-existent-post");
   const response = await router.handle(request);
   
-  assertEquals(response.status, 404);
-  assertEquals(await response.text(), "Post not found");
+  expect(response.status).toBe(404);
+  expect(await response.text()).toBe("Post not found");
   
   await BlogTestCleanup.cleanupEverything();
 });
 
-Deno.test("Blog Integration - Empty blog works correctly", async () => {
+test("Blog Integration - Empty blog works correctly", async () => {
   await BlogTestCleanup.cleanupEverything();
   await BlogTestHelpers.setupTemplates();
   
-  await Deno.mkdir("./posts", { recursive: true });
+  await import("node:fs/promises").then(m => m.mkdir("./posts", { recursive: true }));
   
   const router = new Router({
     publicDir: "./public",
@@ -157,14 +157,14 @@ Deno.test("Blog Integration - Empty blog works correctly", async () => {
   const request = new Request("http://localhost:8000/blog/");
   const response = await router.handle(request);
 
-  assertEquals(response.status, 200);
+  expect(response.status).toBe(200);
   const html = await response.text();
-  assertStringIncludes(html, "No posts yet");
+  expect(html).toContain("No posts yet");
   
   await BlogTestCleanup.cleanupEverything();
 });
 
-Deno.test("Blog Integration - Posts sorted by date (newest first)", async () => {
+test("Blog Integration - Posts sorted by date (newest first)", async () => {
   await BlogTestCleanup.cleanupEverything();
   await BlogTestHelpers.setupTemplates();
   
@@ -187,12 +187,12 @@ Deno.test("Blog Integration - Posts sorted by date (newest first)", async () => 
   const middlePostIndex = html.indexOf("Middle Post");
   const oldPostIndex = html.indexOf("Old Post");
   
-  assert(newPostIndex > -1, "New Post should be in the HTML");
-  assert(middlePostIndex > -1, "Middle Post should be in the HTML");
-  assert(oldPostIndex > -1, "Old Post should be in the HTML");
+  expect(newPostIndex > -1).toBe(true);
+  expect(middlePostIndex > -1).toBe(true);
+  expect(oldPostIndex > -1).toBe(true);
   
-  assert(newPostIndex < middlePostIndex, "New Post should come before Middle Post");
-  assert(middlePostIndex < oldPostIndex, "Middle Post should come before Old Post");
+  expect(newPostIndex < middlePostIndex).toBe(true);
+  expect(middlePostIndex < oldPostIndex).toBe(true);
   
   await BlogTestCleanup.cleanupEverything();
 });

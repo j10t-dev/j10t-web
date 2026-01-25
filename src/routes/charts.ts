@@ -3,8 +3,8 @@ import {
   getChartJSON,
   LR_CHARTS,
   SINGLE_CHARTS,
-} from "../lib/chart_data.ts";
-import { logError, logInfo } from "../lib/logger.ts";
+} from "../lib/chart_data";
+import { logError, logInfo } from "../lib/logger";
 import { z } from "zod";
 
 // Zod schema for chart URL path parameters

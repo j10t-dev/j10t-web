@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 .
 ├── build/              # Build and bundling scripts
 │   ├── build-blog.ts
-│   └── esbuild.bundle.ts
+│   └── bundle.ts
 ├── src/                # Application source code
 │   ├── main.ts        # Server entry point
 │   ├── lib/           # Shared utilities and helpers
@@ -24,12 +24,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-- **Start development server**: `deno task dev` (includes file watching)
-- **Run production server**: `deno task start`
-- **Run tests**: `deno task test`
-- **Bundle frontend assets**: `deno task bundle`
-- **Build blog posts**: `deno task build-blog`
-- **Run single test file**: `deno test --allow-net --allow-read --allow-run --allow-env --allow-write <file_path>`
+- **Start development server**: `bun run dev` (includes file watching)
+- **Run production server**: `bun run start`
+- **Run tests**: `bun test`
+- **Bundle frontend assets**: `bun run bundle`
+- **Build blog posts**: `bun run build-blog`
+- **Run single test file**: `bun test <file_path>`
 
 ## Test Structure Guidelines
 
@@ -37,13 +37,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Unit tests**: Co-located with source files using `_test.ts` suffix (e.g., `router.ts` → `router_test.ts`)
 - **Integration tests**: Located in `/tests/integration/` directory
 - **Test helpers**: Located in `/tests/helpers/` directory
-- **Naming convention**: Use `_test.ts` suffix consistently (Deno standard)
+- **Naming convention**: Use `_test.ts` suffix consistently (Bun standard)
 
 ### Test File Locations
 ```
 build/
   build-blog.ts               # Build scripts
-  esbuild.bundle.ts
+  bundle.ts
 
 src/
   main.ts                     # Application entry point
@@ -78,15 +78,15 @@ tests/
 ```
 
 ### Test Commands
-- **Run all tests**: `deno task test`
-- **Run unit tests in src**: `deno test src/`
-- **Run tests directory**: `deno test tests/`
-- **Run integration tests only**: `deno test tests/integration/`
-- **Run specific test file**: `deno test --allow-all path/to/file_test.ts`
+- **Run all tests**: `bun test`
+- **Run unit tests in src**: `bun test src/`
+- **Run tests directory**: `bun test tests/`
+- **Run integration tests only**: `bun test tests/integration/`
+- **Run specific test file**: `bun test path/to/file_test.ts`
 
 ## Architecture Overview
 
-This is a Deno-based web application that serves Vega-Lite charts for fitness measurement tracking. The architecture follows a clean separation of concerns:
+This is a Bun-based web application that serves Vega-Lite charts for fitness measurement tracking. The architecture follows a clean separation of concerns:
 
 ### Core Components
 
@@ -107,9 +107,11 @@ This is a Deno-based web application that serves Vega-Lite charts for fitness me
 
 ### Key Libraries
 
-- **@eta-dev/eta**: Server-side templating engine
-- **@std/http**: Deno's standard HTTP utilities
-- **@deno/gfm**: GitHub Flavored Markdown rendering for blog posts
+- **eta**: Server-side templating engine
+- **marked**: GitHub Flavored Markdown rendering for blog posts
+- **gray-matter**: Frontmatter parsing for blog posts
+- **zod**: Runtime type validation
+- **@logtape/logtape**: Structured logging
 - **vega-lite**: Chart specification and rendering (client-side)
 
 ## Project-Specific Guidelines

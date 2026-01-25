@@ -1,4 +1,4 @@
-import { Eta } from "@eta-dev/eta";
+import { Eta } from "eta";
 
 export class PageRenderHandler {
   constructor(private eta: Eta) {}
