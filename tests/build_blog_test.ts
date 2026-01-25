@@ -265,3 +265,110 @@ This should NOT be built.`;
 
   await BlogTestCleanup.cleanupAll();
 });
+
+test("Build Blog - Transforms sidenote syntax to HTML", async () => {
+  await BlogTestCleanup.cleanupAll();
+
+  const markdownContent = BlogTestData.markdownWithFrontmatter(
+    "Post with Sidenotes",
+    "2024-08-29",
+    `Some text^[This is a sidenote] continues here.`
+  );
+
+  await BlogTestHelpers.createMarkdownContent("sidenotes.md", markdownContent);
+  await buildPosts(TEST_PATHS.content, TEST_PATHS.generatedPosts);
+
+  const module = await BlogTestHelpers.importGeneratedPost("sidenotes");
+
+  expect(module.post.html).toContain('class="sidenote-container"');
+  expect(module.post.html).toContain('class="sidenote-toggle sidenote-number"');
+  expect(module.post.html).toContain('type="checkbox"');
+  expect(module.post.html).toContain('class="sidenote"');
+  expect(module.post.html).toContain("This is a sidenote");
+  expect(module.post.html).not.toContain("^[");
+
+  await BlogTestCleanup.cleanupAll();
+});
+
+test("Build Blog - Multiple sidenotes get unique IDs", async () => {
+  await BlogTestCleanup.cleanupAll();
+
+  const markdownContent = BlogTestData.markdownWithFrontmatter(
+    "Multiple Sidenotes",
+    "2024-08-29",
+    `First note^[Sidenote zero] and second^[Sidenote one] here.`
+  );
+
+  await BlogTestHelpers.createMarkdownContent("multi-sidenotes.md", markdownContent);
+  await buildPosts(TEST_PATHS.content, TEST_PATHS.generatedPosts);
+
+  const module = await BlogTestHelpers.importGeneratedPost("multi-sidenotes");
+
+  expect(module.post.html).toContain('id="sn-0"');
+  expect(module.post.html).toContain('for="sn-0"');
+  expect(module.post.html).toContain('id="sn-1"');
+  expect(module.post.html).toContain('for="sn-1"');
+  expect(module.post.html).toContain("Sidenote zero");
+  expect(module.post.html).toContain("Sidenote one");
+
+  await BlogTestCleanup.cleanupAll();
+});
+
+test("Build Blog - Sidenote counter resets between posts", async () => {
+  await BlogTestCleanup.cleanupAll();
+
+  const post1 = BlogTestData.markdownWithFrontmatter(
+    "First Post",
+    "2024-08-01",
+    `Note here^[First post note].`
+  );
+  const post2 = BlogTestData.markdownWithFrontmatter(
+    "Second Post",
+    "2024-08-02",
+    `Another note^[Second post note].`
+  );
+
+  await BlogTestHelpers.createMarkdownFiles([
+    { filename: "first-sn.md", content: post1 },
+    { filename: "second-sn.md", content: post2 },
+  ]);
+
+  await buildPosts(TEST_PATHS.content, TEST_PATHS.generatedPosts);
+
+  const module1 = await BlogTestHelpers.importGeneratedPost("first-sn");
+  const module2 = await BlogTestHelpers.importGeneratedPost("second-sn");
+
+  expect(module1.post.html).toContain('id="sn-0"');
+  expect(module2.post.html).toContain('id="sn-0"');
+
+  await BlogTestCleanup.cleanupAll();
+});
+
+test("Build Blog - Sidenote with markdown link inside", async () => {
+  await BlogTestCleanup.cleanupAll();
+
+  const markdownContent = BlogTestData.markdownWithFrontmatter(
+    "Sidenote with Link",
+    "2024-08-29",
+    `Text^[See [this article](https://example.com) for more] continues.`
+  );
+
+  await BlogTestHelpers.createMarkdownContent("sidenote-link.md", markdownContent);
+  await buildPosts(TEST_PATHS.content, TEST_PATHS.generatedPosts);
+
+  const module = await BlogTestHelpers.importGeneratedPost("sidenote-link");
+
+  // The sidenote should contain a proper markdown link
+  expect(module.post.html).toContain('class="sidenote"');
+
+  // Check that the link is properly inside the sidenote span
+  // The sidenote should end with "for more</span>" not just "article</span>"
+  expect(module.post.html).toMatch(/<span class="sidenote">See <a href="https:\/\/example\.com">this article<\/a> for more<\/span>/);
+
+  // Raw syntax should not appear
+  expect(module.post.html).not.toContain("^[");
+  // The closing bracket and "for more" should not be outside the sidenote
+  expect(module.post.html).not.toMatch(/for more\] continues/);
+
+  await BlogTestCleanup.cleanupAll();
+});

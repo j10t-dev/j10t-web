@@ -12,16 +12,23 @@ html {
 }
 
 /* Color scheme - dark mode like Sean Goedecke's site */
-body { 
+body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  font-size: 1rem;
-  max-width: 800px; 
-  margin: 0 auto; 
-  padding: 2rem; 
-  line-height: 1.75;
+  font-size: 1.125rem; /* 18px */
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 4rem;
+  line-height: 1.7;
   background-color: #222222 !important;
   color: #d3d3d3 !important;
   min-height: 100vh;
+}
+
+/* Larger screens: bump font size */
+@media (min-width: 1440px) {
+  body {
+    font-size: 1.25rem; /* 20px */
+  }
 }
 
 /* Typography hierarchy */
@@ -34,12 +41,12 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 }
 
-h1 { 
-  font-size: 2.5rem; 
+h1 {
+  font-size: 2.25rem;
   font-family: 'Montserrat', sans-serif;
   margin-top: 0;
 }
-h2 { font-size: 1.5rem; }
+h2 { font-size: 1.625rem; }
 h3 { font-size: 1.25rem; }
 h4 { 
   font-size: 1rem;
@@ -51,8 +58,7 @@ h5 { font-size: 0.9rem; }
 h6 { font-size: 0.76rem; }
 
 p, li, blockquote {
-  margin-bottom: 1.75rem;
-  font-size: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Links with Sean's styling */
@@ -216,4 +222,89 @@ a:hover {
   padding-left: 1.5rem;
   font-style: italic;
   color: #ccc;
+}
+
+/* ==========================================================================
+   Sidenotes - Tufte-style margin notes
+   Based on Tufte CSS: https://edwardtufte.github.io/tufte-css/
+   ========================================================================== */
+
+/* Counter for sidenote numbering - starts at 0 */
+.sidenote-article {
+  counter-reset: sidenote-counter -1;
+}
+
+/* Hide the checkbox (used for mobile toggle) */
+input.sidenote-toggle {
+  display: none;
+}
+
+/* The clickable superscript number */
+.sidenote-number {
+  counter-increment: sidenote-counter;
+}
+
+.sidenote-number::after {
+  content: counter(sidenote-counter);
+  font-size: 0.75em;
+  vertical-align: super;
+  color: #add8e6;
+  margin-left: 0.1em;
+}
+
+/* The sidenote content - hidden by default (mobile) */
+.sidenote {
+  display: none;
+}
+
+/* Mobile: tap number to expand inline */
+@media (max-width: 1024px) {
+  .sidenote-number {
+    cursor: pointer;
+  }
+
+  input.sidenote-toggle:checked + .sidenote {
+    display: block;
+    background: #2d2d2d;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    border-left: 3px solid #add8e6;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #bbb;
+  }
+
+  input.sidenote-toggle:checked + .sidenote::before {
+    content: counter(sidenote-counter) ". ";
+    color: #add8e6;
+    font-weight: 500;
+  }
+}
+
+/* Desktop: sidenotes float into right margin */
+@media (min-width: 1025px) {
+  /* Content in prime reading area, sidenotes pushed to far right */
+  .sidenote-article {
+    max-width: 700px;
+    margin-left: 18%;
+    margin-right: auto;
+  }
+
+  .sidenote {
+    display: block;
+    float: right;
+    clear: right;
+    margin-right: -320px; /* Push well beyond content edge */
+    width: 240px;
+    margin-top: 0.3rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: #999;
+  }
+
+  .sidenote::before {
+    content: counter(sidenote-counter) ". ";
+    color: #add8e6;
+  }
 }
