@@ -1,5 +1,5 @@
 import matter from "gray-matter";
-import { marked } from "marked";
+import { Marked } from "marked";
 import { readdir, rm, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, basename, extname } from "node:path";
 import { z } from "zod";
@@ -13,7 +13,8 @@ function createSidenoteExtension() {
     name: "sidenote",
     level: "inline" as const,
     start(src: string) {
-      return src.indexOf("^[");
+      const idx = src.indexOf("^[");
+      return idx === -1 ? undefined : idx;
     },
     tokenizer(src: string) {
       if (!src.startsWith("^[")) {
@@ -55,12 +56,6 @@ function createSidenoteExtension() {
     },
   };
 }
-
-// Configure marked to use GitHub Flavored Markdown
-marked.setOptions({
-  gfm: true,
-  breaks: false,
-});
 
 const FrontmatterSchema = z.object({
   title: z.string().min(1),
@@ -120,10 +115,11 @@ export async function buildPosts(contentDir = "./content", postsDir = "./posts")
     const date = attrs.date.toISOString().split('T')[0];
     const body = parsed.content;
 
-    // Reset sidenote counter for each post
-    marked.use({ extensions: [createSidenoteExtension()] });
+    // Fresh parser instance per post ensures sidenote counter resets
+    const parser = new Marked({ gfm: true, breaks: false });
+    parser.use({ extensions: [createSidenoteExtension()] });
 
-    const html = await marked(body);
+    const html = await parser.parse(body);
     const slug = basename(entry.name, ".md");
     const tsContent = `export const post = {
   title: ${JSON.stringify(title)},
