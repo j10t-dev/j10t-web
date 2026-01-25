@@ -2,6 +2,7 @@ import { Eta } from "eta";
 import { readdir } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { z } from "zod";
+import { logError } from "../lib/logger";
 
 export const BlogPostSchema = z.object({
   title: z.string().min(1, "Title cannot be empty"),
@@ -73,7 +74,10 @@ export class BlogHandler {
 
       this.posts.set(parseResult.data.slug, parseResult.data);
     } catch (error) {
-      console.error(`Failed to load post ${fileName}:`, error instanceof Error ? error.message : String(error));
+      logError("Failed to load post", {
+        fileName,
+        error: error instanceof Error ? error.message : String(error),
+      });
       // Don't throw here to allow other posts to load
     }
   }

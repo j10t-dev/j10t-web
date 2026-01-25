@@ -122,6 +122,7 @@ This is a Bun-based web application that serves Vega-Lite charts for fitness mea
 - Posts support frontmatter (title, date) or auto-generate from filename
 - Blog routes: `/blog/` (index) and `/blog/[slug]` (individual posts)
 - No JavaScript required for core blog functionality
+- Markdown is rendered via `marked` which does not sanitise HTML (content is trusted, authored internally)
 
 ### Chart Data Handling
 - Always use fetch for HTTP requests to maintain consistency

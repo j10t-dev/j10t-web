@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import { ChartDataHandler, ChartParamsSchema } from "./charts";
 import { test, expect } from "bun:test";
 

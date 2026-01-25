@@ -35,8 +35,13 @@ export async function buildPosts(contentDir = "./content", postsDir = "./posts")
 
   try {
     await rm(postsDir, { recursive: true });
-  } catch {
-    // Nothing to remove
+  } catch (error) {
+    const nodeError = error as NodeJS.ErrnoException;
+    if (nodeError.code !== "ENOENT") {
+      console.error(`Failed to clean posts directory: ${nodeError.message}`);
+      throw error;
+    }
+    // ENOENT is fine - directory doesn't exist yet
   }
   await mkdir(postsDir, { recursive: true });
 
