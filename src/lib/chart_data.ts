@@ -1,4 +1,4 @@
-import { logError, logInfo } from "./logger.ts";
+import { logError, logInfo } from "./logger";
 import { z } from "zod";
 
 // Local type definition to avoid pulling in vega-lite's native dependencies (canvas)
@@ -19,7 +19,7 @@ const SINGLE_CHARTS: Record<string, string> = {
   Chest: "chest",
 };
 
-const CHART_API_URL = Deno.env.get("CHART_API_URL") ?? "http://127.0.0.1:8888/sqlite-charts";
+const CHART_API_URL = process.env.CHART_API_URL ?? "http://127.0.0.1:8888/sqlite-charts";
 const CACHE_EXPIRY = 3600000; // 1 hour
 const chartCache: Record<string, { data: any; timestamp: number }> = {};
 

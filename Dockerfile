@@ -1,11 +1,12 @@
-FROM denoland/deno:2.5.0 AS builder
+FROM oven/bun:1 AS builder
 WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 COPY . .
-RUN deno cache src/main.ts
-RUN deno task build-blog
-RUN deno task bundle
+RUN bun run build-blog
+RUN bun run bundle
 
-FROM denoland/deno:2.5.0
+FROM oven/bun:1-alpine
 WORKDIR /app
 
 # Copy only runtime-necessary files (not content/, tests/, build/)
@@ -13,15 +14,14 @@ COPY --from=builder /app/src /app/src
 COPY --from=builder /app/posts /app/posts
 COPY --from=builder /app/public /app/public
 COPY --from=builder /app/views /app/views
-COPY --from=builder /app/deno.json /app/deno.json
-COPY --from=builder /app/deno.lock /app/deno.lock
+COPY --from=builder /app/package.json /app/package.json
+COPY --from=builder /app/node_modules /app/node_modules
 
-# Copy Deno cache (required for runtime)
-COPY --from=builder /deno-dir /deno-dir
-
-# Use existing non-root deno user from base image
-RUN chown -R deno:deno /app /deno-dir
-USER deno
+# Create non-root user
+RUN addgroup -S -g 1001 bungroup && \
+    adduser -S -u 1001 -G bungroup bunuser && \
+    chown -R bunuser:bungroup /app
+USER bunuser
 
 EXPOSE 8000
-CMD ["run", "--allow-net", "--allow-read", "--allow-env=CHART_API_URL", "src/main.ts"]
+CMD ["bun", "run", "src/main.ts"]

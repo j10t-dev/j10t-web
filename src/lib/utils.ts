@@ -1,14 +1,19 @@
-import {
-  join,
-  normalize,
-  relative,
-} from "@std/path";
-import { contentType } from "@std/media-types";
+import { join, normalize, relative } from "node:path";
+import mime from "mime";
 
 export function getContentType(path: string): string {
   const match = path.match(/\.[^.]+$/);
   const ext = match ? match[0] : "";
-  return contentType(ext) ?? "application/octet-stream";
+  const mimeType = mime.getType(ext);
+
+  // Add charset for text types to match previous behavior
+  if (mimeType) {
+    if (mimeType.startsWith("text/") || mimeType === "application/json") {
+      return `${mimeType}; charset=UTF-8`;
+    }
+    return mimeType;
+  }
+  return "application/octet-stream";
 }
 
 /**

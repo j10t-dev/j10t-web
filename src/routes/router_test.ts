@@ -1,10 +1,10 @@
-import { Router, RouterOptionsSchema } from "./router.ts";
-import { StaticFileHandler } from "./static.ts";
-import { ChartDataHandler } from "./charts.ts";
-import { PageRenderHandler } from "./index.ts";
-import { BlogHandler } from "./blog.ts";
-import { assertEquals, assertThrows, assertStringIncludes } from "@std/assert";
-import { Eta } from "@eta-dev/eta";
+import { Router, RouterOptionsSchema } from "./router";
+import { StaticFileHandler } from "./static";
+import { ChartDataHandler } from "./charts";
+import { PageRenderHandler } from "./index";
+import { BlogHandler } from "./blog";
+import { test, expect } from "bun:test";
+import { Eta } from "eta";
 
 // Mock handlers extending real classes
 class MockStaticFileHandler extends StaticFileHandler {
@@ -32,98 +32,98 @@ class MockBlogHandler extends BlogHandler {
   }
 }
 
-Deno.test("Router handles static file route", async () => {
+test("Router handles static file route", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).staticHandler = new MockStaticFileHandler();
   const req = new Request("http://localhost/public/foo.js");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(await res.text(), "static");
+  expect(res.status).toBe(200);
+  expect(await res.text()).toBe("static");
 });
 
-Deno.test("Router handles /api/charts", async () => {
+test("Router handles /api/charts", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).chartHandler = new MockChartDataHandler();
   const req = new Request("http://localhost/api/charts");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(await res.text(), "chart");
+  expect(res.status).toBe(200);
+  expect(await res.text()).toBe("chart");
 });
 
-Deno.test("Router handles /measure", async () => {
+test("Router handles /measure", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).pageHandler = new MockPageRenderHandler();
   const req = new Request("http://localhost/measure");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(await res.text(), "measure with title,currentPage");
+  expect(res.status).toBe(200);
+  expect(await res.text()).toBe("measure with title,currentPage");
 });
 
-Deno.test("Router handles / (index)", async () => {
+test("Router handles / (index)", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).pageHandler = new MockPageRenderHandler();
   (router as any)._blogHandler = new MockBlogHandler();
   const req = new Request("http://localhost/");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(await res.text(), "index with title,currentPage,posts");
+  expect(res.status).toBe(200);
+  expect(await res.text()).toBe("index with title,currentPage,posts");
 });
 
-Deno.test("Router handles /weight", async () => {
+test("Router handles /weight", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).pageHandler = new MockPageRenderHandler();
   const req = new Request("http://localhost/weight");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(await res.text(), "weight with title,currentPage");
+  expect(res.status).toBe(200);
+  expect(await res.text()).toBe("weight with title,currentPage");
 });
 
-Deno.test("Router handles /about", async () => {
+test("Router handles /about", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).pageHandler = new MockPageRenderHandler();
   const req = new Request("http://localhost/about");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(await res.text(), "about with title,currentPage");
+  expect(res.status).toBe(200);
+  expect(await res.text()).toBe("about with title,currentPage");
 });
 
-Deno.test("Router handles /projects", async () => {
+test("Router handles /projects", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   (router as any).pageHandler = new MockPageRenderHandler();
   const req = new Request("http://localhost/projects");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(await res.text(), "projects with title,currentPage");
+  expect(res.status).toBe(200);
+  expect(await res.text()).toBe("projects with title,currentPage");
 });
 
-Deno.test("Router handles /health endpoint", async () => {
+test("Router handles /health endpoint", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   const req = new Request("http://localhost/health");
   const res = await router.handle(req);
-  assertEquals(res.status, 200);
-  assertEquals(res.headers.get("Content-Type"), "application/json");
+  expect(res.status).toBe(200);
+  expect(res.headers.get("Content-Type")).toBe("application/json");
   const body = await res.json();
-  assertEquals(body, { status: "ok" });
+  expect(body).toEqual({ status: "ok" });
 });
 
-Deno.test("Router returns 404 for unknown route", async () => {
+test("Router returns 404 for unknown route", async () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({ publicDir: "/public", eta: mockEta });
   const req = new Request("http://localhost/unknown");
   const res = await router.handle(req);
-  assertEquals(res.status, 404);
-  assertEquals(await res.text(), "Not found");
+  expect(res.status).toBe(404);
+  expect(await res.text()).toBe("Not found");
 });
 
-Deno.test("RouterOptionsSchema - Validates valid options with Eta instance", () => {
+test("RouterOptionsSchema - Validates valid options with Eta instance", () => {
   const mockEta = new Eta({ views: "./views" });
   const validOptions = {
     publicDir: "/public",
@@ -131,14 +131,14 @@ Deno.test("RouterOptionsSchema - Validates valid options with Eta instance", () 
   };
 
   const result = RouterOptionsSchema.safeParse(validOptions);
-  assertEquals(result.success, true);
+  expect(result.success).toBe(true);
   if (result.success) {
-    assertEquals(result.data.publicDir, "/public");
-    assertEquals(result.data.eta, mockEta);
+    expect(result.data.publicDir).toBe("/public");
+    expect(result.data.eta).toBe(mockEta);
   }
 });
 
-Deno.test("RouterOptionsSchema - Validates options with postsDir", () => {
+test("RouterOptionsSchema - Validates options with postsDir", () => {
   const mockEta = new Eta({ views: "./views" });
   const validOptions = {
     publicDir: "/public",
@@ -147,13 +147,13 @@ Deno.test("RouterOptionsSchema - Validates options with postsDir", () => {
   };
 
   const result = RouterOptionsSchema.safeParse(validOptions);
-  assertEquals(result.success, true);
+  expect(result.success).toBe(true);
   if (result.success) {
-    assertEquals(result.data.postsDir, "./posts");
+    expect(result.data.postsDir).toBe("./posts");
   }
 });
 
-Deno.test("RouterOptionsSchema - Rejects empty publicDir", () => {
+test("RouterOptionsSchema - Rejects empty publicDir", () => {
   const mockEta = new Eta({ views: "./views" });
   const invalidOptions = {
     publicDir: "",
@@ -161,13 +161,13 @@ Deno.test("RouterOptionsSchema - Rejects empty publicDir", () => {
   };
 
   const result = RouterOptionsSchema.safeParse(invalidOptions);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
   if (!result.success) {
-    assertStringIncludes(result.error.errors[0].message, "empty");
+    expect(result.error.errors[0].message).toContain("empty");
   }
 });
 
-Deno.test("RouterOptionsSchema - Rejects empty postsDir", () => {
+test("RouterOptionsSchema - Rejects empty postsDir", () => {
   const mockEta = new Eta({ views: "./views" });
   const invalidOptions = {
     publicDir: "/public",
@@ -176,63 +176,56 @@ Deno.test("RouterOptionsSchema - Rejects empty postsDir", () => {
   };
 
   const result = RouterOptionsSchema.safeParse(invalidOptions);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
   if (!result.success) {
-    assertStringIncludes(result.error.errors[0].message, "empty");
+    expect(result.error.errors[0].message).toContain("empty");
   }
 });
 
-Deno.test("RouterOptionsSchema - Rejects invalid eta instance", () => {
+test("RouterOptionsSchema - Rejects invalid eta instance", () => {
   const invalidOptions = {
     publicDir: "/public",
     eta: { notRender: "invalid" }, // Missing render method
   };
 
   const result = RouterOptionsSchema.safeParse(invalidOptions);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
   if (!result.success) {
-    assertStringIncludes(result.error.errors[0].message, "Eta instance");
+    expect(result.error.errors[0].message).toContain("Eta instance");
   }
 });
 
-Deno.test("RouterOptionsSchema - Rejects missing publicDir", () => {
+test("RouterOptionsSchema - Rejects missing publicDir", () => {
   const mockEta = new Eta({ views: "./views" });
   const invalidOptions = {
     eta: mockEta,
   };
 
   const result = RouterOptionsSchema.safeParse(invalidOptions);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
 });
 
-Deno.test("RouterOptionsSchema - Rejects missing eta", () => {
+test("RouterOptionsSchema - Rejects missing eta", () => {
   const invalidOptions = {
     publicDir: "/public",
   };
 
   const result = RouterOptionsSchema.safeParse(invalidOptions);
-  assertEquals(result.success, false);
+  expect(result.success).toBe(false);
 });
 
-Deno.test("Router constructor - Throws on invalid options", () => {
-  assertThrows(
-    () => {
-      new Router({ publicDir: "", eta: {} as any } as any);
-    },
-    Error,
-    "Invalid Router options"
-  );
+test("Router constructor - Throws on invalid options", () => {
+  expect(() => {
+    new Router({ publicDir: "", eta: {} as any } as any);
+  }).toThrow("Invalid Router options");
 });
 
-Deno.test("Router constructor - Accepts valid options", {
-  sanitizeResources: false,
-  sanitizeOps: false,
-}, () => {
+test("Router constructor - Accepts valid options", () => {
   const mockEta = new Eta({ views: "./views" });
   const router = new Router({
     publicDir: "/public",
     eta: mockEta,
   });
 
-  assertEquals(typeof router, "object");
-}); 
+  expect(typeof router).toBe("object");
+});

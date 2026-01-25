@@ -1,6 +1,6 @@
-import { Eta } from "@eta-dev/eta";
-import { walk } from "@std/fs/walk";
-import { basename, join } from "@std/path";
+import { Eta } from "eta";
+import { readdir } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { z } from "zod";
 
 export const BlogPostSchema = z.object({
@@ -26,12 +26,15 @@ export class BlogHandler {
   private async loadPosts() {
     try {
       // Load all generated blog posts
-      for await (const entry of walk(this.postsDir, { exts: [".ts"] })) {
-        await this.loadSinglePost(entry.path);
+      const files = await readdir(this.postsDir);
+      for (const file of files) {
+        if (file.endsWith(".ts")) {
+          await this.loadSinglePost(join(this.postsDir, file));
+        }
       }
     } catch (error) {
-      if (error instanceof Deno.errors.NotFound) {
-        console.warn("Posts directory not found. Run 'deno task build-blog' first.");
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+        console.warn("Posts directory not found. Run 'bun run build-blog' first.");
       } else {
         console.error("Failed to load blog posts:", error);
         throw error;

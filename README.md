@@ -1,32 +1,42 @@
-# Lifts FE (Deno Edition)
+# j10t-web
 
-A minimal, fast, and modern frontend for displaying VEGA charts using Deno and
+A minimal, fast, and modern frontend for displaying VEGA charts using Bun and
 vanilla JS. No React or heavy frameworks.
 
 ## Features
 
-- Deno HTTP server
+- Bun HTTP server
 - Vega charts rendered client-side
 - Simple, maintainable structure
 
 ## Getting Started
 
-1. Install [Deno](https://deno.land/manual/getting_started/installation)
-2. Run the server:
+1. Install [Bun](https://bun.sh/)
+2. Install dependencies:
    ```sh
-   deno task dev
+   bun install
    ```
-3. Open your browser at [http://localhost:8000](http://localhost:8000)
+3. Run the server:
+   ```sh
+   bun run dev
+   ```
+4. Open your browser at [http://localhost:8000](http://localhost:8000)
 
 ## Development Commands
 
-- `deno task dev` — Start development server with file watching
-- `deno task start` — Run production server
-- `deno task test` — Run all tests
-- `deno task bundle` — Bundle frontend assets
-- `deno task build-blog` — Build blog posts from markdown
+- `bun run dev` — Start development server with file watching
+- `bun run start` — Run production server
+- `bun test` — Run all tests
+- `bun run bundle` — Bundle frontend assets
+- `bun run build-blog` — Build blog posts from markdown
 
 ## Deployment
+
+Build a standalone binary for Raspberry Pi (ARM64):
+
+```bash
+bun build --compile --minify --target=bun-linux-arm64 src/main.ts --outfile j10t-web
+```
 
 Deploy to Raspberry Pi:
 
@@ -36,7 +46,7 @@ rsync -av \
   --exclude='.git' \
   --exclude='*.log' \
   --exclude='.DS_Store' \
-  --exclude='deno.lock' \
+  --exclude='bun.lock' \
   --exclude='backlog.md' \
   --exclude='docs/' \
   --exclude='content/' \
@@ -56,11 +66,6 @@ rsync -av \
 ├── views/           # HTML templates
 └── public/          # Static assets (JS, CSS, Vega libs)
 ```
-
-## To-do
-
-- Add more pages/styles
-- This README is junk and too claude-ified.
 
 ## API Documentation
 

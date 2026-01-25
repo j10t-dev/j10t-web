@@ -1,8 +1,8 @@
-import { fromFileUrl, join } from "@std/path";
-import { Eta } from "@eta-dev/eta";
+import { join } from "node:path";
+import { Eta } from "eta";
 import { configure, getConsoleSink } from "@logtape/logtape";
-import { logInfo } from "./lib/logger.ts";
-import { Router } from "./routes/router.ts";
+import { logInfo } from "./lib/logger";
+import { Router } from "./routes/router";
 
 await configure({
   sinks: {
@@ -22,7 +22,7 @@ await configure({
   ],
 });
 
-const __dirname = fromFileUrl(new URL(".", import.meta.url));
+const __dirname = import.meta.dir;
 const PUBLIC_DIR = join(__dirname, "..", "public");
 const VIEWS_DIR = join(__dirname, "..", "views");
 const POSTS_DIR = join(__dirname, "..", "posts");
@@ -36,5 +36,5 @@ export async function handler(req: Request): Promise<Response> {
 
 if (import.meta.main) {
   logInfo("Listening on http://localhost:8000");
-  Deno.serve({ port: 8000 }, handler);
+  Bun.serve({ port: 8000, fetch: handler });
 }

@@ -1,10 +1,9 @@
-import { getAllChartJSON, getChartJSON, VegaLiteSpecSchema } from "./chart_data.ts";
-import { assertEquals, assertRejects } from "@std/assert";
+import { test, expect } from "bun:test";
+import { getAllChartJSON, getChartJSON, VegaLiteSpecSchema } from "./chart_data";
 
-// Save the original fetch
 const originalFetch = globalThis.fetch;
 
-Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
+test("getAllChartJSON returns chart data array (mocked)", async () => {
   let called = 0;
   const mockFetch = async (url: string | URL | Request, opts?: RequestInit) => {
     called++;
@@ -24,16 +23,15 @@ Deno.test("getAllChartJSON returns chart data array (mocked)", async () => {
   try {
     globalThis.fetch = mockFetch as any;
     const data = await getAllChartJSON();
-    assertEquals(Array.isArray(data), true);
-    assertEquals(data.length > 0, true);
-    // Use type assertion to access mock property for test only
-    assertEquals((data[0] as any).mock, true);
+    expect(Array.isArray(data)).toBe(true);
+    expect(data.length > 0).toBe(true);
+    expect((data[0] as any).mock).toBe(true);
   } finally {
     globalThis.fetch = originalFetch;
   }
 });
 
-Deno.test("VegaLiteSpecSchema validates valid chart specification", () => {
+test("VegaLiteSpecSchema validates valid chart specification", () => {
   const validSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     mark: "line",
@@ -45,23 +43,20 @@ Deno.test("VegaLiteSpecSchema validates valid chart specification", () => {
   };
 
   const result = VegaLiteSpecSchema.safeParse(validSpec);
-  assertEquals(result.success, true);
+  expect(result.success).toBe(true);
   if (result.success) {
-    assertEquals(result.data.$schema, validSpec.$schema);
-    assertEquals(result.data.mark, "line");
+    expect(result.data.$schema).toBe(validSpec.$schema);
+    expect(result.data.mark).toBe("line");
   }
 });
 
-Deno.test("VegaLiteSpecSchema validates minimal spec", () => {
-  const minimalSpec = {
-    mark: "bar"
-  };
-
+test("VegaLiteSpecSchema validates minimal spec", () => {
+  const minimalSpec = { mark: "bar" };
   const result = VegaLiteSpecSchema.safeParse(minimalSpec);
-  assertEquals(result.success, true);
+  expect(result.success).toBe(true);
 });
 
-Deno.test("VegaLiteSpecSchema allows additional properties", () => {
+test("VegaLiteSpecSchema allows additional properties", () => {
   const specWithExtras = {
     mark: "point",
     customProperty: "custom value",
@@ -69,27 +64,24 @@ Deno.test("VegaLiteSpecSchema allows additional properties", () => {
   };
 
   const result = VegaLiteSpecSchema.safeParse(specWithExtras);
-  assertEquals(result.success, true);
+  expect(result.success).toBe(true);
   if (result.success) {
-    assertEquals((result.data as any).customProperty, "custom value");
+    expect((result.data as any).customProperty).toBe("custom value");
   }
 });
 
-Deno.test("VegaLiteSpecSchema rejects non-object values", () => {
+test("VegaLiteSpecSchema rejects non-object values", () => {
   const invalidValues = [null, undefined, "string", 123, [], true];
-
   for (const invalid of invalidValues) {
     const result = VegaLiteSpecSchema.safeParse(invalid);
-    assertEquals(result.success, false);
+    expect(result.success).toBe(false);
   }
 });
 
-Deno.test("getChartJSON rejects invalid API response", async () => {
+test("getChartJSON rejects invalid API response", async () => {
   const mockFetch = async () => {
     return {
-      async json() {
-        return "invalid data";
-      },
+      async json() { return "invalid data"; },
       ok: true,
       status: 200,
       statusText: "OK"
@@ -98,17 +90,13 @@ Deno.test("getChartJSON rejects invalid API response", async () => {
 
   try {
     globalThis.fetch = mockFetch;
-    await assertRejects(
-      async () => await getChartJSON("SINGLE", "test-invalid"),
-      Error,
-      "Invalid chart data structure"
-    );
+    await expect(getChartJSON("SINGLE", "test-invalid")).rejects.toThrow("Invalid chart data structure");
   } finally {
     globalThis.fetch = originalFetch;
   }
 });
 
-Deno.test("getChartJSON validates and accepts valid response", async () => {
+test("getChartJSON validates and accepts valid response", async () => {
   const mockValidSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     mark: "line",
@@ -117,9 +105,7 @@ Deno.test("getChartJSON validates and accepts valid response", async () => {
 
   const mockFetch = async () => {
     return {
-      async json() {
-        return mockValidSpec;
-      },
+      async json() { return mockValidSpec; },
       ok: true,
       status: 200,
       statusText: "OK"
@@ -129,8 +115,8 @@ Deno.test("getChartJSON validates and accepts valid response", async () => {
   try {
     globalThis.fetch = mockFetch;
     const result = await getChartJSON("SINGLE", "test-valid-weight");
-    assertEquals((result as any).mark, "line");
-    assertEquals((result as any).$schema, mockValidSpec.$schema);
+    expect((result as any).mark).toBe("line");
+    expect((result as any).$schema).toBe(mockValidSpec.$schema);
   } finally {
     globalThis.fetch = originalFetch;
   }
