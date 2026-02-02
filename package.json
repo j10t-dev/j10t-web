@@ -6,7 +6,8 @@
     "dev": "bun --watch run src/main.ts",
     "test": "bun test",
     "bundle": "bun run build/bundle.ts",
-    "build-blog": "bun run build/build-blog.ts"
+    "build-blog": "bun run build/build-blog.ts",
+    "deploy": "./scripts/deploy-pi.sh"
   },
   "dependencies": {
     "@logtape/logtape": "^0.7.2",
