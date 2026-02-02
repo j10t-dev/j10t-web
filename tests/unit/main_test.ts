@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { handler } from "../src/main";
+import { handler } from "../../src/main";
 
 test("handler returns home page with navigation and recent posts", async () => {
   const req = new Request("http://localhost:8000/");

@@ -1,12 +1,12 @@
 import { test, expect } from "bun:test";
 import { access } from "node:fs/promises";
-import { buildPosts, FrontmatterSchema } from "../build/build-blog";
+import { buildPosts, FrontmatterSchema } from "../../build/build-blog";
 import {
   BlogTestHelpers,
   BlogTestCleanup,
   BlogTestData,
   TEST_PATHS
-} from "./helpers/blog_test_helpers";
+} from "../helpers/blog_test_helpers";
 
 async function exists(path: string): Promise<boolean> {
   try {
