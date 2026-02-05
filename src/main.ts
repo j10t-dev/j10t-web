@@ -36,5 +36,5 @@ export async function handler(req: Request): Promise<Response> {
 
 if (import.meta.main) {
   logInfo("Listening on http://localhost:8000");
-  Bun.serve({ port: 8000, fetch: handler });
+  Bun.serve({ hostname: "127.0.0.1", port: 8000, fetch: handler });
 }
