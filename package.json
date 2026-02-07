@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@logtape/logtape": "2.0.2",
-    "eta": "4.5.0",
+    "eta": "4.5.1",
     "gray-matter": "^4.0.3",
     "marked": "^17.0.1",
     "mime": "^4.0.0",
