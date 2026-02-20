@@ -1,5 +1,5 @@
 import matter from "gray-matter";
-import { Marked } from "marked";
+import { Marked, type TokenizerThis, type RendererThis, type Tokens } from "marked";
 import { readdir, rm, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, basename, extname } from "node:path";
 import { z } from "zod";
@@ -16,7 +16,7 @@ function createSidenoteExtension() {
       const idx = src.indexOf("^[");
       return idx === -1 ? undefined : idx;
     },
-    tokenizer(src: string) {
+    tokenizer(this: TokenizerThis, src: string): Tokens.Generic | undefined {
       if (!src.startsWith("^[")) {
         return undefined;
       }
@@ -34,10 +34,9 @@ function createSidenoteExtension() {
             // Found the matching close bracket
             const raw = src.slice(0, i + 1);
             const content = src.slice(2, i); // Content between ^[ and ]
-            const token: any = {
+            const token: Tokens.Generic & { tokens?: any[] } = {
               type: "sidenote",
               raw,
-              text: content,
             };
             // Tell marked to tokenize the content as well
             token.tokens = this.lexer.inlineTokens(content);
@@ -48,7 +47,7 @@ function createSidenoteExtension() {
 
       return undefined; // No matching bracket found
     },
-    renderer(token: any) {
+    renderer(this: RendererThis, token: Tokens.Generic & { tokens?: any[] }): string {
       const id = sidenoteCounter++;
       // Parse the content to handle markdown inside sidenotes
       const parsedContent = this.parser.parseInline(token.tokens || []);
@@ -101,7 +100,7 @@ export async function buildPosts(contentDir = "./content", postsDir = "./posts")
 
     if (!parseResult.success) {
       console.error(`Invalid frontmatter in ${entry.path}:`);
-      console.error(parseResult.error.errors);
+      console.error(parseResult.error.issues);
       throw new Error(`Build failed: Invalid frontmatter in ${entry.path}`);
     }
 

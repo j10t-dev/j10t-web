@@ -79,14 +79,13 @@ test("VegaLiteSpecSchema rejects non-object values", () => {
 });
 
 test("getChartJSON rejects invalid API response", async () => {
-  const mockFetch = async () => {
-    return {
-      async json() { return "invalid data"; },
-      ok: true,
+  const mockFetch = (async () => {
+    return new Response(JSON.stringify("invalid data"), {
       status: 200,
-      statusText: "OK"
-    } as unknown as Response;
-  };
+      statusText: "OK",
+      headers: { "content-type": "application/json" }
+    });
+  }) as unknown as typeof fetch;
 
   try {
     globalThis.fetch = mockFetch;
@@ -103,14 +102,13 @@ test("getChartJSON validates and accepts valid response", async () => {
     data: { values: [{ x: 1, y: 2 }] }
   };
 
-  const mockFetch = async () => {
-    return {
-      async json() { return mockValidSpec; },
-      ok: true,
+  const mockFetch = (async () => {
+    return new Response(JSON.stringify(mockValidSpec), {
       status: 200,
-      statusText: "OK"
-    } as unknown as Response;
-  };
+      statusText: "OK",
+      headers: { "content-type": "application/json" }
+    });
+  }) as unknown as typeof fetch;
 
   try {
     globalThis.fetch = mockFetch;

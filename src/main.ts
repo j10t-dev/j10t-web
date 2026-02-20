@@ -11,12 +11,12 @@ await configure({
   loggers: [
     {
       category: ["j10t-web"],
-      level: "info",
+      lowestLevel: "info",
       sinks: ["console"],
     },
     {
       category: ["logtape", "meta"],
-      level: "warning",
+      lowestLevel: "warning",
       sinks: ["console"],
     },
   ],

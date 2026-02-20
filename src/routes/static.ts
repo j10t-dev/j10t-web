@@ -8,19 +8,22 @@ export interface StaticFileResponse {
   headers: Headers;
 }
 
+type StatFn = (path: string) => Promise<Stats>;
+type ReadFileFn = (path: string) => Promise<Buffer>;
+
 export class StaticFileHandler {
   private getContentType: typeof getContentType;
   private sanitizePath: typeof sanitizePath;
-  private stat: typeof stat;
-  private readFile: typeof readFile;
+  private stat: StatFn;
+  private readFile: ReadFileFn;
 
   constructor(
     private publicDir: string,
     opts?: {
       getContentType?: typeof getContentType;
       sanitizePath?: typeof sanitizePath;
-      stat?: typeof stat;
-      readFile?: typeof readFile;
+      stat?: StatFn;
+      readFile?: ReadFileFn;
     }
   ) {
     this.getContentType = opts?.getContentType ?? getContentType;

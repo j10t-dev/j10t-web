@@ -36,7 +36,7 @@ export class Router {
     const parseResult = RouterOptionsSchema.safeParse(options);
 
     if (!parseResult.success) {
-      const errorMessages = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      const errorMessages = parseResult.error.issues.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
       throw new Error(`Invalid Router options: ${errorMessages}`);
     }
 

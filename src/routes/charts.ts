@@ -10,7 +10,7 @@ import { z } from "zod";
 // Zod schema for chart URL path parameters
 export const ChartParamsSchema = z.object({
   type: z.enum(["single", "lr"], {
-    errorMap: () => ({ message: "Chart type must be 'single' or 'lr'" })
+    message: "Chart type must be 'single' or 'lr'"
   }),
   name: z.string()
     .min(1, "Chart name cannot be empty")
@@ -46,7 +46,7 @@ export class ChartDataHandler {
     // Handle weight endpoint specifically
     if (url.pathname === "/api/weight") {
       try {
-        const chartData = await this.deps.getChartJSON("SINGLE", SINGLE_CHARTS["Weight"]);
+        const chartData = await this.deps.getChartJSON("SINGLE", SINGLE_CHARTS["Weight"]!);
         return new Response(JSON.stringify(chartData), {
           headers: { "content-type": "application/json" },
         });
@@ -72,11 +72,11 @@ export class ChartDataHandler {
       const paramsResult = ChartParamsSchema.safeParse({ type, name });
 
       if (!paramsResult.success) {
-        const errorMessages = paramsResult.error.errors.map(e => e.message).join(', ');
+        const errorMessages = paramsResult.error.issues.map(e => e.message).join(', ');
         this.deps.logError("Invalid chart path parameters", {
           type,
           name,
-          errors: paramsResult.error.errors,
+          errors: paramsResult.error.issues,
         });
         return new Response(
           JSON.stringify({ error: `Invalid chart path: ${errorMessages}` }),
@@ -92,12 +92,9 @@ export class ChartDataHandler {
           validParams.name.slice(1).toLowerCase();
 
         if (validParams.type === "single" && capitalizedName in SINGLE_CHARTS) {
-          chartData = await this.deps.getChartJSON(
-            "SINGLE",
-            SINGLE_CHARTS[capitalizedName],
-          );
+          chartData = await this.deps.getChartJSON("SINGLE", SINGLE_CHARTS[capitalizedName]!);
         } else if (validParams.type === "lr" && capitalizedName in LR_CHARTS) {
-          chartData = await this.deps.getChartJSON("LR", LR_CHARTS[capitalizedName]);
+          chartData = await this.deps.getChartJSON("LR", LR_CHARTS[capitalizedName]!);
         } else {
           return new Response(
             JSON.stringify({ error: "Chart not found" }),
