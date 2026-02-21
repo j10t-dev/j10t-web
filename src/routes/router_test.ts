@@ -163,7 +163,7 @@ test("RouterOptionsSchema - Rejects empty publicDir", () => {
   const result = RouterOptionsSchema.safeParse(invalidOptions);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.errors[0].message).toContain("empty");
+    expect(result.error.issues[0]!.message).toContain("empty");
   }
 });
 
@@ -178,7 +178,7 @@ test("RouterOptionsSchema - Rejects empty postsDir", () => {
   const result = RouterOptionsSchema.safeParse(invalidOptions);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.errors[0].message).toContain("empty");
+    expect(result.error.issues[0]!.message).toContain("empty");
   }
 });
 
@@ -191,7 +191,7 @@ test("RouterOptionsSchema - Rejects invalid eta instance", () => {
   const result = RouterOptionsSchema.safeParse(invalidOptions);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.errors[0].message).toContain("Eta instance");
+    expect(result.error.issues[0]!.message).toContain("Eta instance");
   }
 });
 

@@ -215,7 +215,7 @@ test("BlogPostSchema - Rejects empty title", () => {
   const result = BlogPostSchema.safeParse(invalidPost);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.errors[0].message).toContain("empty");
+    expect(result.error.issues[0]!.message).toContain("empty");
   }
 });
 
@@ -298,7 +298,7 @@ test("BlogPostSchema - Rejects empty HTML content", () => {
   const result = BlogPostSchema.safeParse(invalidPost);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.errors[0].message).toContain("empty");
+    expect(result.error.issues[0]!.message).toContain("empty");
   }
 });
 

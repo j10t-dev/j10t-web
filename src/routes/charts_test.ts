@@ -125,7 +125,7 @@ test("ChartParamsSchema - Rejects invalid chart type", () => {
   const result = ChartParamsSchema.safeParse(invalidParams);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.errors[0].message).toContain("single");
+    expect(result.error.issues[0]!.message).toContain("single");
   }
 });
 
@@ -138,7 +138,7 @@ test("ChartParamsSchema - Rejects empty name", () => {
   const result = ChartParamsSchema.safeParse(invalidParams);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.errors[0].message).toContain("empty");
+    expect(result.error.issues[0]!.message).toContain("empty");
   }
 });
 

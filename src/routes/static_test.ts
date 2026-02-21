@@ -20,8 +20,8 @@ const mockFileInfo: Stats = {
   ctime: new Date(),
 } as Stats;
 
-const mockStat = (_path: string) => Promise.resolve(mockFileInfo);
-const mockReadFile = (_path: string) => Promise.resolve(Buffer.from(mockFile));
+const mockStat = async (_path: string) => mockFileInfo;
+const mockReadFile = async (_path: string) => Buffer.from(mockFile);
 const mockGetContentType = (_path: string) => "text/javascript; charset=UTF-8";
 const mockSanitizePath = (_base: string, user: string) => `/mock/${user}`;
 
@@ -69,7 +69,7 @@ test("StaticFileHandler returns 304 if not modified (ETag)", async () => {
 test("StaticFileHandler returns 404 if path is directory", async () => {
   const dirInfo = { ...mockFileInfo, isFile: () => false } as Stats;
   const handler = new StaticFileHandler("/mock", {
-    stat: () => Promise.resolve(dirInfo),
+    stat: async (_path: string) => dirInfo,
   });
   const req = new Request("http://localhost/public/dir/");
   const url = new URL(req.url);

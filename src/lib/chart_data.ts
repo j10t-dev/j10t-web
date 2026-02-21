@@ -109,7 +109,7 @@ async function getChartJSON(
         endpoint,
         type,
         table_name,
-        errors: parseResult.error.errors,
+        errors: parseResult.error.issues,
       });
       throw new Error(`Invalid chart data structure: ${parseResult.error.message}`);
     }
@@ -151,16 +151,16 @@ export { getChartJSON, LR_CHARTS, SINGLE_CHARTS, VegaLiteSpecSchema };
 export async function getAllChartJSON(): Promise<TopLevelSpec[]> {
   const chartJSON: (TopLevelSpec | null)[] = [];
   const promises: { promise: Promise<TopLevelSpec>; index: number }[] = [];
-  for (const exe in LR_CHARTS) {
+  for (const [, tableName] of Object.entries(LR_CHARTS)) {
     promises.push({
-      promise: getChartJSON("LR", LR_CHARTS[exe]),
+      promise: getChartJSON("LR", tableName),
       index: chartJSON.length,
     });
     chartJSON.push(null);
   }
-  for (const exe in SINGLE_CHARTS) {
+  for (const [, tableName] of Object.entries(SINGLE_CHARTS)) {
     promises.push({
-      promise: getChartJSON("SINGLE", SINGLE_CHARTS[exe]),
+      promise: getChartJSON("SINGLE", tableName),
       index: chartJSON.length,
     });
     chartJSON.push(null);

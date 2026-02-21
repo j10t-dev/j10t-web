@@ -4,7 +4,7 @@ type TopLevelSpec = Record<string, unknown>;
 declare global {
   interface Window {
     vegaEmbed: (
-      el: string,
+      el: HTMLElement,
       spec: TopLevelSpec,
       opts: { renderer: string; actions: boolean },
     ) => Promise<unknown>;
@@ -29,7 +29,7 @@ async function loadChart(type: string, name: string, chartDiv: HTMLElement): Pro
     if (!response.ok) return;
     
     const chartSpec = await response.json();
-    await (globalThis as typeof window).vegaEmbed(chartDiv, chartSpec, {
+    await window.vegaEmbed(chartDiv, chartSpec, {
       renderer: "svg",
       actions: false,
     });
@@ -41,17 +41,19 @@ async function loadChart(type: string, name: string, chartDiv: HTMLElement): Pro
 globalThis.addEventListener("DOMContentLoaded", () => {
   const visContainer = document.getElementById("vis");
   if (!visContainer) return;
-  
+
   visContainer.innerHTML = "";
-  
+
   // Create containers and start parallel loading
   CHARTS.forEach((chart, index) => {
     const chartDiv = document.createElement("div");
     chartDiv.id = `chart-${index}`;
     chartDiv.className = "chart-container";
     visContainer.appendChild(chartDiv);
-    
+
     // Start loading immediately
     loadChart(chart.type, chart.name, chartDiv);
   });
 });
+
+export {};
