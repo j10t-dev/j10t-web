@@ -7,12 +7,6 @@
     <link rel="stylesheet" href="/public/styles.css" />
 </head>
 <body>
-    <% if (it.currentPage === 'home') { %>
-    <div class="homepage-hero">
-        <h1 class="hero-title">jack gwinnett</h1>
-    </div>
-    <% } %>
-    
     <%~ include("../components/header", { currentPage: it.currentPage }) %>
     
     <main>

@@ -28,9 +28,9 @@ With the release of `mm`, my maintenance workflow has become simple:
 * `mm scan` -> trivy scans and reports vulnerability detections and updates (and other generic dependency updates).
 * `mm update` -> For each project with findings, iteratively update dependencies and validate each one against the full unit/integration/component test-suite. 
 
-This generates and publishes a `graphite` stack for human review and merging into `main`.^[I am still long term evaluating if graphite is the right solution here, as well as whether I really need a human review for the final merge] 
+  * This generates and publishes a `graphite` stack for human review and merging into `main`.^[I am still long term evaluating if graphite is the right solution here, as well as whether I really need a human review for the final merge] 
 
-If an update fails, the branch is left intact for further investigation and rectification.
+  * If an update fails, the branch is left intact for further investigation and rectification.
 
 * `mm deploy --build` -> Deploys all^[eventually I'd like a version (or change detection) driven check to ensure deploys are not ran unnecessarily] configured applications, building their deploy artifacts if necessary^[e.g. I use bun-compiled executables for typescript, while python projects aren't compiled] and validates succesful deployments via the application's healthcheck. 
 

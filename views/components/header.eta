@@ -1,8 +1,8 @@
 <header class="site-header">
     <nav class="main-nav">
-        <a href="/" class="nav-link <%= it.currentPage === 'home' ? 'active' : '' %>">home</a>
-        <a href="/about" class="nav-link <%= it.currentPage === 'about' ? 'active' : '' %>">about</a>
+        <a href="/" class="nav-wordmark <%= it.currentPage === 'home' ? 'active' : '' %>">j10t</a>
         <a href="/blog" class="nav-link <%= it.currentPage === 'blog' ? 'active' : '' %>">words</a>
         <a href="/projects" class="nav-link <%= it.currentPage === 'projects' ? 'active' : '' %>">projects</a>
+        <a href="/about" class="nav-link <%= it.currentPage === 'about' ? 'active' : '' %>">about</a>
     </nav>
 </header>

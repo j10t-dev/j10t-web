@@ -57,8 +57,17 @@ h4 {
 h5 { font-size: 0.9rem; }
 h6 { font-size: 0.76rem; }
 
-p, li, blockquote {
+p, blockquote {
   margin-bottom: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.6rem;
+}
+
+ul, ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
 }
 
 /* Links with Sean's styling */
@@ -86,6 +95,19 @@ a:hover {
   align-items: center;
 }
 
+/* Site wordmark */
+.nav-wordmark {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-wordmark:hover { color: #add8e6; text-decoration: none; }
+.nav-wordmark.active { box-shadow: 0 2px 0 #ffffff; }
+
 .nav-link {
   color: #d3d3d3;
   text-decoration: none;
@@ -107,38 +129,18 @@ a:hover {
   box-shadow: 0 2px 0 #ffffff;
 }
 
-/* Homepage hero section */
-.homepage-hero {
-  text-align: center;
-  margin-bottom: 1rem;
-  padding: 2rem 0 0.5rem 0;
-}
-
-.hero-title {
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.2;
-  color: #ffffff;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-
-
 /* Section titles - white like Sean's site */
 .section-title {
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin-bottom: 2rem;
   color: #ffffff;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: 1rem;
 }
 
 .back-link {
   font-size: 0.9rem;
-  margin-bottom: 2rem;
   display: inline-block;
 }
 

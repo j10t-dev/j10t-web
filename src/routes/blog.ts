@@ -133,7 +133,12 @@ export class BlogHandler {
   private async renderBlogPost(post: BlogPost): Promise<Response> {
     try {
       const formattedPost = { ...post, date: post.date.toISOString().split('T')[0] };
-      const html = await this.eta.render("blog/post", { post: formattedPost });
+      const content = await this.eta.render("blog/post", { post: formattedPost });
+      const html = await this.eta.render("layouts/base", {
+        title: formattedPost.title,
+        currentPage: "blog",
+        body: content,
+      });
       return new Response(html, {
         headers: { "Content-Type": "text/html; charset=utf-8" }
       });
