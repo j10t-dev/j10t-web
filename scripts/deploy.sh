@@ -8,6 +8,7 @@ echo "==> Syncing to Pi..."
 rsync -av \
     --exclude='node_modules' \
     --exclude='.git' \
+    --exclude='.jj' \
     --exclude='*.log' \
     --exclude='.DS_Store' \
     --exclude='bun.lock' \
