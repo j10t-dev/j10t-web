@@ -5,7 +5,7 @@
     "": {
       "name": "j10t-web",
       "dependencies": {
-        "@logtape/logtape": "2.1.0",
+        "@logtape/logtape": "2.1.1",
         "eta": "4.6.0",
         "gray-matter": "^4.0.3",
         "marked": "18.0.3",
@@ -18,7 +18,7 @@
     },
   },
   "packages": {
-    "@logtape/logtape": ["@logtape/logtape@2.1.0", "", {}, "sha512-KpKQBeLJSlFtkGr9Dpi03ld96nqBEG8WiD5lTrwE33oaKdQXOcO5oJAr28hsCQ1RnZ0U8xaVvxwopNDgjFNYuw=="],
+    "@logtape/logtape": ["@logtape/logtape@2.1.1", "", {}, "sha512-aULbCqUQGerfOsZ3CMvcKtueKzmdchluXYUd3bIHKmOIS93fx1ko0+hyRQ4flloGZ8EiyRPydZXiy8n1J/eAQA=="],
 
     "@types/bun": ["@types/bun@1.3.14", "", { "dependencies": { "bun-types": "1.3.14" } }, "sha512-h1hFqFVcvAvD9j9K7ZW7vd82aSA+rTdznZa+5bwvCwqSB1jmmfLcbIWhOLx1/+boy/xmjgCs/OMUL8hRJSmnPw=="],
 
